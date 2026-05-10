@@ -1,0 +1,56 @@
+<h2 mat-dialog-title>Reseña del Agricultor</h2>
+
+<mat-dialog-content>
+  <div class="review-content" *ngIf="!loading">
+    
+    <!-- Info del farmer -->
+    <div class="farmer-info">
+      <img [src]="farmerPhoto" 
+           class="farmer-avatar" 
+           [alt]="farmerName" />
+      <h3>{{ farmerName }}</h3>
+    </div>
+
+    <!-- Rating (solo lectura) -->
+    <div class="rating-section">
+      <label>Calificación</label>
+      <div class="stars">
+        <span 
+          *ngFor="let star of [1,2,3,4,5]" 
+          class="star"
+          [class.active]="star <= rating">
+          ★
+        </span>
+      </div>
+    </div>
+
+    <!-- Comentario (solo lectura) -->
+    <div class="comment-section" *ngIf="comment">
+      <label>Comentario</label>
+      <mat-form-field appearance="outline" class="w-100">
+        <textarea 
+          matInput 
+          [value]="comment" 
+          readonly 
+          rows="4"
+          style="resize: none;">
+        </textarea>
+      </mat-form-field>
+    </div>
+
+    <!-- No hay reseña -->
+    <div class="no-review" *ngIf="rating === 0">
+      <p>Este agricultor no ha dejado una reseña todavía.</p>
+    </div>
+
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="30"></mat-spinner>
+    <p>Cargando reseña...</p>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-flat-button color="primary" (click)="close()">Cerrar</button>
+</mat-dialog-actions>

@@ -1,0 +1,44 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <mat-card-title>Reseñas</mat-card-title>
+    @if(reviews.length === 0) {
+      <p>No hay reseñas disponibles.</p>
+    }
+    <mat-list>
+      @for(review of reviews.slice(0, 4); track review.farmerId) {
+        <mat-list-item role="listitem" class="gap-12 p-0 h-100">
+          <div class="row">
+            <div class="col-2 col-sm-1 text-center align-self-center">
+              <span matListItemIcon>
+                <img
+                  src="{{ review.farmerPhoto }}"
+                  alt="Farmer Photo"
+                  width="42"
+                  class="rounded-circle"
+                />
+              </span>
+            </div>
+            <div class="col-10 col-sm-6">
+              <h3 class="f-w-600 f-s-16" matListItemTitle>
+                {{ review.farmerName }}
+              </h3>
+              <p class="f-s-14 review-comment">
+                {{ review.comment }}
+              </p>
+            </div>
+            <div class="col-12 col-sm-5 align-self-center text-center">
+              <mat-icon
+                *ngFor="let star of [1, 2, 3, 4, 5]; let i = index"
+                [ngClass]="{
+                  'text-warning': i < review.rating,
+                  'text-muted': i >= review.rating
+                }"
+              >star</mat-icon
+              >
+            </div>
+          </div>
+        </mat-list-item>
+      }
+    </mat-list>
+  </mat-card-content>
+</mat-card>

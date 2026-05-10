@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Editar' : 'Escribir' }} Reseña</h2>
+
+<mat-dialog-content>
+  <div class="review-content" *ngIf="!loading">
+    
+    <!-- Info del asesor -->
+    <div class="advisor-info">
+      <img [src]="data.advisorPhoto || 'assets/images/profile/user-1.jpg'" 
+           class="advisor-avatar" 
+           [alt]="data.advisorName" />
+      <h3>{{ data.advisorName }}</h3>
+    </div>
+
+    <!-- Rating -->
+    <div class="rating-section">
+      <label>Calificación</label>
+      <div class="stars">
+        <button 
+          *ngFor="let star of [1,2,3,4,5]" 
+          type="button"
+          class="star-btn"
+          [class.active]="star <= rating"
+          (click)="setRating(star)">
+          ★
+        </button>
+      </div>
+    </div>
+
+    <!-- Comentario -->
+    <div class="comment-section">
+      <label for="comment">Comentario</label>
+      <textarea 
+        id="comment"
+        [(ngModel)]="comment" 
+        placeholder="Escribe tu comentario aquí..."
+        rows="4">
+      </textarea>
+    </div>
+
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="30"></mat-spinner>
+    <p>{{ isEdit ? 'Cargando reseña...' : 'Verificando reseña...' }}</p>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button 
+    mat-flat-button 
+    color="primary" 
+    (click)="submitReview()"
+    [disabled]="loading || rating === 0">
+    {{ isEdit ? 'Actualizar' : 'Enviar' }}
+  </button>
+</mat-dialog-actions>

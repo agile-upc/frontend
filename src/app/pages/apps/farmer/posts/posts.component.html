@@ -1,0 +1,35 @@
+@if(posts().length == 0) {
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="text-center p-y-32">
+      <i-tabler name="file-search" class="icon-48 text-dark m-b-16"></i-tabler>
+      <div class="f-s-16 text-dark">No hay publicaciones disponibles.</div>
+    </mat-card-content>
+  </mat-card>
+}
+@else {
+  <div class="row">
+    <div class="col-sm-6 col-lg-4" *ngFor="let post of posts()">
+      <mat-card
+        class="cardWithShadow position-relative card-hover cursor-pointer"
+        (click)="goToAdvisorProfile(post.advisorId)"
+      >
+        <mat-card-header>
+          <img
+            mat-card-avatar
+            [src]="getAdvisor(post.advisorId).photo"
+            alt="Asesor {{ getAdvisor(post.advisorId).firstName }} {{ getAdvisor(post.advisorId).lastName }}"
+            (error)="onImageError($event)"
+          />
+          <mat-card-title>
+            {{ getAdvisor(post.advisorId).firstName }} {{ getAdvisor(post.advisorId).lastName }}
+          </mat-card-title>
+        </mat-card-header>
+        <img mat-card-image [src]="post.image" alt="{{ post.title }}" />
+        <mat-card-content>
+          <mat-card-title>{{ post.title }}</mat-card-title>
+          <p>{{ post.description }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+}

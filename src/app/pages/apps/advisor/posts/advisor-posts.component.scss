@@ -1,0 +1,44 @@
+/* General card styles */
+.cardWithShadow {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &.card-hover {
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  &.position-relative {
+    position: relative;
+  }
+
+  &.cursor-pointer {
+    cursor: pointer;
+  }
+}
+
+/* Button container styles */
+.button-container {
+  display: flex;
+  justify-content: center; /* Center buttons horizontally */
+  align-items: center; /* Align buttons vertically */
+  gap: 16px; /* Space between buttons */
+  margin-top: 8px; /* Top margin for spacing */
+}
+
+/* Button styles */
+.edit-button,
+.delete-button {
+  padding: 8px 16px; /* Add padding for better button size */
+  border-radius: 4px; /* Rounded corners */
+  font-size: 14px; /* Font size */
+  font-weight: 500; /* Font weight */
+}
+
+.delete-button {
+  background-color: #ea4b4b; /* Light red background */
+  color: #ffffff; /* Dark red text */
+}

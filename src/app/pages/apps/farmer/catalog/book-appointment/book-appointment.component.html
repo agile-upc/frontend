@@ -1,0 +1,82 @@
+<div class="row" *ngIf="advisor">
+  <div class="col-md-4">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="d-flex justify-content-center m-8">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="text-center m-b-24">
+              <img src="{{ advisor.photo }}" class="rounded-circle" width="150"  alt="Advisor Photo"/>
+            </div>
+            <div class="text-center m-t-16">
+              <mat-card-title>Lugar de residencia</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ advisor.city }}, {{ advisor.country }}</mat-card-subtitle>
+            </div>
+            <div class="text-center m-t-16">
+              <mat-card-title>Edad</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ calculateAge(advisor.birthDate) }}</mat-card-subtitle>
+            </div>
+            <div class="text-center m-t-16">
+              <mat-card-title>Ocupación</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ advisor.occupation }}</mat-card-subtitle>
+            </div>
+            <div class="text-center m-t-16">
+              <mat-card-title>Años de experiencia</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ advisor.experience }} años</mat-card-subtitle>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions class="d-flex justify-content-center">
+        <button
+          mat-flat-button
+          class="text-white"
+          [routerLink]="['/apps/farmer/catalog', advisor.advisorId]"
+        >
+          Regresar
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <div class="col-md-8">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-card class="cardWithShadow">
+        <mat-card-content>
+          <mat-label class="f-s-14 f-w-600 m-b-8 d-block m-t-12">Selecciona un horario para la cita</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="date">
+              @for(option of dates; track option.dateId) {
+                <mat-option [value]="option.dateId">
+                  {{ formatAvailableDate(option.scheduledDate, option.startTime, option.endTime) }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Agrega un mensaje para el asesor</mat-label>
+          <mat-form-field appearance="outline" class="w-100" color="primary">
+            <textarea matInput rows="5" formControlName="comment"></textarea>
+          </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions class="d-flex justify-content-center">
+          <button
+            mat-flat-button
+            [disabled]="form.invalid"
+            class="text-white"
+            type="submit"
+          >
+            Reservar
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </div>
+</div>
+<div class="row" *ngIf="!advisor">
+  <div class="col-12">
+    <mat-card class="cardWithShadow">
+      <mat-card-content>
+        <mat-card-title>Asesor no encontrado.</mat-card-title>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

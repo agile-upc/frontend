@@ -1,0 +1,8 @@
+<h2 mat-dialog-title>Eliminar {{ data.type }}</h2>
+<mat-dialog-content>
+  <p>¿Seguro que deseas eliminar <strong>{{ data.name || ('#' + data.id) }}</strong>?</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button class="cancel-button" (click)="close(false)">Cancelar</button>
+  <button mat-flat-button class="delete-button" (click)="close(true)">Eliminar</button>
+</mat-dialog-actions>

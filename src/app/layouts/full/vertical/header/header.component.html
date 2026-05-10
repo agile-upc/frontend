@@ -1,0 +1,154 @@
+<mat-toolbar class="topbar">
+  <!-- --------------------------------------------------------------- -->
+  <!-- Desktop Menu -->
+  @if(showToggle) {
+  <button
+    mat-icon-button
+    (click)="toggleCollapsed.emit()"
+    class="d-flex justify-content-center"
+  >
+    <i-tabler name="menu-2" class="icon-20 d-flex"></i-tabler>
+  </button>
+  }
+
+  <!-- Mobile Menu -->
+  @if(!showToggle) {
+  <button
+    mat-icon-button
+    (click)="toggleMobileNav.emit()"
+    class="d-flex justify-content-center"
+  >
+    <i-tabler name="menu-2" class="icon-20 d-flex"></i-tabler>
+  </button>
+  }
+
+  <span class="flex-1-auto"></span>
+
+  @if(options.theme=='light'){
+    <button mat-icon-button aria-label="lightdark" class="d-flex justify-content-center" (click)="setlightDark('dark')" >
+      <i-tabler class="d-flex icon-22" [name]="'moon'"></i-tabler>
+    </button>
+    }@else{
+    <button mat-icon-button aria-label="lightdark" class="d-flex justify-content-center" (click)="setlightDark('light')">
+      <i-tabler class="d-flex icon-22" [name]="'sun'"></i-tabler>
+    </button>
+  }
+
+  <!-- --------------------------------------------------------------- -->
+  <!-- Notification Dropdown -->
+  <!-- --------------------------------------------------------------- -->
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="notificationmenu"
+    aria-label="Notifications" class="m-x-5"
+  >
+    <i-tabler
+      class="d-flex"
+      name="bell"
+      [matBadge]="notifications.length"
+      matBadgeColor="primary"
+    ></i-tabler>
+  </button>
+  <mat-menu #notificationmenu="matMenu" class="topbar-dd cardWithShadow">
+    <div class="d-flex align-items-center p-x-32 p-y-16">
+      <h6 class="f-s-16 f-w-600 m-0 ">Notificaciones</h6>
+    </div>
+
+    @for(notification of notifications.slice(0, 6); track notification.id) {
+    <button mat-menu-item class="p-x-32 p-y-16">
+      <div class="d-flex align-items-center">
+        <div class="m-l-16">
+          <h5 class="f-s-14 f-w-600 m-0 ">
+            {{ notification.title }}
+          </h5>
+          <span>{{ notification.message }}</span>
+        </div>
+      </div>
+    </button>
+    }
+    @if(notifications.length==0){
+      <div class="p-x-32 p-y-16">
+        <h5 class="f-s-14 f-w-600 m-0 ">
+          No hay notificaciones
+        </h5>
+      </div>
+    }
+    <div class="p-y-12 p-x-32">
+      <button
+        [routerLink]="['/apps/notifications']"
+        mat-stroked-button
+        color="primary">Ver notificaciones</button>
+    </div>
+  </mat-menu>
+
+  <!-- --------------------------------------------------------------- -->
+  <!-- profile Dropdown -->
+  <!-- --------------------------------------------------------------- -->
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="profilemenu"
+    aria-label="Notifications" class="m-l-8"
+  >
+    <img
+      [src]="photo"
+      class="rounded-circle object-cover icon-35 profile-dd"
+      width="35"
+    />
+  </button>
+  <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">
+    <ng-scrollbar class="position-relative" style="height: 400px">
+      <div class="p-x-32 p-y-16">
+        <h6 class="f-s-16 f-w-600 m-0 ">Perfil de usuario</h6>
+
+        <div class="d-flex align-items-center p-b-24 b-b-1 m-t-16">
+          <img
+            [src]="photo"
+            class="rounded-circle object-cover"
+            width="95"
+            height="95"
+          />
+          <div class="m-l-16">
+            <h6 class="f-s-14 f-w-600 m-0 ">{{ username }}</h6>
+            <span class="f-s-14 d-block m-b-4">{{ role }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="p-x-32">
+        @for(profile of profiledd; track profile.title) {
+        <a
+          class="p-y-16 text-decoration-none d-block text-hover-primary"
+          [routerLink]="[profile.link]"
+        >
+          <div class="d-flex align-items-center">
+            <button
+              mat-mini-fab
+              class="text-primary bg-light shadow-none rounded"
+            >
+              <img [src]="profile.img" width="20" />
+            </button>
+
+            <div class="m-l-16">
+              <h5
+                class="f-s-14 f-w-600 m-0 textprimary  hover-text"
+              >
+                {{ profile.title }}
+              </h5>
+              <span class="f-s-14 text-body">{{ profile.subtitle }}</span>
+            </div>
+          </div>
+        </a>
+        }
+      </div>
+
+      <div class="p-y-12 p-x-32">
+        <a
+          (click)="logout()"
+          mat-stroked-button
+          color="primary"
+          class="w-100"
+          >Cerrar sesión</a
+        >
+      </div>
+    </ng-scrollbar>
+  </mat-menu>
+</mat-toolbar>

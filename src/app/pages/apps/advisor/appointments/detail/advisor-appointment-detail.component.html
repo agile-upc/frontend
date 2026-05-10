@@ -1,0 +1,81 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="row justify-content-start">
+      <div class="d-flex align-items-center">
+        <button mat-flat-button color="primary" (click)="goBack()">
+          <mat-icon matSuffix class="d-none d-sm-flex">
+            <i-tabler name="arrow-left" class="icon-18 d-flex m-0"></i-tabler>
+          </mat-icon>
+          Volver
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+@if (loading()) {
+  <div class="d-flex justify-content-center p-24">
+    <mat-progress-spinner mode="indeterminate" diameter="36"></mat-progress-spinner>
+  </div>
+}
+@else {
+  <!-- Card principal del detail -->
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="p-24">
+      <div class="row">
+        <!-- Columna izquierda: Foto y nombre del productor -->
+        <div class="col-md-4 text-center m-b-24">
+          <img
+            [src]="farmerPhoto()"
+            class="rounded-circle border p-5"
+            width="120"
+            [alt]="farmerName()"
+          />
+          <h3 class="m-t-16 m-b-0">{{ farmerName() }}</h3>
+        </div>
+
+        <!-- Columna derecha: Información de la cita -->
+        <div class="col-md-8">
+          <!-- Fecha programada -->
+          <div class="m-b-20">
+            <h5 class="text-muted f-s-14 m-b-8">Fecha programada</h5>
+            <p class="m-b-0 f-s-16">
+              {{ scheduledDate() | date: 'd \'de\' MMMM \'de\' yyyy' : '' : 'es-ES' }}, {{ startTime() }} - {{ endTime() }}
+            </p>
+          </div>
+
+          <!-- Link de videoconferencia -->
+          <div class="m-b-20">
+            <h5 class="text-muted f-s-14 m-b-8">Link de la videoconferencia</h5>
+            <a [href]="meetingUrl()" target="_blank" class="text-primary f-s-16">
+              {{ meetingUrl() }}
+            </a>
+          </div>
+
+          <!-- Comentario del usuario -->
+          <div class="m-b-24">
+            <h5 class="text-muted f-s-14 m-b-8">Comentario brindado por el usuario</h5>
+            <p class="m-b-0 f-s-16">
+              {{ message() }}
+            </p>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="d-flex gap-12">
+            <button mat-flat-button color="primary" (click)="openCancelModal()">
+              <mat-icon matSuffix class="d-none d-sm-flex">
+                <i-tabler name="x" class="icon-18 d-flex m-0"></i-tabler>
+              </mat-icon>
+              Cancelar cita
+            </button>
+          </div>
+
+          <!-- Mensaje de error -->
+          <div class="alert alert-danger m-t-16" *ngIf="errorMessage()">
+            {{ errorMessage() }}
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+}

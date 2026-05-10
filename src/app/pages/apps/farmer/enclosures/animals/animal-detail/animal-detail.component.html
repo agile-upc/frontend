@@ -1,0 +1,75 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="row justify-content-start">
+      <div class="d-flex align-items-center">
+        <button mat-flat-button color="primary" (click)="goBack()">
+          <mat-icon matSuffix class="d-none d-sm-flex">
+            <i-tabler name="arrow-left" class="icon-18 d-flex m-0"></i-tabler>
+          </mat-icon>
+          Volver
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="cardWithShadow">
+  <mat-card-title>
+    <div class="text-center w-100 m-t-30 m-b-30">
+      <h2>Información de {{ animal?.name }}</h2>
+    </div>
+  </mat-card-title>
+  <mat-card-content>
+   <form>
+     <div class="row">
+       <div class="col-sm-6">
+         <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Especie</mat-label>
+         <mat-form-field class="w-100" appearance="outline">
+           <input matInput [value]="animal?.species" readonly />
+         </mat-form-field>
+       </div>
+
+       <div class="col-sm-6">
+         <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Raza</mat-label>
+         <mat-form-field class="w-100" appearance="outline">
+           <input matInput [value]="animal?.breed" readonly />
+         </mat-form-field>
+       </div>
+
+       <div class="col-sm-6">
+         <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Edad</mat-label>
+         <mat-form-field class="w-100" appearance="outline">
+           <input matInput [value]="animal?.age ? (animal?.age + ' año(s)') : '0 años'" readonly />
+         </mat-form-field>
+       </div>
+
+       <div class="col-sm-6">
+         <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Género</mat-label>
+         <mat-form-field class="w-100" appearance="outline">
+           <input matInput [value]="animal?.gender ? 'Macho' : 'Hembra'" readonly />
+         </mat-form-field>
+       </div>
+
+       <div class="col-sm-6">
+         <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Peso</mat-label>
+         <mat-form-field class="w-100" appearance="outline">
+           <input matInput [value]="animal?.weight ? (animal?.weight + ' kg') : ''" readonly />
+         </mat-form-field>
+       </div>
+
+       <div class="col-sm-6">
+         <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Salud</mat-label>
+         <mat-form-field class="w-100" appearance="outline">
+           <input matInput [value]="animalHealthStatus" readonly />
+         </mat-form-field>
+       </div>
+     </div>
+  </form>
+  </mat-card-content>
+  <mat-card-actions>
+    <div class="d-flex text-center w-100 justify-content-center gap-10">
+      <button mat-flat-button color="primary" (click)="edit()">Editar</button>
+      <button mat-button color="warn" class="delete-button" (click)="delete()">Eliminar</button>
+    </div>
+  </mat-card-actions>
+</mat-card>

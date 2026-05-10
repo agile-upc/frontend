@@ -1,0 +1,134 @@
+@if (isLoading) {
+  <div class="d-flex justify-content-center p-24">
+    <mat-progress-spinner mode="indeterminate" diameter="36"></mat-progress-spinner>
+  </div>
+}
+@else {
+  @if (crop) {
+    <div class="row">
+      <div class="col-md-6 m-b-16">
+        <mat-card class="cardWithShadow p-16">
+          <mat-card-title class="text-center">Humedad</mat-card-title>
+          <mat-card-content>
+            <app-humidity-chart
+              [value]="crop.humidity"
+              [threshold]="crop.humidityMinThreshold"
+              [size]="150">
+            </app-humidity-chart>
+            <div class="text-center m-t-8" [ngStyle]="{ color: crop.humidity >= crop.humidityMinThreshold ? '#00bcd4' : '#ff9800' }">
+              {{ crop.humidity >= crop.humidityMinThreshold ? 'Humedad en buen nivel' : 'Cultivo Seco' }}
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="col-md-6 m-b-16">
+        <mat-card class="cardWithShadow p-16">
+          <mat-card-title class="text-center">Temperatura</mat-card-title>
+          <mat-card-content>
+            <!-- Indicador circular igual al de humedad -->
+            <app-temperature-chart
+              [value]="crop.temperature"
+              [threshold]="crop.temperatureMaxThreshold"
+              [size]="150">
+            </app-temperature-chart>
+            <!-- Mensaje dinámico -->
+            <div
+              class="text-center m-t-8"
+              [ngStyle]="{
+        color: crop.temperature <= crop.temperatureMaxThreshold ? '#4caf50' : '#f44336'
+      }"
+            >
+              {{
+                crop.temperature <= crop.temperatureMaxThreshold
+                  ? 'Temperatura estable'
+                  : 'Demasiado calor para el cultivo'
+              }}
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 m-b-16">
+        <!-- TANQUE -->
+        <mat-card class="cardWithShadow p-16">
+          <mat-card-content>
+            <div class="row align-items-center">
+
+              <!-- Icono SVG dinámico -->
+              <div class="col-4 text-center">
+                <ng-container *ngIf="crop as c">
+                  <p class="m-t-8 f-w-600">Tanque</p>
+                  <svg
+                    width="42"
+                    height="42"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    [attr.stroke]="
+              (c.tankCurrentVolume / c.tankMaxVolume * 100) < 30 ? '#90caf9' :
+              (c.tankCurrentVolume / c.tankMaxVolume * 100) < 60 ? '#42a5f5' :
+              '#1976d2'
+            "
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <!-- Pega aquí tu contenido de waterdrop.svg -->
+                    <path d="M12 2.69l-5.66 5.66a8 8 0 1011.31 0L12 2.69z"/>
+                  </svg>
+                </ng-container>
+
+              </div>
+
+              <!-- Valor -->
+              <div class="col-4 text-center">
+                <mat-card-subtitle class="f-s-14">Actual</mat-card-subtitle>
+                <p class="f-s-20">{{ crop.tankCurrentVolume | number:'1.0-2' }} L</p>
+              </div>
+
+              <!-- Estado -->
+              <div class="col-4 text-center">
+                <mat-card-subtitle class="f-s-14">Capacidad</mat-card-subtitle>
+                <p class="f-w-600">
+                  {{ (crop.tankCurrentVolume / crop.tankMaxVolume * 100) | number:'1.0-2' }} %
+                </p>
+              </div>
+
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="col-md-6 m-b-16">
+        <!-- RIEGO -->
+        <mat-card class="cardWithShadow p-16">
+          <mat-card-content>
+            <div class="row align-items-center">
+              <!-- Icono -->
+              <div class="col-4 text-center">
+                <p class="m-t-8 f-w-600">Riego</p>
+                <mat-icon>water</mat-icon>
+              </div>
+
+              <!-- Estado -->
+              <div class="col-8 text-center">
+                <mat-card-subtitle class="f-s-14">
+                  Estado del riego
+                </mat-card-subtitle>
+                <p class="f-s-20 f-w-600" *ngIf="crop.isIrrigating">Regando</p>
+                <p class="f-s-20 f-w-600" *ngIf="!crop.isIrrigating">Inactivo</p>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  } @else {
+    <div class="col-12">
+      <mat-card class="cardWithShadow">
+        <mat-card-content>
+          <mat-card-title>Cultivo no encontrado.</mat-card-title>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+}

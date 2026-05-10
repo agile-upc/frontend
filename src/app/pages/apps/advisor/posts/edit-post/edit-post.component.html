@@ -1,0 +1,78 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="row justify-content-start">
+      <div class="d-flex align-items-center">
+        <button mat-flat-button color="primary" (click)="goBack()">
+          <mat-icon matSuffix class="d-none d-sm-flex">
+            <i-tabler name="arrow-left" class="icon-18 d-flex m-0"></i-tabler>
+          </mat-icon>
+          Volver
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<div class="row">
+  <div class="col-6">
+    <mat-card class="cardWithShadow">
+      <mat-card-content>
+        <div class="text-center">
+          <img
+            [src]="imagePreview || currentImageUrl"
+            alt="Vista previa"
+            width="250"
+          />
+        </div>
+      </mat-card-content>
+      <mat-card-actions class="row">
+        <div class="col-sm-12 text-center">
+          <button mat-stroked-button type="button" (click)="photoInput.click()">
+            <mat-icon matSuffix class="d-none d-sm-flex m-r-8">
+              <i-tabler name="photo" class="icon-18 d-flex m-0"></i-tabler>
+            </mat-icon>
+            Cambiar foto
+          </button>
+          <input #photoInput id="photoInput" type="file" accept="image/*" class="d-none" (change)="onFileChange($event)" />
+        </div>
+        <div class="col-sm-12 text-center m-t-8">
+          <span *ngIf="selectedFileName">{{ selectedFileName }}</span>
+        </div>
+
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <div class="col-6">
+    <mat-card class="cardWithShadow">
+      <mat-card-content>
+        <form [formGroup]="postForm" (ngSubmit)="savePost()">
+          <div class="col-sm-12">
+            <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Título</mat-label>
+            <mat-form-field appearance="outline" class="w-100">
+              <input matInput formControlName="title" placeholder="Ingrese el título" />
+            </mat-form-field>
+          </div>
+          <div class="col-sm-12">
+            <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Descripción</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <textarea
+                matInput
+                formControlName="description"
+                rows="5"
+                placeholder="Ingrese la descripción"
+              ></textarea>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-12 text-center">
+            <button mat-flat-button type="submit" [disabled]="postForm.invalid || isSaving">
+              Guardar
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+

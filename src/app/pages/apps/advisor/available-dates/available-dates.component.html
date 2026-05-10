@@ -1,0 +1,45 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="row justify-content-end">
+      <div class="d-flex align-items-center">
+        <button mat-flat-button color="primary" (click)="openCreateDialog()">
+          <mat-icon matSuffix class="d-none d-sm-flex">
+            <i-tabler name="plus" class="icon-18 d-flex m-0"></i-tabler>
+          </mat-icon>
+          Agregar nuevo horario
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+@if(availableDates().length == 0) {
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="text-center p-y-32">
+      <i-tabler name="calendar-event" class="icon-48 text-dark m-b-16"></i-tabler>
+      <div class="f-s-16 text-dark">No tienes horarios programados.</div>
+    </mat-card-content>
+  </mat-card>
+}
+
+<div class="row">
+  @for(availableDate of availableDates(); track availableDate.id ) {
+    <div class="col-sm-6 col-lg-4">
+      <mat-card class="cardWithShadow">
+        <mat-card-content class="text-center">
+          <div class="d-flex flex-col gap-20 m-t-16">
+            <div>
+              <h4 mat-card-title>
+                {{ availableDate.scheduledDate }}
+              </h4>
+              <span class="f-s-12">{{ availableDate.startTime }} - {{ availableDate.endTime }}</span>
+            </div>
+            <div class="button-container">
+              <button mat-button color="warn" class="delete-button" (click)="openDeleteDialog(availableDate)">Eliminar</button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+</div>

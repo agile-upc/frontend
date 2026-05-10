@@ -1,0 +1,35 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="row justify-content-between">
+      <div class="col-sm-4 col-7">
+      </div>
+      <div class="col-4 d-flex align-items-center justify-content-end">
+        <button mat-flat-button color="primary" (click)="onAddCrop()">
+          <mat-icon matSuffix class="d-none d-sm-flex">
+            <i-tabler name="plus" class="icon-18 d-flex m-0"></i-tabler>
+          </mat-icon>
+          Agregar cultivo
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+@if(crops().length == 0) {
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="text-center p-y-32">
+      <i-tabler name="file-search" class="icon-48 text-dark m-b-16"></i-tabler>
+      <div class="f-s-16 text-dark">No hay cultivos disponibles.</div>
+    </mat-card-content>
+  </mat-card>
+}
+@else {
+  <app-crop-table
+    [data]="crops()"
+    (viewRequested)="onView($event)"
+    (editRequested)="onEdit($event)"
+    (deleteRequested)="onDelete($event)">
+  </app-crop-table>
+}
+
+

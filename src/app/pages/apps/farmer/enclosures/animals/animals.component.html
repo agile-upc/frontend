@@ -1,0 +1,48 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="row justify-content-end">
+      <div class="d-flex align-items-center">
+        <button mat-flat-button color="primary" (click)="create()">
+          <mat-icon matSuffix class="d-none d-sm-flex">
+            <i-tabler name="plus" class="icon-18 d-flex m-0"></i-tabler>
+          </mat-icon>
+          Agregar nuevo animal
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+@if(animals().length == 0) {
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="text-center p-y-32">
+      <i-tabler name="horse" class="icon-48 text-dark m-b-16"></i-tabler>
+      <div class="f-s-16 text-dark">No tienes animales en este recinto.</div>
+    </mat-card-content>
+  </mat-card>
+}
+
+<div class="row">
+  @for(animal of animals(); track animal.id ) {
+    <div class="col-sm-6 col-lg-4">
+      <mat-card class="cardWithShadow position-relative card-hover">
+        <mat-card-content class="text-center">
+          <div class="d-flex flex-col gap-20 m-t-16">
+            <div>
+              <i-tabler name="horse" class="icon-48 text-dark m-b-16"></i-tabler>
+              <h4 mat-card-title>
+                {{ animal.name }}
+              </h4>
+              <span class="f-s-12">Raza: {{ animal.breed }}</span>
+            </div>
+            <div class="button-container">
+                <button mat-button color="primary" class="view-button" (click)="view(animal)">Ver</button>
+                <button mat-flat-button color="primary" class="edit-button" (click)="edit(animal)">Editar</button>
+                <button mat-button color="warn" class="delete-button" (click)="delete(animal)">Eliminar</button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+</div>

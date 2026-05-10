@@ -1,0 +1,16 @@
+:host ::ng-deep mat-list-item {
+  height: auto !important;
+  --mdc-list-list-item-three-line-container-height: auto !important;
+}
+
+.review-comment {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  min-width: 0;
+  max-height: calc(1.2em * 2);
+  line-height: 1.2em;
+}

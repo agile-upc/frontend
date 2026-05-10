@@ -1,0 +1,17 @@
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.view-button {
+  background-color: #0ac980;
+  color: #ffffff;
+}
+
+.delete-button {
+  background-color: #ea4b4b;
+  color: #ffffff;
+}

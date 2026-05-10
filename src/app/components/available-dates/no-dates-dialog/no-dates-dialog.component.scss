@@ -1,0 +1,22 @@
+.no-dates-dialog {
+    mat-card {
+        min-width: 260px;
+    }
+
+    .message {
+        margin: 0; 
+        font-size: 1rem;
+        text-align: center;
+    }
+
+    mat-card-content {
+        padding-bottom: 8px !important;
+    }
+
+    mat-card-actions {
+        margin-bottom: 0 !important;
+        display: flex;
+        justify-content: center;
+        margin-top: 8px; 
+    }
+}

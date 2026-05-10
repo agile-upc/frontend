@@ -1,0 +1,90 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="row justify-content-start">
+      <div class="d-flex align-items-center">
+        <button mat-flat-button color="primary" (click)="goBack()">
+          <mat-icon matSuffix class="d-none d-sm-flex">
+            <i-tabler name="arrow-left" class="icon-18 d-flex m-0"></i-tabler>
+          </mat-icon>
+          Volver
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+@if (loading) {
+  <div class="d-flex justify-content-center p-24">
+    <mat-progress-spinner mode="indeterminate" diameter="36"></mat-progress-spinner>
+  </div>
+}
+@else {
+  @if (error || !appointment) {
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="text-center p-y-32">
+        <i-tabler name="alert-triangle" class="icon-48 text-warning m-b-16"></i-tabler>
+        <div class="f-s-16 text-dark">No se pudo cargar la cita.</div>
+      </mat-card-content>
+    </mat-card>
+  }
+  @else {
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <div class="row">
+          <!-- Columna izquierda: Foto y nombre del asesor -->
+          <div class="col-md-4 text-center m-b-24">
+            <img
+              [src]="appointment.advisorPhoto || 'assets/images/profile/user-1.jpg'"
+              class="rounded-circle border p-5"
+              width="120"
+              alt="Foto del asesor"
+            />
+            <h3 class="m-t-16 m-b-0">{{ appointment.advisorName }}</h3>
+          </div>
+
+          <!-- Columna derecha: Información de la cita -->
+          <div class="col-md-8">
+            <!-- Fecha programada -->
+            <div class="m-b-20">
+              <h5 class="text-muted f-s-14 m-b-8">Fecha programada</h5>
+              <p class="m-b-0 f-s-16">
+                {{ formattedDate }}{{ formattedTime ? ', ' + formattedTime : '' }}
+              </p>
+            </div>
+
+            <!-- Link de videoconferencia -->
+            <div class="m-b-20">
+              <h5 class="text-muted f-s-14 m-b-8">Link de la videoconferencia</h5>
+              <a [href]="appointment.meetingUrl" target="_blank" class="text-primary f-s-16">
+                {{ appointment.meetingUrl }}
+              </a>
+            </div>
+
+            <!-- Comentario -->
+            <div class="m-b-24">
+              <h5 class="text-muted f-s-14 m-b-8">Comentario brindado por ti</h5>
+              <p class="m-b-0 f-s-16">
+                {{ appointment.message }}
+              </p>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="d-flex align-items-center">
+              <button mat-flat-button color="warn" (click)="openCancelModal()">
+                <mat-icon matSuffix class="d-none d-sm-flex">
+                  <i-tabler name="x" class="icon-18 d-flex m-0"></i-tabler>
+                </mat-icon>
+                Cancelar Cita
+              </button>
+            </div>
+
+            <!-- Mensaje de error -->
+            <div class="alert alert-danger m-t-16" *ngIf="errorMessage">
+              {{ errorMessage }}
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+}

@@ -1,0 +1,82 @@
+.review-content {
+  min-width: 400px;
+  padding: 1rem 0;
+}
+
+.farmer-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  .farmer-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+}
+
+.rating-section {
+  margin-bottom: 1.5rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .stars {
+    display: flex;
+    gap: 0.25rem;
+
+    .star {
+      font-size: 1.5rem;
+      color: #ddd;
+
+      &.active {
+        color: #ffc107;
+      }
+    }
+  }
+}
+
+.comment-section {
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  // El mat-form-field se adapta automáticamente al tema
+}
+
+.no-review {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+
+  p {
+    margin: 0;
+    font-style: italic;
+  }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  gap: 1rem;
+
+  p {
+    margin: 0;
+    color: #666;
+  }
+}

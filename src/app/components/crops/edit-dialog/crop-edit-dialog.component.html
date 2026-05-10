@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>Editar cultivo</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <mat-dialog-content>
+    <div class="row">
+
+      <!-- Nombre -->
+      <div class="col-12 m-b-20">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Nombre del cultivo</mat-label>
+          <input matInput formControlName="name" required />
+          <mat-hint class="f-w-300">Ejemplo: Lechuga, fresas, maíz</mat-hint>
+          <mat-error *ngIf="form.controls.name.invalid">Requerido</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Volumen máximo -->
+      <div class="col-12 m-b-20">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Volumen máximo del tanque (L)</mat-label>
+          <input type="number" min="1" matInput formControlName="tankMaxVolume" required />
+          <mat-hint class="f-w-300">Capacidad total de agua del tanque en litros</mat-hint>
+          <mat-error *ngIf="form.controls.tankMaxVolume.invalid">Número inválido</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Altura del tanque-->
+      <div class="col-12 m-b-20">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Altura del tanque (cm)</mat-label>
+          <input type="number" min="1" matInput formControlName="tankHeight" required />
+          <mat-hint class="f-w-300">Altura del tanque en centímetros</mat-hint>
+          <mat-error *ngIf="form.controls.tankHeight.invalid">Número inválido</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Umbral temperatura -->
+      <div class="col-12 m-b-20">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Temperatura máxima (C°)</mat-label>
+          <input type="number" min="0" matInput formControlName="temperatureMaxThreshold" required />
+          <mat-hint class="f-w-300">Temperatura máxima del suelo antes que empiece el riego</mat-hint>
+          <mat-error *ngIf="form.controls.temperatureMaxThreshold.invalid">Número inválido</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Umbral humedad -->
+      <div class="col-12 m-b-20">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Humedad mínima (%)</mat-label>
+          <input type="number" min="0" matInput formControlName="humidityMinThreshold" required />
+          <mat-hint class="f-w-300">Humedad mínima antes de activar el riego</mat-hint>
+          <mat-error *ngIf="form.controls.humidityMinThreshold.invalid">Número inválido</mat-error>
+        </mat-form-field>
+      </div>
+
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="close()">Cancelar</button>
+    <button mat-flat-button color="primary" class="text-white" type="submit" [disabled]="form.invalid">
+      Guardar
+    </button>
+  </mat-dialog-actions>
+</form>

@@ -1,0 +1,150 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="row justify-content-between align-items-center gap-16">
+      <div class="col-sm-4">
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            placeholder="Busca aquí..."
+            (keyup)="applyFilter($event)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20 d-flex m-t-2"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            matInput
+            [matDatepicker]="picker"
+            placeholder="Selecciona una fecha"
+            (dateChange)="onDateChange($event)"
+          />
+          <mat-hint>DD/MM/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+@if(advisors().length == 0) {
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="text-center p-y-32">
+      <i-tabler name="file-search" class="icon-48 text-dark m-b-16"></i-tabler>
+      <div class="f-s-16 text-dark">No hay asesores disponibles.</div>
+    </mat-card-content>
+  </mat-card>
+}
+@else {
+  <div class="row">
+    @for(advisor of advisors(); track advisor.advisorId ) {
+      <div class="col-sm-6 col-lg-4">
+        <mat-card class="cardWithShadow">
+          <mat-card-content class="text-center">
+            <img
+              src="{{ advisor.photo }}"
+              class="rounded-circle border p-5"
+              width="100"
+            />
+            <div class="d-flex flex-col gap-20 m-t-16">
+              <div>
+                <h4 mat-card-title>
+                  {{ advisor.firstName }} {{ advisor.lastName }}
+                </h4>
+                <span class="f-s-12">{{ advisor.occupation }}</span>
+              </div>
+              <div class="d-flex gap-8 justify-content-center">
+                <button
+                  mat-flat-button
+                  class="text-white"
+                  [routerLink]="['/apps/farmer/catalog/', advisor.advisorId]"
+                >
+                  Ver más
+                </button>
+              </div>
+              <span class="f-s-14"> {{ advisor.city + ", " + advisor.country }}</span>
+            </div>
+          </mat-card-content>
+          <mat-divider></mat-divider>
+          <div class="row">
+            <div class="col-4 p-y-12"></div>
+            <div class="col-4 p-y-12">
+              <a
+                [routerLink]="['/apps/farmer/catalog/', advisor.advisorId]"
+                class="text-decoration-none f-s-14 f-w-500 d-flex justify-content-center align-items-center gap-4"
+              >
+                <i-tabler name="star" class="icon-18 d-flex"></i-tabler>
+                {{ advisor.rating }}
+              </a>
+            </div>
+            <div class="col-4 p-y-12"></div>
+          </div>
+        </mat-card>
+      </div>
+    }
+  </div>
+  <div class="chat-box"
+       *ngIf="chatOpen">
+    <div class="chat-header b-b-1">
+      <span>Chat con IA</span>
+      <button mat-icon-button (click)="chatOpen = false">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="chat-body">
+      <div
+        *ngFor="let msg of messages"
+        class="bubble"
+        [ngClass]="{ 'bg-light-primary ai': msg.from === 'ai', 'bg-light-secondary user': msg.from == 'user' }">
+        <div>{{ msg.text }}</div>
+        <div *ngIf="msg.advisorId" class="recommend-card">
+          <button
+            mat-stroked-button
+            color="primary"
+            [routerLink]="['/apps/farmer/catalog/', msg.advisorId]"
+          >
+            Ver asesor recomendado
+          </button>
+        </div>
+      </div>
+      <div *ngIf="loading" class="bubble ai typing">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+      </div>
+    </div>
+    <div class="chat-footer b-t-1">
+      <mat-form-field appearance="outline" class="w-100 hide-hint">
+        <textarea
+          matInput
+          cdkTextareaAutosize
+          cdkAutosizeMaxRows="3"
+          rows="1"
+          [disabled]="loading"
+          [(ngModel)]="message"
+          placeholder="Describe tu asesoría ideal..."
+          (keydown.enter)="sendMessage()"
+        ></textarea>
+        <button
+          [disabled]="loading"
+          mat-icon-button
+          matSuffix
+          (click)="sendMessage()">
+          <mat-icon matSuffix>
+            <i-tabler name="send" class="icon-20 d-flex m-t-2"></i-tabler>
+          </mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </div>
+  <button mat-fab color="primary" class="fab-fixed d-none d-sm-flex" (click)="toggleChat()">
+    <mat-icon>
+      <i-tabler name="message" class="icon-24 d-flex m-0"></i-tabler>
+    </mat-icon>
+  </button>
+}
+
+

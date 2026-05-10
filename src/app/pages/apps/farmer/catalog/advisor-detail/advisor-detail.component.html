@@ -1,0 +1,58 @@
+<div class="row" *ngIf="advisor">
+  <div class="col-md-4">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="d-flex justify-content-center m-8">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="text-center m-b-24">
+              <img src="{{ advisor.photo }}" class="rounded-circle" width="150"  alt="Advisor Photo"/>
+            </div>
+            <div class="text-center m-t-16">
+              <mat-card-title>Lugar de residencia</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ advisor.city }}, {{ advisor.country }}</mat-card-subtitle>
+            </div>
+            <div class="text-center m-t-16">
+              <mat-card-title>Edad</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ calculateAge(advisor.birthDate) }}</mat-card-subtitle>
+            </div>
+            <div class="text-center m-t-16">
+              <mat-card-title>Ocupación</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ advisor.occupation }}</mat-card-subtitle>
+            </div>
+            <div class="text-center m-t-16">
+              <mat-card-title>Años de experiencia</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ advisor.experience }} años</mat-card-subtitle>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions class="d-flex justify-content-center">
+        <button
+          mat-flat-button
+          class="text-white"
+          (click)="goToBookingPage()"
+        >
+          Contactar
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <div class="col-md-8">
+    <mat-card class="cardWithShadow">
+      <mat-card-content>
+        <mat-card-title>Sobre {{ advisor.firstName }} {{ advisor.lastName }}</mat-card-title>
+        <p>{{ advisor.description }}</p>
+      </mat-card-content>
+    </mat-card>
+    <app-review [advisorId]="advisor.advisorId"></app-review>
+  </div>
+</div>
+<div class="row" *ngIf="!advisor">
+  <div class="col-12">
+    <mat-card class="cardWithShadow">
+      <mat-card-content>
+        <mat-card-title>Asesor no encontrado.</mat-card-title>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
