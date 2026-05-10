@@ -14,16 +14,15 @@ export class PostService {
     this.environmentUrl = `${environment.apiUrl}/posts`;
   }
 
-  public getPosts(advisorId?: number): Observable<Post[]> {
-    const url = advisorId ? `${this.environmentUrl}?advisorId=${advisorId}` : this.environmentUrl;
-    return this.httpClient.get<Post[]>(url);
+  public getPosts(): Observable<Post[]> {
+    return this.httpClient.get<Post[]>(this.environmentUrl);
   }
 
   public getPostById(id: number): Observable<Post> {
     return this.httpClient.get<Post>(`${this.environmentUrl}/${id}`);
   }
 
-  public createPost(post: Post): Observable<Post> {
+  public createPost(post: FormData): Observable<Post> {
     return this.httpClient.post<Post>(this.environmentUrl, post);
   }
 

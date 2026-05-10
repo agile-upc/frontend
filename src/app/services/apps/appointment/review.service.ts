@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -33,15 +32,10 @@ export class ReviewService {
   }
 
   createReview(advisorId: number, rating: number, comment: string): Observable<Review> {
-    const farmerId = this.getFarmerId();
-    return this.http.post<Review>(this.baseUrl, { advisorId, farmerId, rating, comment });
+    return this.http.post<Review>(this.baseUrl, { advisorId, rating, comment });
   }
 
   updateReview(id: number, rating: number, comment: string): Observable<Review> {
     return this.http.put<Review>(`${this.baseUrl}/${id}`, { rating, comment });
-  }
-
-  private getFarmerId(): number {
-    return Number(localStorage.getItem('farmerId')) || 1;
   }
 }

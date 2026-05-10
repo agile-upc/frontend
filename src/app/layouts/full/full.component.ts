@@ -235,20 +235,24 @@ export class FullComponent implements OnInit {
 
   ngOnInit(): void {
     const user = this.authService.user;
-    const roles = user.roles || [];
-    const userId = user.id || 0;
+    const role = user.role;
 
-    if (roles.includes('ROLE_FARMER')) {
+    if (role === 'FARMER') {
       this.navItems = navItemsFarmer;
       this.role = "Productor agrícola";
     }
 
-    if (roles.includes('ROLE_ADVISOR')) {
+    if (role === 'ADVISOR') {
       this.navItems = navItemsAdvisor;
       this.role = "Asesor especializado"
     }
 
-    this.profileService.fetchProfile(userId).subscribe({
+    if (role === 'ADMIN') {
+      this.navItems = [];
+      this.role = 'Administrador';
+    }
+
+    this.profileService.fetchMyProfile().subscribe({
       next: (profile) => {
         this.username = `${profile.firstName} ${profile.lastName}`;
         this.photo = profile.photo;
@@ -258,7 +262,7 @@ export class FullComponent implements OnInit {
       }
     })
 
-    this.notificationService.fetchNotificationsByUserId(userId).subscribe({
+    this.notificationService.fetchNotifications().subscribe({
       next: (notifications: UserNotification[]) => {
         this.notifications = notifications;
       },
@@ -293,7 +297,8 @@ export class FullComponent implements OnInit {
   }
 
   receiveOptions(options: AppSettings): void {
-   // this.options = options;
+    this.settings.setOptions(options);
+    this.options = this.settings.getOptions();
     this.toggleDarkTheme(options);
     this.toggleColorsTheme(options);
   }

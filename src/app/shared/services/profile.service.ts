@@ -1,106 +1,93 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {map} from "rxjs/operators";
-import {Observable} from "rxjs";
-import {environment} from "src/environments/environment";
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { Profile } from 'src/app/shared/model/profile';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
-
 export class ProfileService {
-  private environmentUrl = '';
+  private environmentUrl = `${environment.apiUrl}/profiles`;
 
-  constructor(private httpClient: HttpClient) {
-    this.environmentUrl = `${environment.apiUrl}/profiles`;
-  }
+  constructor(
+    private httpClient: HttpClient,
+    private authService: AuthService
+  ) {}
 
-  public fetchAdvisorProfiles(): Observable<Profile[]> {
-    const urlEndpoint = `${this.environmentUrl}/advisors`;
-    return this.httpClient.get<any[]>(urlEndpoint, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      })
-    }).pipe(
-      map((profiles: any[]) => profiles.map(profile => this.mapToProfile(profile)))
+  public fetchProfiles(): Observable<Profile[]> {
+    return this.httpClient.get<any[] | any>(this.environmentUrl).pipe(
+      map((response) => (Array.isArray(response) ? response : [response]).map((profile) => this.mapToProfile(profile)))
     );
   }
 
-  public fetchProfile(userId: number): Observable<Profile> {
-    const urlEndpoint = `${this.environmentUrl}/${userId}/user`;
-    return this.httpClient.get(urlEndpoint, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      })
-    }).pipe(map(profile => this.mapToProfile(profile)));
-  }
-
-  private mapToProfile(profile: any): Profile {
-    // Manejo robusto de fecha: si viene como 'YYYY-MM-DD', crear fecha local sin desfase
-    let birthDate: Date = new Date();
-    const bd = profile['birthDate'];
-    if (bd) {
-      if (typeof bd === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(bd)) {
-        const [y, m, d] = bd.split('-').map((v: string) => parseInt(v, 10));
-        birthDate = new Date(y, m - 1, d); // fecha local
-      } else {
-        birthDate = new Date(bd);
-      }
+  public fetchMyProfile(): Observable<Profile> {
+    const profileId = this.authService.user.profileId;
+    if (!profileId) {
+      return this.httpClient.get<any>(this.environmentUrl).pipe(
+        map((profile) => this.mapToProfile(profile))
+      );
     }
 
-    return new Profile(
-      profile['id'],
-      profile['userId'],
-      profile['firstName'],
-      profile['lastName'],
-      profile['city'],
-      profile['country'],
-      birthDate,
-      profile['description'],
-      profile['photo'],
-      profile['occupation'],
-      profile['experience']
+    return this.fetchProfileById(profileId);
+  }
+
+  public fetchProfileById(profileId: number): Observable<Profile> {
+    return this.httpClient.get<any>(`${this.environmentUrl}/${profileId}`).pipe(
+      map((profile) => this.mapToProfile(profile))
+    );
+  }
+
+  public fetchProfile(id: number): Observable<Profile> {
+    const ownProfileId = this.authService.user.profileId;
+    if (ownProfileId === id) {
+      return this.fetchProfileById(id);
+    }
+
+    return this.findProfileByUserId(id).pipe(
+      map((profile) => profile ?? new Profile(0, 0, '', '', '', '', new Date(), '', '', null, 0))
+    );
+  }
+
+  public findProfileByUserId(userId: number): Observable<Profile | null> {
+    return this.fetchProfiles().pipe(
+      map((profiles) => profiles.find((profile) => profile.userId === userId) ?? null)
     );
   }
 
   public create(profile: Profile, photo: File): Observable<Profile> {
-    const urlEndpoint = `${this.environmentUrl}`;
     const formData = new FormData();
-    // @ts-ignore
-    formData.append('userId', profile.userId);
     formData.append('firstName', profile.firstName);
     formData.append('lastName', profile.lastName);
     formData.append('city', profile.city);
     formData.append('country', profile.country);
-    // @ts-ignore
-    formData.append('birthDate', profile.birthDate.toISOString().slice(0, 10));
-    formData.append('description', profile.description);
-    // @ts-ignore
-    formData.append('occupation', profile.occupation);
-    formData.append('experience', profile.experience?.toString() ?? '0');
+    formData.append('birthDate', this.toYmd(profile.birthDate));
+    formData.append('description', profile.description ?? '');
+    formData.append('occupation', profile.occupation ?? '');
+    formData.append('experience', String(profile.experience ?? 0));
     formData.append('photo', photo);
 
-    return this.httpClient.post<any>(urlEndpoint, formData).pipe(
-      map(profile => this.mapToProfile(profile))
+    return this.httpClient.post<any>(this.environmentUrl, formData).pipe(
+      map((createdProfile) => this.mapToProfile(createdProfile))
     );
   }
 
-  public updateProfile(id: number, payload: {
-    firstName: string;
-    lastName: string;
-    city: string;
-    country: string;
-    birthDate: string; // yyyy-MM-dd
-    description: string;
-    photo: string | null; // mantenido para compatibilidad, no usado si se pasa File
-    occupation: string | null;
-    experience: number;
-  }, photoFile?: File): Observable<Profile> {
-    const urlEndpoint = `${this.environmentUrl}/${id}`;
-
+  public updateProfile(
+    id: number,
+    payload: {
+      firstName: string;
+      lastName: string;
+      city: string;
+      country: string;
+      birthDate: string;
+      description: string;
+      occupation: string | null;
+      experience: number | null;
+    },
+    photoFile?: File
+  ): Observable<Profile> {
     const formData = new FormData();
     formData.append('firstName', payload.firstName ?? '');
     formData.append('lastName', payload.lastName ?? '');
@@ -108,18 +95,56 @@ export class ProfileService {
     formData.append('country', payload.country ?? '');
     formData.append('birthDate', payload.birthDate ?? '');
     formData.append('description', payload.description ?? '');
-    if (payload.occupation !== undefined && payload.occupation !== null) {
+
+    if (payload.occupation != null) {
       formData.append('occupation', payload.occupation);
     }
-    if (payload.experience !== undefined && payload.experience !== null) {
+
+    if (payload.experience != null) {
       formData.append('experience', String(payload.experience));
     }
+
     if (photoFile) {
       formData.append('photo', photoFile);
     }
 
-    return this.httpClient.put<any>(urlEndpoint, formData).pipe(
-      map(profile => this.mapToProfile(profile))
+    return this.httpClient.put<any>(`${this.environmentUrl}/${id}`, formData).pipe(
+      map((profile) => this.mapToProfile(profile))
     );
+  }
+
+  private mapToProfile(profile: any): Profile {
+    let birthDate: Date = new Date();
+    const birthDateValue = profile?.birthDate;
+
+    if (birthDateValue) {
+      if (typeof birthDateValue === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(birthDateValue)) {
+        const [year, month, day] = birthDateValue.split('-').map((value: string) => parseInt(value, 10));
+        birthDate = new Date(year, month - 1, day);
+      } else {
+        birthDate = new Date(birthDateValue);
+      }
+    }
+
+    return new Profile(
+      profile?.id ?? 0,
+      profile?.userId ?? 0,
+      profile?.firstName ?? '',
+      profile?.lastName ?? '',
+      profile?.city ?? '',
+      profile?.country ?? '',
+      birthDate,
+      profile?.description ?? '',
+      profile?.photo ?? '',
+      profile?.occupation ?? null,
+      profile?.experience ?? 0
+    );
+  }
+
+  private toYmd(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }

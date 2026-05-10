@@ -1,27 +1,29 @@
 import { Component } from '@angular/core';
-import { CoreService } from 'src/app/services/core.service';
-import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { BrandingComponent } from '../../../layouts/full/vertical/sidebar/branding.component';
 import { MaterialModule } from '../../../material.module';
-import { AuthService } from "../../../shared/services/auth.service";
-import {User} from "../../../shared/model/user";
-import {ToastrService} from "ngx-toastr";
-import {BrandingComponent} from "../../../layouts/full/vertical/sidebar/branding.component";
+import { CoreService } from 'src/app/services/core.service';
+import { User } from '../../../shared/model/user';
+import { AuthService } from '../../../shared/services/auth.service';
 
 @Component({
-    selector: 'app-side-login',
+  selector: 'app-side-login',
   imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, BrandingComponent],
-    templateUrl: './side-login.component.html',
-    styleUrls: ['./side-login.component.scss']
+  templateUrl: './side-login.component.html',
+  styleUrls: ['./side-login.component.scss']
 })
 export class AppSideLoginComponent {
   options = this.settings.getOptions();
-  user: User = new User(null,'', '', null);
+  user: User = new User('', '');
 
-  constructor(private settings: CoreService,
-              private authService: AuthService,
-              private router: Router,
-              private toastr: ToastrService) { }
+  constructor(
+    private settings: CoreService,
+    private authService: AuthService,
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
 
   form = new FormGroup({
     uname: new FormControl('', [Validators.required, Validators.email]),
@@ -33,15 +35,19 @@ export class AppSideLoginComponent {
   }
 
   submit() {
-    if (this.form.invalid) { return }
-    this.user = new User(null, this.form.value.uname!, this.form.value.password!, null);
-    this.authService.login(this.user).subscribe(response => {
-      this.authService.saveUser(response.id, response.token);
-      this.authService.saveToken(response.token);
-      this.router.navigate(['']);
-    },
-      _error => {
-        this.toastr.error('Usuario o contraseña incorrecta', 'Error de autenticación');
-      })
+    if (this.form.invalid) {
+      return;
+    }
+
+    this.user = new User(this.form.value.uname!, this.form.value.password!);
+    this.authService.login(this.user).subscribe({
+      next: (session) => {
+        this.authService.saveSession(session);
+        this.router.navigate(['']);
+      },
+      error: () => {
+        this.toastr.error('Usuario o contraseÃ±a incorrecta', 'Error de autenticaciÃ³n');
+      }
+    });
   }
 }

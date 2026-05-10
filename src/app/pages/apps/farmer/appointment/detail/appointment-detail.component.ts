@@ -1,16 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
-import { AvailableDateService } from 'src/app/services/apps/catalog/available-date.service';
-import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
-import { TimeFormatPipe } from '../../../../../pipes/filter.pipe';
-import type { AppointmentDetailed } from 'src/app/pages/apps/farmer/appointment/appointment-detailed';
-import { MaterialModule } from 'src/app/material.module';
-import { TablerIconsModule } from "angular-tabler-icons";
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { TablerIconsModule } from 'angular-tabler-icons';
+import { MaterialModule } from 'src/app/material.module';
 import { AppDeleteDialogComponent } from 'src/app/shared/components/delete-dialog/delete-dialog.component';
+import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
+import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
+import type { AppointmentDetailed } from 'src/app/pages/apps/farmer/appointment/appointment-detailed';
 
 @Component({
   selector: 'app-appointment-detail',
@@ -20,28 +18,6 @@ import { AppDeleteDialogComponent } from 'src/app/shared/components/delete-dialo
   styleUrls: ['./appointment-detail.component.scss']
 })
 export class AppointmentDetailComponent implements OnInit {
-  formatDate(dateVal: string | Date | undefined): string {
-    if (!dateVal) return '';
-    let d: Date | null = null;
-    if (dateVal instanceof Date && !isNaN(dateVal as any)) {
-      d = dateVal;
-    } else if (typeof dateVal === 'string' && dateVal) {
-      d = new Date(dateVal);
-      if (isNaN(d.getTime()) && typeof dateVal === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
-        const dateStr: string = dateVal as string;
-        const [y, m, day] = dateStr.split('-');
-        d = new Date(Number(y), Number(m) - 1, Number(day));
-      }
-    }
-    if (d && !isNaN(d.getTime())) {
-      return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-    }
-    return '';
-  }
-
-  formatTime(start?: string, end?: string): string {
-    return start && end ? `${start} - ${end}` : '';
-  }
   appointment?: AppointmentDetailed;
   loading = true;
   error = false;
@@ -54,7 +30,6 @@ export class AppointmentDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private appointmentService: AppointmentService,
-    private availableDateService: AvailableDateService,
     private advisorService: AdvisorService,
     private dialog: MatDialog
   ) {}
@@ -66,37 +41,45 @@ export class AppointmentDetailComponent implements OnInit {
       this.loading = false;
       return;
     }
+
     this.appointmentService.getAppointmentById(id).subscribe({
-      next: (appt) => {
-        this.availableDateService.getAvailableDateById(appt.availableDateId).subscribe({
-          next: (date) => {
-            this.advisorService.getAdvisor(date.advisorId).subscribe({
-              next: (advisor) => {
-                this.appointment = {
-                  ...appt,
-                  advisorName: advisor.firstName + ' ' + advisor.lastName,
-                  advisorPhoto: advisor.photo,
-                  scheduledDate: date.scheduledDate,
-                  startTime: date.startTime,
-                  endTime: date.endTime
-                };
-                // Formatear fecha y hora para el input (robusto)
-                let d: Date | null = null;
-                // Depuración: mostrar en consola el valor recibido
-                // eslint-disable-next-line no-console
-                console.log('Valor de scheduledDate recibido:', date.scheduledDate);
-                  this.formattedDate = this.formatDate(date.scheduledDate);
-                  this.formattedTime = this.formatTime(date.startTime, date.endTime);
-                this.loading = false;
-              },
-              error: () => { this.error = true; this.loading = false; }
-            });
+      next: (appointment) => {
+        this.advisorService.getAdvisorCatalog().subscribe({
+          next: (advisors) => {
+            const advisor = advisors.find((item) => item.advisorId === appointment.availableDate.advisorId);
+            this.appointment = {
+              ...appointment,
+              advisorName: advisor ? `${advisor.firstName} ${advisor.lastName}` : 'Asesor',
+              advisorPhoto: advisor?.photo ?? 'assets/images/profile/user-1.jpg',
+              scheduledDate: appointment.availableDate.scheduledDate,
+              startTime: appointment.availableDate.startTime,
+              endTime: appointment.availableDate.endTime
+            };
+            this.formattedDate = this.formatDate(appointment.availableDate.scheduledDate);
+            this.formattedTime = this.formatTime(appointment.availableDate.startTime, appointment.availableDate.endTime);
+            this.loading = false;
           },
-          error: () => { this.error = true; this.loading = false; }
+          error: () => {
+            this.error = true;
+            this.loading = false;
+          }
         });
       },
-      error: () => { this.error = true; this.loading = false; }
+      error: () => {
+        this.error = true;
+        this.loading = false;
+      }
     });
+  }
+
+  formatDate(dateVal: string | Date | undefined): string {
+    if (!dateVal) return '';
+    const date = typeof dateVal === 'string' ? new Date(dateVal) : dateVal;
+    return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  formatTime(start?: string, end?: string): string {
+    return start && end ? `${start} - ${end}` : '';
   }
 
   goBack() {
@@ -105,7 +88,7 @@ export class AppointmentDetailComponent implements OnInit {
 
   openCancelModal() {
     if (!this.appointment) return;
-    
+
     const dialogRef = this.dialog.open(AppDeleteDialogComponent, {
       width: '400px',
       autoFocus: false,
@@ -125,9 +108,9 @@ export class AppointmentDetailComponent implements OnInit {
 
   private cancelAppointment() {
     if (!this.appointment) return;
-    
+
     this.cancelLoading = true;
-    this.appointmentService.cancelAppointment(this.appointment.id, 'Cancelado por el usuario').subscribe({
+    this.appointmentService.cancelAppointment(this.appointment.id).subscribe({
       next: () => {
         this.cancelLoading = false;
         this.router.navigate(['/apps/farmer/appointments']);

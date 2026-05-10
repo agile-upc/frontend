@@ -1,29 +1,25 @@
-import {Component, OnInit} from '@angular/core';
-import { CoreService } from 'src/app/services/core.service';
-import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { TablerIconsModule } from 'angular-tabler-icons';
+import { BrandingComponent } from '../../../layouts/full/vertical/sidebar/branding.component';
 import { MaterialModule } from '../../../material.module';
-import {AuthService} from "../../../shared/services/auth.service";
-import {User} from "../../../shared/model/user";
-import {ToastrService} from "ngx-toastr";
-import {BrandingComponent} from "../../../layouts/full/vertical/sidebar/branding.component";
-import {NgIf} from "@angular/common";
-import {TablerIconsModule} from "angular-tabler-icons";
-import {ProfileService} from "../../../shared/services/profile.service";
-import {Profile} from "../../../shared/model/profile";
+import { CoreService } from 'src/app/services/core.service';
+import { AuthService } from '../../../shared/services/auth.service';
 
 @Component({
-    selector: 'app-side-register',
+  selector: 'app-side-register',
   imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, BrandingComponent, NgIf, TablerIconsModule],
-    templateUrl: './side-register.component.html',
-    styleUrls: ['./side-register.component.scss']
+  templateUrl: './side-register.component.html',
+  styleUrls: ['./side-register.component.scss']
 })
-export class AppSideRegisterComponent implements OnInit{
+export class AppSideRegisterComponent implements OnInit {
   options = this.settings.getOptions();
-  user: User = new User(null,'', '', null);
-  image: any = null;
-  imageUrl: string = '';
-  imageName: string = '';
+  image: File | null = null;
+  imageUrl = '';
+  imageName = '';
 
   today = new Date();
   maxBirthDate = new Date(
@@ -32,46 +28,42 @@ export class AppSideRegisterComponent implements OnInit{
     this.today.getDate()
   );
 
-
-  constructor(private settings: CoreService,
-              private authService: AuthService,
-              private profileService: ProfileService,
-              private router: Router,
-              private toastr: ToastrService) { }
+  constructor(
+    private settings: CoreService,
+    private authService: AuthService,
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit() {
-    this.form.get('role')?.valueChanges.subscribe(() => {
-      this.updateRequirement()
-    })
-    this.updateRequirement()
+    this.form.get('role')?.valueChanges.subscribe(() => this.updateRequirement());
+    this.updateRequirement();
   }
 
   form = new FormGroup({
     uname: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
-    role: new FormControl('ROLE_FARMER', [Validators.required]),
+    role: new FormControl<'FARMER' | 'ADVISOR'>('FARMER', [Validators.required]),
     firstName: new FormControl('', [Validators.required]),
     lastName: new FormControl('', [Validators.required]),
     city: new FormControl('', [Validators.required]),
     country: new FormControl('', [Validators.required]),
-    birthDate: new FormControl(null, [Validators.required]),
+    birthDate: new FormControl<Date | null>(null, [Validators.required]),
     description: new FormControl('', []),
     occupation: new FormControl('', []),
-    experience: new FormControl(null, []),
-    photo: new FormControl('', [Validators.required]),
+    experience: new FormControl<number | null>(null, []),
+    photo: new FormControl('', []),
   });
 
   updateRequirement() {
-    if (this.form.get('role')?.value === 'ROLE_ADVISOR') {
-      this.form.get('description')?.setValidators([Validators.required]);
+    if (this.form.get('role')?.value === 'ADVISOR') {
       this.form.get('occupation')?.setValidators([Validators.required]);
       this.form.get('experience')?.setValidators([Validators.required, Validators.min(1)]);
     } else {
-      this.form.get('description')?.clearValidators();
       this.form.get('occupation')?.clearValidators();
       this.form.get('experience')?.clearValidators();
     }
-    this.form.get('description')?.updateValueAndValidity();
+
     this.form.get('occupation')?.updateValueAndValidity();
     this.form.get('experience')?.updateValueAndValidity();
   }
@@ -88,7 +80,7 @@ export class AppSideRegisterComponent implements OnInit{
   }
 
   isAdvisor() {
-    return this.form.get('role')?.value === 'ROLE_ADVISOR';
+    return this.form.get('role')?.value === 'ADVISOR';
   }
 
   get f() {
@@ -96,35 +88,50 @@ export class AppSideRegisterComponent implements OnInit{
   }
 
   submit() {
-    if (this.form.invalid) { return }
-    const roles = ['ROLE_USER', this.form.value.role!];
-    this.user = new User(null, this.form.value.uname!, this.form.value.password!, roles);
-    this.authService.signup(this.user).subscribe(response => {
-      this.authService.login(this.user).subscribe(res => {
-        this.authService.saveUser(res.id, res.token);
-        this.authService.saveToken(res.token);
-        // profile creation
-        let profile = new Profile(
-          0,
-          response.id,
-          this.form.value.firstName!,
-          this.form.value.lastName!,
-          this.form.value.city!,
-          this.form.value.country!,
-          this.form.value.birthDate!,
-          this.form.value.description!,
-          this.form.value.photo!,
-          this.isAdvisor() ? this.form.value.occupation! : "",
-          this.isAdvisor() ? this.form.value.experience! : 0
-        )
-        this.profileService.create(profile, this.image).subscribe(res => {
-          this.toastr.success('Usuario registrado con éxito', 'Registro exitoso');
-        })
+    if (this.form.invalid) {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('username', this.form.value.uname ?? '');
+    formData.append('password', this.form.value.password ?? '');
+    formData.append('role', this.form.value.role ?? 'FARMER');
+    formData.append('firstName', this.form.value.firstName ?? '');
+    formData.append('lastName', this.form.value.lastName ?? '');
+    formData.append('city', this.form.value.city ?? '');
+    formData.append('country', this.form.value.country ?? '');
+    formData.append('birthDate', this.toYmd(this.form.value.birthDate));
+    formData.append('description', this.form.value.description ?? '');
+
+    if (this.isAdvisor()) {
+      formData.append('occupation', this.form.value.occupation ?? '');
+      formData.append('experience', String(this.form.value.experience ?? 0));
+    }
+
+    if (this.image) {
+      formData.append('photo', this.image);
+    }
+
+    this.authService.signup(formData).subscribe({
+      next: (session) => {
+        this.authService.saveSession(session);
+        this.toastr.success('Usuario registrado con Ã©xito', 'Registro exitoso');
         this.router.navigate(['']);
-      });
-    },
-      _error => {
+      },
+      error: () => {
         this.toastr.error('Error al registrar el usuario', 'Error de registro');
-      })
+      }
+    });
+  }
+
+  private toYmd(date: Date | null | undefined): string {
+    if (!date) {
+      return '';
+    }
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }

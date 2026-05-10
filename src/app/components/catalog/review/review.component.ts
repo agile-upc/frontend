@@ -1,9 +1,10 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {MaterialModule} from "src/app/material.module";
-import {ReviewService, Review} from "src/app/services/apps/appointment/review.service";
-import {NgClass, NgForOf} from "@angular/common";
-import {FarmerService} from "src/app/services/apps/catalog/farmer.service";
-import {ProfileService} from "src/app/shared/services/profile.service";
+import { Component, Input, OnInit } from '@angular/core';
+import { NgClass, NgForOf } from '@angular/common';
+import { firstValueFrom } from 'rxjs';
+import { MaterialModule } from 'src/app/material.module';
+import { Review, ReviewService } from 'src/app/services/apps/appointment/review.service';
+import { FarmerService } from 'src/app/services/apps/catalog/farmer.service';
+import { ProfileService } from 'src/app/shared/services/profile.service';
 
 interface EnrichedReview extends Review {
   farmerName: string;
@@ -18,7 +19,7 @@ interface EnrichedReview extends Review {
 })
 export class ReviewComponent implements OnInit {
   protected reviews: EnrichedReview[] = [];
-  @Input() advisorId: number;
+  @Input() advisorId!: number;
 
   constructor(
     private reviewService: ReviewService,
@@ -33,34 +34,25 @@ export class ReviewComponent implements OnInit {
   private loadReviews(): void {
     this.reviewService.getReviewsByAdvisorId(this.advisorId).subscribe({
       next: async (reviews) => {
-        // Enriquecer cada review con datos del farmer
-        const enrichedReviews = await Promise.all(
+        this.reviews = await Promise.all(
           reviews.map(async (review) => {
             try {
-              const farmer = await this.farmerService.getFarmer(review.farmerId).toPromise();
-              if (!farmer) {
-                throw new Error('Farmer not found');
-              }
-              const profile = await this.profileService.fetchProfile(farmer.userId).toPromise();
-              if (!profile) {
-                throw new Error('Profile not found');
-              }
+              const farmer = await firstValueFrom(this.farmerService.getFarmer(review.farmerId));
+              const profile = await firstValueFrom(this.profileService.findProfileByUserId(farmer.userId));
               return {
                 ...review,
-                farmerName: `${profile.firstName} ${profile.lastName}`,
-                farmerPhoto: profile.photo || 'assets/images/profile/user-1.jpg'
+                farmerName: profile ? `${profile.firstName} ${profile.lastName}` : `Productor #${review.farmerId}`,
+                farmerPhoto: profile?.photo || 'assets/images/profile/user-1.jpg'
               };
-            } catch (error) {
-              console.error('Error loading farmer data:', error);
+            } catch {
               return {
                 ...review,
-                farmerName: 'Usuario',
+                farmerName: `Productor #${review.farmerId}`,
                 farmerPhoto: 'assets/images/profile/user-1.jpg'
               };
             }
           })
         );
-        this.reviews = enrichedReviews;
       },
       error: (err) => {
         console.error('Error loading reviews:', err);

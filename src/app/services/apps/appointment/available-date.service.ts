@@ -14,8 +14,16 @@ export class AvailableDateService {
     this.environmentUrl = `${environment.apiUrl}/available_dates`;
   }
 
-  public findByAdvisorId(advisorId?: number, isAvailable: boolean = true): Observable<AvailableDate[]> {
-    const url = advisorId ? `${this.environmentUrl}?advisorId=${advisorId}&isAvailable=${isAvailable}` : this.environmentUrl;
+  public findByAdvisorId(advisorId?: number, isAvailable?: boolean): Observable<AvailableDate[]> {
+    const params: string[] = [];
+    if (advisorId != null) {
+      params.push(`advisorId=${advisorId}`);
+    }
+    if (isAvailable != null) {
+      params.push(`isAvailable=${isAvailable}`);
+    }
+    const query = params.length ? `?${params.join('&')}` : '';
+    const url = `${this.environmentUrl}${query}`;
     return this.httpClient.get<AvailableDate[]>(url);
   }
 
@@ -24,11 +32,19 @@ export class AvailableDateService {
   }
 
   public create(date: AvailableDate): Observable<AvailableDate> {
-    return this.httpClient.post<AvailableDate>(this.environmentUrl, date);
+    return this.httpClient.post<AvailableDate>(this.environmentUrl, {
+      scheduledDate: date.scheduledDate,
+      startTime: date.startTime,
+      endTime: date.endTime,
+    });
   }
 
   public update(id: number, date: AvailableDate): Observable<AvailableDate> {
-    return this.httpClient.put<AvailableDate>(`${this.environmentUrl}/${id}`, date);
+    return this.httpClient.put<AvailableDate>(`${this.environmentUrl}/${id}`, {
+      scheduledDate: date.scheduledDate,
+      startTime: date.startTime,
+      endTime: date.endTime,
+    });
   }
 
   public delete(id: number): Observable<any> {

@@ -1,77 +1,69 @@
 import { Injectable } from '@angular/core';
-import {Advisor} from "src/app/pages/apps/farmer/catalog/advisor";
-import {HttpClient} from "@angular/common/http";
-import {environment} from "../../../../environments/environment";
-import {map, switchMap} from "rxjs/operators";
-import {ProfileService} from "src/app/shared/services/profile.service";
-import {Observable} from "rxjs";
-import {Profile} from "src/app/shared/model/profile";
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
+import { Advisor } from 'src/app/pages/apps/farmer/catalog/advisor';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdvisorService {
-  private environmentUrl = '';
+  private environmentUrl = `${environment.apiUrl}/advisors`;
+  private catalogUrl = `${environment.apiUrl}/advisors/catalog`;
 
-  constructor(private httpClient: HttpClient,
-              private profileService: ProfileService,) {
-    this.environmentUrl = `${environment.apiUrl}/advisors`;
+  constructor(
+    private httpClient: HttpClient,
+    private authService: AuthService
+  ) {}
+
+  public getAdvisor(advisorId: number): Observable<{ id: number; userId: number; rating: number }> {
+    return this.httpClient.get<{ id: number; userId: number; rating: number }>(`${this.environmentUrl}/${advisorId}`);
   }
 
-  public getAdvisor(advisorId: number): Observable<Advisor> {
-    return this.httpClient.get<any>(`${this.environmentUrl}/${advisorId}`).pipe(
-      switchMap((advisor) =>
-        this.profileService.fetchProfile(advisor.userId).pipe(
-          map((profile: Profile) =>
-            new Advisor(
-              advisor.id,
-              advisor.userId,
-              profile.firstName,
-              profile.lastName,
-              profile.city,
-              profile.country,
-              profile.birthDate,
-              profile.description,
-              profile.photo,
-              profile.occupation ?? '',
-              profile.experience,
-              advisor.rating,
-            )
-          )
-        )
-      )
-    )
+  public getMyAdvisor(): Observable<{ id: number; userId: number; rating: number }> {
+    return this.httpClient.get<{ id: number; userId: number; rating: number }>(this.environmentUrl);
   }
 
   public getAdvisorByUserId(userId: number): Observable<{ id: number; userId: number; rating: number }> {
-    return this.httpClient.get<{ id: number; userId: number; rating: number }>(`${this.environmentUrl}/${userId}/user`);
+    if (this.authService.user.userId === userId) {
+      return this.getMyAdvisor();
+    }
+
+    return this.getAdvisorCatalog().pipe(
+      map((advisors) => {
+        const advisor = advisors.find((item) => item.userId === userId);
+        return {
+          id: advisor?.advisorId ?? 0,
+          userId: advisor?.userId ?? 0,
+          rating: advisor?.rating ?? 0,
+        };
+      })
+    );
   }
 
-  public getAdvisors(): Observable<Advisor[]> {
-    return this.httpClient.get<any[]>(this.environmentUrl).pipe(
-      switchMap((advisors) =>
-        this.profileService.fetchAdvisorProfiles().pipe(
-          map((profiles) =>
-            advisors.map((advisor) => {
-              const profile = profiles.find(p => p.userId === advisor.userId);
-              return new Advisor(
-                advisor.id,
-                advisor.userId,
-                profile?.firstName ?? '',
-                profile?.lastName ?? '',
-                profile?.city ?? '',
-                profile?.country ?? '',
-                profile?.birthDate ?? new Date(),
-                profile?.description ?? '',
-                profile?.photo ?? '',
-                profile?.occupation ?? '',
-                profile?.experience ?? 0,
-                advisor.rating,
-              )
-            })
-          )
-        )
-      )
-    )
+  public getAdvisorCatalog(): Observable<Advisor[]> {
+    return this.httpClient.get<any[]>(this.catalogUrl).pipe(
+      map((items) => items.map((item) => this.mapCatalogItem(item)))
+    );
+  }
+
+  private mapCatalogItem(item: any): Advisor {
+    const profile = item?.profile ?? {};
+    return new Advisor(
+      item?.advisorId ?? 0,
+      item?.userId ?? 0,
+      profile?.firstName ?? '',
+      profile?.lastName ?? '',
+      profile?.city ?? '',
+      profile?.country ?? '',
+      new Date(),
+      profile?.description ?? '',
+      profile?.photo ?? '',
+      profile?.occupation ?? '',
+      profile?.experience ?? 0,
+      item?.rating ?? 0
+    );
   }
 }

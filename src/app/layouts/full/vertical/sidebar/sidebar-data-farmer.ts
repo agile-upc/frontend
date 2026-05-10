@@ -15,19 +15,6 @@ export const navItemsFarmer: NavItem[] = [
     route: '/apps/farmer/appointments',
   },
   {
-    navCap: 'Gestión',
-  },
-  {
-    displayName: 'Mis Recintos',
-    iconName: 'building-warehouse',
-    route: '/apps/farmer/enclosures',
-  },
-  {
-    displayName: 'Mis Cultivos',
-    iconName: 'plant',
-    route: '/apps/farmer/crops',
-  },
-  {
     navCap: 'Posts',
   },
   {

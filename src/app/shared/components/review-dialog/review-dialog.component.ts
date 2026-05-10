@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material.module';
 import { ReviewService } from 'src/app/services/apps/appointment/review.service';
+import { AuthService } from '../../services/auth.service';
 
 export interface ReviewDialogData {
   appointmentId: number;
@@ -30,7 +31,8 @@ export class ReviewDialogComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<ReviewDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ReviewDialogData,
-    private reviewService: ReviewService
+    private reviewService: ReviewService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -38,12 +40,15 @@ export class ReviewDialogComponent implements OnInit {
   }
 
   checkExistingReview(): void {
-    this.loading = true;
-    const farmerId = Number(localStorage.getItem('farmerId'));
+    const farmerId = this.authService.user.farmerId;
+    if (!farmerId) {
+      return;
+    }
 
+    this.loading = true;
     this.reviewService.getReviewByAdvisorAndFarmer(this.data.advisorId, farmerId).subscribe({
       next: (reviews) => {
-        if (reviews && reviews.length > 0) {
+        if (reviews.length > 0) {
           const review = reviews[0];
           this.hasReview = true;
           this.isEdit = true;
@@ -72,7 +77,6 @@ export class ReviewDialogComponent implements OnInit {
     this.loading = true;
 
     if (this.isEdit && this.reviewId) {
-      // Actualizar reseña existente
       this.reviewService.updateReview(this.reviewId, this.rating, this.comment).subscribe({
         next: () => {
           this.loading = false;
@@ -82,18 +86,18 @@ export class ReviewDialogComponent implements OnInit {
           this.loading = false;
         }
       });
-    } else {
-      // Crear nueva reseña
-      this.reviewService.createReview(this.data.advisorId, this.rating, this.comment).subscribe({
-        next: () => {
-          this.loading = false;
-          this.dialogRef.close(true);
-        },
-        error: () => {
-          this.loading = false;
-        }
-      });
+      return;
     }
+
+    this.reviewService.createReview(this.data.advisorId, this.rating, this.comment).subscribe({
+      next: () => {
+        this.loading = false;
+        this.dialogRef.close(true);
+      },
+      error: () => {
+        this.loading = false;
+      }
+    });
   }
 
   close(): void {

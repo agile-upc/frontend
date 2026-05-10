@@ -58,9 +58,7 @@ export class CreatePostComponent implements OnInit {
 
   createPost(): void {
     if (this.postForm.valid) {
-      const advisorId = Number(localStorage.getItem('advisorId') || 0);
       const formData = new FormData();
-      formData.append('advisorId', advisorId.toString());
       formData.append('title', this.postForm.get('title')?.value);
       formData.append('description', this.postForm.get('description')?.value);
       if (this.selectedFile) {

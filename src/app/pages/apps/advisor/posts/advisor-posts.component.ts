@@ -1,14 +1,13 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { Router } from '@angular/router';
-import { PostService } from 'src/app/services/apps/post/post.service';
-import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
-import { TablerIconsModule } from 'angular-tabler-icons';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { MatDialog } from '@angular/material/dialog';
+import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
-import {PostDeleteDialogComponent} from "./post-delete-dialog/post-delete-dialog.component";
-import {ToastrService} from "ngx-toastr";
-import {MatDialog} from "@angular/material/dialog";
 import { AppDeleteDialogComponent } from 'src/app/shared/components/delete-dialog/delete-dialog.component';
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { PostService } from 'src/app/services/apps/post/post.service';
 
 @Component({
   selector: 'app-posts',
@@ -24,17 +23,19 @@ export class AdvisorPostsComponent implements OnInit {
   constructor(
     public router: Router,
     private postService: PostService,
-    private advisorService: AdvisorService,
+    private authService: AuthService,
     private dialog: MatDialog,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
-    const advisorId = localStorage.getItem('advisorId');
-    this.loggedInAdvisorId = advisorId ? parseInt(advisorId, 10) : 0;
-
-    this.postService.getPosts(this.loggedInAdvisorId).subscribe((posts) => {
-        this.posts.set(posts);
+    this.loggedInAdvisorId = this.authService.user.advisorId;
+    this.postService.getPosts().subscribe((posts) => {
+      this.posts.set(
+        this.loggedInAdvisorId == null
+          ? []
+          : posts.filter((post) => post.advisorId === this.loggedInAdvisorId)
+      );
     });
   }
 
@@ -45,17 +46,19 @@ export class AdvisorPostsComponent implements OnInit {
   deletePost(postId: number): void {
     const ref = this.dialog.open(AppDeleteDialogComponent, {
       width: '420px',
-      data: { id: postId, name: `publicación`, type: "publicación" },
+      data: { id: postId, name: 'publicación', type: 'publicación' },
       autoFocus: false,
       restoreFocus: true,
       disableClose: true,
     });
+
     ref.afterClosed().subscribe((confirm: boolean) => {
       if (!confirm) return;
+
       this.postService.deletePost(postId).subscribe({
         next: () => {
           this.toastr.success('Publicación eliminada', 'Éxito');
-          this.posts.set(this.posts().filter(post => post.id !== postId));
+          this.posts.set(this.posts().filter((post) => post.id !== postId));
         },
         error: (err) => {
           console.error('No se pudo eliminar la publicación:', err);
@@ -65,9 +68,7 @@ export class AdvisorPostsComponent implements OnInit {
     });
   }
 
-
   addPost() {
     this.router.navigate(['/apps/advisor/posts/create']);
   }
-
 }

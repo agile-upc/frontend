@@ -110,7 +110,8 @@ export class AppHorizontalHeaderComponent {
   }
 
   setlightDark(theme: string) {
-    this.options.theme = theme;
+    this.settings.setOptions({ theme: theme as 'light' | 'dark' });
+    this.options = this.settings.getOptions();
     this.emitOptions();
   }
 

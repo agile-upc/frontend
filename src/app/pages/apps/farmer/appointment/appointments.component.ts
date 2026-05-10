@@ -1,26 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
-import { FarmerService } from 'src/app/services/apps/catalog/farmer.service';
-import { AuthService } from 'src/app/shared/services/auth.service';
+import { Router, RouterLink } from '@angular/router';
+import { TablerIconsModule } from 'angular-tabler-icons';
+import { MaterialModule } from 'src/app/material.module';
 import { TimeFormatPipe } from 'src/app/pipes/filter.pipe';
-import { AvailableDateService } from 'src/app/services/apps/catalog/available-date.service';
+import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
 import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
-import {Router, RouterLink} from '@angular/router';
 import type { AppointmentDetailed } from 'src/app/pages/apps/farmer/appointment/appointment-detailed';
-import {TablerIconsModule} from "angular-tabler-icons";
-import {MaterialModule} from "src/app/material.module";
 
 @Component({
   selector: 'app-appointments',
   templateUrl: './appointments.component.html',
-  imports: [
-    CommonModule,
-    TimeFormatPipe,
-    RouterLink,
-    MaterialModule,
-    TablerIconsModule
-  ]
+  imports: [CommonModule, TimeFormatPipe, RouterLink, MaterialModule, TablerIconsModule]
 })
 export class AppAppointmentsComponent implements OnInit {
   appointments: AppointmentDetailed[] = [];
@@ -28,9 +19,6 @@ export class AppAppointmentsComponent implements OnInit {
 
   constructor(
     private appointmentService: AppointmentService,
-    private farmerService: FarmerService,
-    private authService: AuthService,
-    private availableDateService: AvailableDateService,
     private advisorService: AdvisorService,
     private router: Router
   ) {}
@@ -40,88 +28,34 @@ export class AppAppointmentsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Si no hay farmerId en localStorage, lo obtenemos usando el userId del usuario logueado
-    const farmerId = localStorage.getItem('farmerId');
-    if (!farmerId) {
-      const user = this.authService.user;
-      if (user && user.id) {
-        this.farmerService.getFarmerByUserId(user.id).subscribe({
-          next: (farmer) => {
-            localStorage.setItem('farmerId', String(farmer.farmerId));
-            this.fetchAppointments();
-          },
-          error: () => {
-            this.loading = false;
-          }
-        });
-      } else {
-        this.loading = false;
-      }
-    } else {
-      this.fetchAppointments();
-    }
+    this.fetchAppointments();
   }
 
   fetchAppointments() {
     this.loading = true;
     this.appointmentService.getMyAppointments().subscribe({
       next: (data) => {
-        if (!data.length) {
-          this.appointments = [];
-          this.loading = false;
-          return;
-        }
-        let loaded = 0;
-        const enriched: AppointmentDetailed[] = [];
-        data.forEach((appt, idx) => {
-          this.availableDateService.getAvailableDateById(appt.availableDateId).subscribe({
-            next: (date) => {
-              this.advisorService.getAdvisor(date.advisorId).subscribe({
-                next: (advisor) => {
-                  enriched[idx] = {
-                    ...appt,
-                    advisorName: advisor.firstName + ' ' + advisor.lastName,
-                    advisorPhoto: advisor.photo,
-                    scheduledDate: date.scheduledDate,
-                    startTime: date.startTime,
-                    endTime: date.endTime
-                  };
-                  loaded++;
-                  if (loaded === data.length) {
-                    // Filtrar solo citas FUTURAS (no completadas y fecha >= hoy)
-                    this.appointments = enriched.filter(a =>
-                      a &&
-                      a.status !== 'COMPLETED' &&
-                      !this.isPast(a)
-                    );
-                    this.loading = false;
-                  }
-                },
-                error: () => {
-                  loaded++;
-                  if (loaded === data.length) {
-                    this.appointments = enriched.filter(a =>
-                      a &&
-                      a.status !== 'COMPLETED' &&
-                      !this.isPast(a)
-                    );
-                    this.loading = false;
-                  }
-                }
-              });
-            },
-            error: () => {
-              loaded++;
-              if (loaded === data.length) {
-                this.appointments = enriched.filter(a =>
-                  a &&
-                  a.status !== 'COMPLETED' &&
-                  !this.isPast(a)
-                );
-                this.loading = false;
-              }
-            }
-          });
+        this.advisorService.getAdvisorCatalog().subscribe({
+          next: (advisors) => {
+            this.appointments = data
+              .map((appointment) => {
+                const advisor = advisors.find((item) => item.advisorId === appointment.availableDate.advisorId);
+                return {
+                  ...appointment,
+                  advisorId: appointment.availableDate.advisorId,
+                  advisorName: advisor ? `${advisor.firstName} ${advisor.lastName}` : 'Asesor',
+                  advisorPhoto: advisor?.photo ?? 'assets/images/profile/user-1.jpg',
+                  scheduledDate: appointment.availableDate.scheduledDate,
+                  startTime: appointment.availableDate.startTime,
+                  endTime: appointment.availableDate.endTime,
+                };
+              })
+              .filter((appointment) => appointment.status !== 'COMPLETED' && !this.isPast(appointment));
+            this.loading = false;
+          },
+          error: () => {
+            this.loading = false;
+          }
         });
       },
       error: () => {
@@ -130,12 +64,12 @@ export class AppAppointmentsComponent implements OnInit {
     });
   }
 
-  isPast(appt: AppointmentDetailed): boolean {
-    if (!appt.scheduledDate) return false;
+  isPast(appointment: AppointmentDetailed): boolean {
+    if (!appointment.availableDate?.scheduledDate) return false;
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Comparar solo fecha, no hora
-    const apptDate = new Date(appt.scheduledDate);
-    apptDate.setHours(0, 0, 0, 0);
-    return apptDate < today;
+    today.setHours(0, 0, 0, 0);
+    const appointmentDate = new Date(appointment.availableDate.scheduledDate);
+    appointmentDate.setHours(0, 0, 0, 0);
+    return appointmentDate < today;
   }
 }

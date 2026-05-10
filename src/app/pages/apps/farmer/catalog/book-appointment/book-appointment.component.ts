@@ -1,19 +1,16 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {MaterialModule} from 'src/app/material.module';
-import {TablerIconsModule} from 'angular-tabler-icons';
-import {AdvisorService} from "src/app/services/apps/catalog/advisor.service";
-import {Advisor} from "../advisor";
-import moment from "moment";
-import {NgIf} from "@angular/common";
-import {AvailableDate} from "./available-date";
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {AvailableDateService} from "src/app/services/apps/catalog/available-date.service";
-import {ToastrService} from "ngx-toastr";
-import {AppointmentService} from "src/app/services/apps/appointment/appointment.service";
-import {FarmerService} from "src/app/services/apps/catalog/farmer.service";
-import {AuthService} from "src/app/shared/services/auth.service";
-import {Appointment} from "src/app/shared/model/appointment";
+import { Component, OnInit } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import moment from 'moment';
+import { ToastrService } from 'ngx-toastr';
+import { TablerIconsModule } from 'angular-tabler-icons';
+import { MaterialModule } from 'src/app/material.module';
+import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
+import { AvailableDateService } from 'src/app/services/apps/catalog/available-date.service';
+import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
+import { Advisor } from '../advisor';
+import { AvailableDate } from './available-date';
 
 @Component({
   selector: 'app-advisor-page',
@@ -21,22 +18,21 @@ import {Appointment} from "src/app/shared/model/appointment";
   templateUrl: './book-appointment.component.html'
 })
 export class AppBookAppointmentComponent implements OnInit {
-  protected advisor: Advisor;
+  protected advisor!: Advisor;
   protected dates: AvailableDate[] = [];
-  protected comment: string = '';
 
-  constructor(public router: Router,
-              public activatedRoute: ActivatedRoute,
-              public authService: AuthService,
-              public advisorService: AdvisorService,
-              public availableDateService: AvailableDateService,
-              public appointmentService: AppointmentService,
-              public farmerService: FarmerService,
-              private toastr: ToastrService,) {}
+  constructor(
+    public router: Router,
+    public activatedRoute: ActivatedRoute,
+    public advisorService: AdvisorService,
+    public availableDateService: AvailableDateService,
+    public appointmentService: AppointmentService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
-    this.activatedRoute.params.subscribe(params => {
-      const advisorId = params['advisorId'];
+    this.activatedRoute.params.subscribe((params) => {
+      const advisorId = Number(params['advisorId']);
       if (advisorId) {
         this.loadAdvisor(advisorId);
         this.loadAvailableDates(advisorId);
@@ -47,16 +43,17 @@ export class AppBookAppointmentComponent implements OnInit {
   form = new FormGroup({
     date: new FormControl<number>(0, Validators.required),
     comment: new FormControl('', Validators.required),
-  })
+  });
 
   private loadAdvisor(advisorId: number): void {
-    this.advisorService.getAdvisor(advisorId).subscribe({
-      next: (data) => {
-        this.advisor = data;
+    this.advisorService.getAdvisorCatalog().subscribe({
+      next: (advisors) => {
+        const advisor = advisors.find((item) => item.advisorId === advisorId);
+        if (advisor) {
+          this.advisor = advisor;
+        }
       },
-      error: (err) => {
-        console.error('Error loading advisor:', err);
-      }
+      error: (err) => console.error('Error loading advisor:', err)
     });
   }
 
@@ -65,13 +62,10 @@ export class AppBookAppointmentComponent implements OnInit {
       next: (data) => {
         this.dates = data;
         if (this.dates.length > 0) {
-          console.log(this.dates);
           this.form.get('date')!.setValue(this.dates[0].dateId);
         }
       },
-      error: (err) => {
-        console.error('Error loading available dates:', err);
-      }
+      error: (err) => console.error('Error loading available dates:', err)
     });
   }
 
@@ -80,48 +74,25 @@ export class AppBookAppointmentComponent implements OnInit {
   }
 
   protected formatAvailableDate(scheduledDate: string, startTime: string, endTime: string): string {
-    const date = moment(scheduledDate, 'YYYY-MM-DD').format('DD MMM YYYY');
-    return `${date}, ${startTime} - ${endTime}`;
+    return `${moment(scheduledDate, 'YYYY-MM-DD').format('DD MMM YYYY')}, ${startTime} - ${endTime}`;
   }
 
   protected submit() {
-    if (!this.form.valid) return;
-    console.log(this.authService.user)
-    const userId: number = this.authService.user.id ?? 0;
-    if (userId === 0) {
-      this.toastr.error('Error al reservar la cita. Por favor, inicie sesión e inténtelo de nuevo.', 'Error');
+    if (!this.form.valid) {
       return;
     }
 
-    this.farmerService.getFarmerByUserId(userId).subscribe(
-      {
-        next: (data) => {
-          const appointment = new Appointment(
-            0,
-            this.form.get('date')!.value ?? 0,
-            data.farmerId,
-            this.form.get('comment')!.value ?? '',
-            "",
-            ""
-          );
-          console.log(appointment);
-          this.appointmentService.bookAppointment(appointment).subscribe({
-            next: (data) => {
-              this.toastr.success('Cita reservada con éxito.', 'Éxito');
-              // TODO: Redireccionar a la página de confirmación o historial de citas
-              this.router.navigate(['apps/farmer/catalog']);
-              console.log('Appointment booked successfully:', data);
-            },
-            error: (err) => {
-              this.toastr.error('Error al reservar la cita. Por favor, inténtelo de nuevo más tarde.', 'Error');
-              console.error('Error booking appointment:', err);
-            }
-          });
-        },
-        error: (err) => {
-          console.error('Error getting farmer by user id:', err);
-        }
+    this.appointmentService.bookAppointment({
+      availableDateId: this.form.get('date')!.value ?? 0,
+      message: this.form.get('comment')!.value ?? '',
+    }).subscribe({
+      next: () => {
+        this.toastr.success('Cita reservada con éxito.', 'Éxito');
+        this.router.navigate(['apps/farmer/catalog']);
+      },
+      error: () => {
+        this.toastr.error('Error al reservar la cita. Por favor, inténtelo de nuevo más tarde.', 'Error');
       }
-    )
+    });
   }
 }

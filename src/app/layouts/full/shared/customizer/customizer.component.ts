@@ -36,21 +36,25 @@ export class CustomizerComponent {
   constructor(private settings: CoreService) { }
   setDark() {
     this.settings.setOptions({ theme: 'dark' });
+    this.options = this.settings.getOptions();
     this.emitOptions();
   }
 
   setColor(color: string) {
     this.settings.setOptions({ activeTheme: color });
+    this.options = this.settings.getOptions();
     this.emitOptions();
   }
 
   setDir(dir: 'ltr' | 'rtl') {
     this.settings.setOptions({ dir: dir });
+    this.options = this.settings.getOptions();
     this.emitOptions();
   }
 
   setSidebar(sidenavOpened: boolean) {
     this.settings.setOptions({ sidenavOpened: sidenavOpened });
+    this.options = this.settings.getOptions();
     this.emitOptions();
   }
 

@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from 'src/app/material.module';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { TablerIconsModule } from 'angular-tabler-icons';
-import { NotificationService } from 'src/app/shared/services/notification.service';
 import { ToastrService } from 'ngx-toastr';
+import { TablerIconsModule } from 'angular-tabler-icons';
+import { MaterialModule } from 'src/app/material.module';
 import { UserNotification } from 'src/app/shared/model/userNotification';
-import {AuthService} from "../../../../shared/services/auth.service";
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
   selector: 'app-notifications',
@@ -23,28 +22,21 @@ export class AppNotificationsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  userId: number | null;
-
   constructor(
-    private authService: AuthService,
     private notificationService: NotificationService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
-    this.userId = this.authService.user.id;
-    if (this.userId != null) {
-      this.loadNotifications(this.userId);
-    }
+    this.loadNotifications();
   }
 
-  loadNotifications(userId: number): void {
-    this.notificationService.fetchNotificationsByUserId(userId).subscribe({
+  loadNotifications(): void {
+    this.notificationService.fetchNotifications().subscribe({
       next: (data) => {
         this.dataSource.data = data;
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        console.log(this.dataSource);
       },
       error: () => this.toastr.error('Error al cargar notificaciones'),
     });
@@ -58,7 +50,7 @@ export class AppNotificationsComponent implements OnInit {
     this.notificationService.deleteNotification(row.id).subscribe({
       next: () => {
         this.toastr.success('Notificación eliminada');
-        if (this.userId != null) this.loadNotifications(this.userId);
+        this.loadNotifications();
       },
       error: () => this.toastr.error('Error al eliminar notificación'),
     });

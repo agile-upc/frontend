@@ -68,22 +68,22 @@ export class AppProfileComponent implements OnInit {
     });
   }
 
-  get isAdvisor(): boolean { return this.authService.user.roles?.includes('ROLE_ADVISOR') ?? false; }
-  get isFarmer(): boolean { return this.authService.user.roles?.includes('ROLE_FARMER') ?? false; }
+  get isAdvisor(): boolean { return this.authService.user.role === 'ADVISOR'; }
+  get isFarmer(): boolean { return this.authService.user.role === 'FARMER'; }
 
   ngOnInit(): void {
-    const userId = this.authService.user.id;
-    if (userId == null) {
+    const profileId = this.authService.user.profileId;
+    if (profileId == null) {
       this.loading.set(false);
       this.error.set('No se encontró el usuario');
       return;
     }
-    this.loadProfile(userId);
+    this.loadProfile();
   }
 
-  private loadProfile(userId: number) {
+  private loadProfile() {
     this.loading.set(true);
-    this.profileService.fetchProfile(userId).subscribe({
+    this.profileService.fetchMyProfile().subscribe({
       next: (p) => {
         this.profile.set(p);
         this.patchForm(p);
