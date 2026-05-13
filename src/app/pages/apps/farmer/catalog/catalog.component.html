@@ -107,7 +107,7 @@
               <span *ngIf="msg.selectedMatch.city || msg.selectedMatch.country">· {{ msg.selectedMatch.city }}{{ msg.selectedMatch.city && msg.selectedMatch.country ? ', ' : '' }}{{ msg.selectedMatch.country }}</span>
             </div>
             <div class="recommend-meta">
-              Rating {{ msg.selectedMatch.rating }} · {{ msg.selectedMatch.experience }} años
+              Rating {{ msg.selectedMatch.rating }} ⭐ · {{ msg.selectedMatch.experience }} años de experiencia
               <span *ngIf="msg.selectedMatch.nextAvailableDate">· Disponible desde {{ msg.selectedMatch.nextAvailableDate | date:'yyyy-MM-dd' }}</span>
             </div>
             <div class="recommend-why">{{ msg.selectedMatch.why }}</div>
