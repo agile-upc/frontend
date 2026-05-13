@@ -53,6 +53,23 @@ export interface UpdateAppointmentRequest {
   status: AppointmentStatus;
 }
 
+export function parseAppointmentDate(dateValue?: string | Date | null): Date | null {
+  if (!dateValue) {
+    return null;
+  }
+
+  if (dateValue instanceof Date) {
+    return dateValue;
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+    const [year, month, day] = dateValue.split('-').map((value) => Number(value));
+    return new Date(year, month - 1, day);
+  }
+
+  return new Date(dateValue);
+}
+
 export function mapAppointmentDetailed(dto: any): AppointmentDetailed {
   const availableDate = {
     id: dto?.availableDate?.id ?? 0,

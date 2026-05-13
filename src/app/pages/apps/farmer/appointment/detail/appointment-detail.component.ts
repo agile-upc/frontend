@@ -7,7 +7,7 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { AppDeleteDialogComponent } from 'src/app/shared/components/delete-dialog/delete-dialog.component';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
-import type { AppointmentDetailed } from 'src/app/pages/apps/farmer/appointment/appointment-detailed';
+import { AppointmentDetailed, parseAppointmentDate } from 'src/app/pages/apps/farmer/appointment/appointment-detailed';
 
 @Component({
   selector: 'app-appointment-detail',
@@ -56,7 +56,8 @@ export class AppointmentDetailComponent implements OnInit {
 
   formatDate(dateVal: string | Date | undefined): string {
     if (!dateVal) return '';
-    const date = typeof dateVal === 'string' ? new Date(dateVal) : dateVal;
+    const date = parseAppointmentDate(dateVal);
+    if (!date) return '';
     return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 

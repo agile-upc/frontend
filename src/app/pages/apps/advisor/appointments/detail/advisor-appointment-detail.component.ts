@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { AppDeleteDialogComponent } from 'src/app/shared/components/delete-dialog/delete-dialog.component';
-import { AppointmentDetailed } from '../../../farmer/appointment/appointment-detailed';
+import { AppointmentDetailed, parseAppointmentDate } from '../../../farmer/appointment/appointment-detailed';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
 
 @Component({
@@ -24,6 +24,7 @@ export class AdvisorAppointmentDetailComponent implements OnInit {
   scheduledDate = signal('');
   startTime = signal('');
   endTime = signal('');
+  formattedDate = signal('');
   meetingUrl = signal('');
   message = signal('');
   loading = signal(true);
@@ -56,6 +57,7 @@ export class AdvisorAppointmentDetailComponent implements OnInit {
         this.message.set(appointment.message);
         this.meetingUrl.set(appointment.meetingUrl || '');
         this.scheduledDate.set(appointment.availableDate.scheduledDate);
+        this.formattedDate.set(this.formatDate(appointment.availableDate.scheduledDate));
         this.startTime.set(appointment.availableDate.startTime);
         this.endTime.set(appointment.availableDate.endTime);
         this.farmerName.set(appointment.farmerName || `Productor #${appointment.farmerId}`);
@@ -67,6 +69,13 @@ export class AdvisorAppointmentDetailComponent implements OnInit {
         this.router.navigate(['/apps/advisor/appointments']);
       }
     });
+  }
+
+  formatDate(dateVal: string | Date | undefined): string {
+    if (!dateVal) return '';
+    const date = parseAppointmentDate(dateVal);
+    if (!date) return '';
+    return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
   openCancelModal() {

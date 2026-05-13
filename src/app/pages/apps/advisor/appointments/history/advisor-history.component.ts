@@ -6,7 +6,7 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { TimeFormatPipe } from 'src/app/pipes/time-format.pipe';
 import { AdvisorReviewDialogComponent } from 'src/app/shared/components/advisor-review-dialog/advisor-review-dialog.component';
-import { AppointmentDetailed } from 'src/app/pages/apps/farmer/appointment/appointment-detailed';
+import { AppointmentDetailed, parseAppointmentDate } from 'src/app/pages/apps/farmer/appointment/appointment-detailed';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
 
 interface EnrichedAppointment {
@@ -28,6 +28,7 @@ interface EnrichedAppointment {
 })
 export class AdvisorHistoryComponent implements OnInit {
   appointments = signal<EnrichedAppointment[]>([]);
+  protected readonly parseAppointmentDate = parseAppointmentDate;
   loading = signal(true);
 
   constructor(
@@ -69,7 +70,8 @@ export class AdvisorHistoryComponent implements OnInit {
   isPast(appointment: AppointmentDetailed): boolean {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const appointmentDate = new Date(appointment.availableDate.scheduledDate);
+    const appointmentDate = parseAppointmentDate(appointment.availableDate.scheduledDate);
+    if (!appointmentDate) return false;
     appointmentDate.setHours(0, 0, 0, 0);
     return appointmentDate < today;
   }

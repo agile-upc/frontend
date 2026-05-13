@@ -6,7 +6,7 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from '../../../../../material.module';
 import { TimeFormatPipe } from '../../../../../pipes/filter.pipe';
 import { ReviewDialogComponent } from 'src/app/shared/components/review-dialog/review-dialog.component';
-import { AppointmentDetailed } from '../appointment-detailed';
+import { AppointmentDetailed, parseAppointmentDate } from '../appointment-detailed';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
 
 @Component({
@@ -17,6 +17,7 @@ import { AppointmentService } from 'src/app/services/apps/appointment/appointmen
 })
 export class AppAppointmentsHistoryComponent implements OnInit {
   history: AppointmentDetailed[] = [];
+  protected readonly parseAppointmentDate = parseAppointmentDate;
   loading = true;
 
   constructor(
@@ -46,7 +47,8 @@ export class AppAppointmentsHistoryComponent implements OnInit {
     if (!appointment.availableDate?.scheduledDate) return false;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const appointmentDate = new Date(appointment.availableDate.scheduledDate);
+    const appointmentDate = parseAppointmentDate(appointment.availableDate.scheduledDate);
+    if (!appointmentDate) return false;
     appointmentDate.setHours(0, 0, 0, 0);
     return appointmentDate < today;
   }

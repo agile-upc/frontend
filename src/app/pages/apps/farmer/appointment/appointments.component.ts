@@ -5,7 +5,7 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { TimeFormatPipe } from 'src/app/pipes/filter.pipe';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
-import type { AppointmentDetailed } from 'src/app/pages/apps/farmer/appointment/appointment-detailed';
+import { AppointmentDetailed, parseAppointmentDate } from 'src/app/pages/apps/farmer/appointment/appointment-detailed';
 
 @Component({
   selector: 'app-appointments',
@@ -14,6 +14,7 @@ import type { AppointmentDetailed } from 'src/app/pages/apps/farmer/appointment/
 })
 export class AppAppointmentsComponent implements OnInit {
   appointments: AppointmentDetailed[] = [];
+  protected readonly parseAppointmentDate = parseAppointmentDate;
   loading = true;
 
   constructor(
@@ -47,7 +48,8 @@ export class AppAppointmentsComponent implements OnInit {
     if (!appointment.availableDate?.scheduledDate) return false;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const appointmentDate = new Date(appointment.availableDate.scheduledDate);
+    const appointmentDate = parseAppointmentDate(appointment.availableDate.scheduledDate);
+    if (!appointmentDate) return false;
     appointmentDate.setHours(0, 0, 0, 0);
     return appointmentDate < today;
   }

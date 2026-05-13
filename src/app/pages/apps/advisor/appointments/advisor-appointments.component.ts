@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from '../../../../material.module';
 import { TimeFormatPipe } from 'src/app/pipes/filter.pipe';
-import { AppointmentDetailed } from '../../farmer/appointment/appointment-detailed';
+import { AppointmentDetailed, parseAppointmentDate } from '../../farmer/appointment/appointment-detailed';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
 
 interface EnrichedAppointment {
@@ -26,6 +26,7 @@ interface EnrichedAppointment {
 })
 export class AdvisorAppointmentsComponent implements OnInit {
   appointments = signal<EnrichedAppointment[]>([]);
+  protected readonly parseAppointmentDate = parseAppointmentDate;
   loading = signal(true);
 
   constructor(
@@ -66,7 +67,8 @@ export class AdvisorAppointmentsComponent implements OnInit {
   isPast(appointment: AppointmentDetailed): boolean {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const appointmentDate = new Date(appointment.availableDate.scheduledDate);
+    const appointmentDate = parseAppointmentDate(appointment.availableDate.scheduledDate);
+    if (!appointmentDate) return false;
     appointmentDate.setHours(0, 0, 0, 0);
     return appointmentDate < today;
   }
