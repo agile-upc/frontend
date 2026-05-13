@@ -67,7 +67,6 @@ export class AppBookAppointmentComponent implements OnInit {
   }
 
   protected calculateAge(birthDate: Date): number {
-    console.log(`Calculating age for birth date: ${birthDate}, age: ${moment().diff(birthDate, 'years')}`);
     return moment().diff(birthDate, 'years');
   }
 
