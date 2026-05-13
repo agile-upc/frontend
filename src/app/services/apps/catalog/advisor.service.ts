@@ -18,8 +18,10 @@ export class AdvisorService {
     private authService: AuthService
   ) {}
 
-  public getAdvisor(advisorId: number): Observable<{ id: number; userId: number; rating: number }> {
-    return this.httpClient.get<{ id: number; userId: number; rating: number }>(`${this.environmentUrl}/${advisorId}`);
+  public getAdvisor(advisorId: number): Observable<Advisor> {
+    return this.httpClient.get<any>(`${this.environmentUrl}/${advisorId}`).pipe(
+      map((item) => this.mapCatalogItem(item))
+    );
   }
 
   public getMyAdvisor(): Observable<{ id: number; userId: number; rating: number }> {
@@ -50,20 +52,33 @@ export class AdvisorService {
   }
 
   private mapCatalogItem(item: any): Advisor {
-    const profile = item?.profile ?? {};
+    const profile = item?.profile ?? item ?? {};
     return new Advisor(
-      item?.advisorId ?? 0,
-      item?.userId ?? 0,
+      item?.advisorId ?? item?.id ?? 0,
+      item?.userId ?? profile?.userId ?? 0,
       profile?.firstName ?? '',
       profile?.lastName ?? '',
       profile?.city ?? '',
       profile?.country ?? '',
-      new Date(),
+      this.mapBirthDate(profile?.birthDate),
       profile?.description ?? '',
       profile?.photo ?? '',
       profile?.occupation ?? '',
       profile?.experience ?? 0,
       item?.rating ?? 0
     );
+  }
+
+  private mapBirthDate(value: unknown): Date {
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      const [year, month, day] = value.split('-').map((part) => parseInt(part, 10));
+      return new Date(year, month - 1, day);
+    }
+
+    if (value) {
+      return new Date(value as string | number | Date);
+    }
+
+    return new Date();
   }
 }

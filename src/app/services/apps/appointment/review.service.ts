@@ -3,10 +3,23 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {environment} from "../../../../environments/environment";
 
+export interface ReviewProfile {
+  profileId: number;
+  firstName: string;
+  lastName: string;
+  city: string;
+  country: string;
+  description: string;
+  photo: string;
+  occupation: string;
+  experience: number;
+}
+
 export interface Review {
   id: number;
   advisorId: number;
   farmerId: number;
+  farmerProfile?: ReviewProfile | null;
   comment: string;
   rating: number;
 }

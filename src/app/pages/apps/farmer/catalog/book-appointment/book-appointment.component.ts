@@ -46,12 +46,9 @@ export class AppBookAppointmentComponent implements OnInit {
   });
 
   private loadAdvisor(advisorId: number): void {
-    this.advisorService.getAdvisorCatalog().subscribe({
-      next: (advisors) => {
-        const advisor = advisors.find((item) => item.advisorId === advisorId);
-        if (advisor) {
-          this.advisor = advisor;
-        }
+    this.advisorService.getAdvisor(advisorId).subscribe({
+      next: (advisor) => {
+        this.advisor = advisor;
       },
       error: (err) => console.error('Error loading advisor:', err)
     });
@@ -70,6 +67,7 @@ export class AppBookAppointmentComponent implements OnInit {
   }
 
   protected calculateAge(birthDate: Date): number {
+    console.log(`Calculating age for birth date: ${birthDate}, age: ${moment().diff(birthDate, 'years')}`);
     return moment().diff(birthDate, 'years');
   }
 

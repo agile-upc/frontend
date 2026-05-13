@@ -1,10 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgClass, NgForOf } from '@angular/common';
-import { firstValueFrom } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { Review, ReviewService } from 'src/app/services/apps/appointment/review.service';
-import { FarmerService } from 'src/app/services/apps/catalog/farmer.service';
-import { ProfileService } from 'src/app/shared/services/profile.service';
 
 interface EnrichedReview extends Review {
   farmerName: string;
@@ -21,11 +18,7 @@ export class ReviewComponent implements OnInit {
   protected reviews: EnrichedReview[] = [];
   @Input() advisorId!: number;
 
-  constructor(
-    private reviewService: ReviewService,
-    private farmerService: FarmerService,
-    private profileService: ProfileService
-  ) {}
+  constructor(private reviewService: ReviewService) {}
 
   ngOnInit(): void {
     this.loadReviews();
@@ -33,26 +26,14 @@ export class ReviewComponent implements OnInit {
 
   private loadReviews(): void {
     this.reviewService.getReviewsByAdvisorId(this.advisorId).subscribe({
-      next: async (reviews) => {
-        this.reviews = await Promise.all(
-          reviews.map(async (review) => {
-            try {
-              const farmer = await firstValueFrom(this.farmerService.getFarmer(review.farmerId));
-              const profile = await firstValueFrom(this.profileService.findProfileByUserId(farmer.userId));
-              return {
-                ...review,
-                farmerName: profile ? `${profile.firstName} ${profile.lastName}` : `Productor #${review.farmerId}`,
-                farmerPhoto: profile?.photo || 'assets/images/profile/user-1.jpg'
-              };
-            } catch {
-              return {
-                ...review,
-                farmerName: `Productor #${review.farmerId}`,
-                farmerPhoto: 'assets/images/profile/user-1.jpg'
-              };
-            }
-          })
-        );
+      next: (reviews) => {
+        this.reviews = reviews.map((review) => ({
+          ...review,
+          farmerName: review.farmerProfile
+            ? `${review.farmerProfile.firstName} ${review.farmerProfile.lastName}`
+            : `Productor #${review.farmerId}`,
+          farmerPhoto: review.farmerProfile?.photo || 'assets/images/profile/user-1.jpg'
+        }));
       },
       error: (err) => {
         console.error('Error loading reviews:', err);
