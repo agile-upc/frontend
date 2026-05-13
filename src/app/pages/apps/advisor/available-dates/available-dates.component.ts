@@ -34,7 +34,10 @@ export class AvailableDatesComponent implements OnInit {
 
   private loadAvailableDates(): void {
     this.availableDateService.findByAdvisorId(this.advisorId ?? undefined).subscribe({
-      next: (data) => this.availableDates.set(data),
+      next: (data) =>
+        this.availableDates.set(
+          data.filter((availableDate) => availableDate.status?.toUpperCase() !== 'UNAVAILABLE')
+        ),
       error: (err) => console.error('Error fetching available dates:', err)
     });
   }
