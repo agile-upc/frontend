@@ -7,7 +7,6 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { AppDeleteDialogComponent } from 'src/app/shared/components/delete-dialog/delete-dialog.component';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
-import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
 import type { AppointmentDetailed } from 'src/app/pages/apps/farmer/appointment/appointment-detailed';
 
 @Component({
@@ -30,7 +29,6 @@ export class AppointmentDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private appointmentService: AppointmentService,
-    private advisorService: AdvisorService,
     private dialog: MatDialog
   ) {}
 
@@ -44,26 +42,10 @@ export class AppointmentDetailComponent implements OnInit {
 
     this.appointmentService.getAppointmentById(id).subscribe({
       next: (appointment) => {
-        this.advisorService.getAdvisorCatalog().subscribe({
-          next: (advisors) => {
-            const advisor = advisors.find((item) => item.advisorId === appointment.availableDate.advisorId);
-            this.appointment = {
-              ...appointment,
-              advisorName: advisor ? `${advisor.firstName} ${advisor.lastName}` : 'Asesor',
-              advisorPhoto: advisor?.photo ?? 'assets/images/profile/user-1.jpg',
-              scheduledDate: appointment.availableDate.scheduledDate,
-              startTime: appointment.availableDate.startTime,
-              endTime: appointment.availableDate.endTime
-            };
-            this.formattedDate = this.formatDate(appointment.availableDate.scheduledDate);
-            this.formattedTime = this.formatTime(appointment.availableDate.startTime, appointment.availableDate.endTime);
-            this.loading = false;
-          },
-          error: () => {
-            this.error = true;
-            this.loading = false;
-          }
-        });
+        this.appointment = appointment;
+        this.formattedDate = this.formatDate(appointment.availableDate.scheduledDate);
+        this.formattedTime = this.formatTime(appointment.availableDate.startTime, appointment.availableDate.endTime);
+        this.loading = false;
       },
       error: () => {
         this.error = true;

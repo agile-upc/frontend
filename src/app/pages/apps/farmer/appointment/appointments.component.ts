@@ -5,7 +5,6 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { TimeFormatPipe } from 'src/app/pipes/filter.pipe';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
-import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
 import type { AppointmentDetailed } from 'src/app/pages/apps/farmer/appointment/appointment-detailed';
 
 @Component({
@@ -19,7 +18,6 @@ export class AppAppointmentsComponent implements OnInit {
 
   constructor(
     private appointmentService: AppointmentService,
-    private advisorService: AdvisorService,
     private router: Router
   ) {}
 
@@ -35,28 +33,9 @@ export class AppAppointmentsComponent implements OnInit {
     this.loading = true;
     this.appointmentService.getMyAppointments().subscribe({
       next: (data) => {
-        this.advisorService.getAdvisorCatalog().subscribe({
-          next: (advisors) => {
-            this.appointments = data
-              .map((appointment) => {
-                const advisor = advisors.find((item) => item.advisorId === appointment.availableDate.advisorId);
-                return {
-                  ...appointment,
-                  advisorId: appointment.availableDate.advisorId,
-                  advisorName: advisor ? `${advisor.firstName} ${advisor.lastName}` : 'Asesor',
-                  advisorPhoto: advisor?.photo ?? 'assets/images/profile/user-1.jpg',
-                  scheduledDate: appointment.availableDate.scheduledDate,
-                  startTime: appointment.availableDate.startTime,
-                  endTime: appointment.availableDate.endTime,
-                };
-              })
-              .filter((appointment) => appointment.status !== 'COMPLETED' && !this.isPast(appointment));
-            this.loading = false;
-          },
-          error: () => {
-            this.loading = false;
-          }
-        });
+        this.appointments = data
+          .filter((appointment) => appointment.status !== 'COMPLETED' && !this.isPast(appointment));
+        this.loading = false;
       },
       error: () => {
         this.loading = false;

@@ -10,7 +10,7 @@ export class Appointment {
 
   static fromDto(dto: any): Appointment {
     const appointmentId = dto.id ?? 0;
-    const availableDateId = dto.availableDateId ?? 0;
+    const availableDateId = dto.availableDateId ?? dto.availableDate?.id ?? 0;
     const farmerId = dto.farmerId ?? 0;
     const message = dto.message ?? '';
     const status = dto.status ?? 'PENDING';

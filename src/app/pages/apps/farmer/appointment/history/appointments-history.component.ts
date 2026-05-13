@@ -8,7 +8,6 @@ import { TimeFormatPipe } from '../../../../../pipes/filter.pipe';
 import { ReviewDialogComponent } from 'src/app/shared/components/review-dialog/review-dialog.component';
 import { AppointmentDetailed } from '../appointment-detailed';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
-import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
 
 @Component({
   selector: 'app-appointments-history',
@@ -22,7 +21,6 @@ export class AppAppointmentsHistoryComponent implements OnInit {
 
   constructor(
     private appointmentService: AppointmentService,
-    private advisorService: AdvisorService,
     private dialog: MatDialog
   ) {}
 
@@ -34,28 +32,9 @@ export class AppAppointmentsHistoryComponent implements OnInit {
     this.loading = true;
     this.appointmentService.getMyAppointments().subscribe({
       next: (data) => {
-        this.advisorService.getAdvisorCatalog().subscribe({
-          next: (advisors) => {
-            this.history = data
-              .map((appointment) => {
-                const advisor = advisors.find((item) => item.advisorId === appointment.availableDate.advisorId);
-                return {
-                  ...appointment,
-                  advisorId: appointment.availableDate.advisorId,
-                  advisorName: advisor ? `${advisor.firstName} ${advisor.lastName}` : 'Asesor',
-                  advisorPhoto: advisor?.photo ?? 'assets/images/profile/user-1.jpg',
-                  scheduledDate: appointment.availableDate.scheduledDate,
-                  startTime: appointment.availableDate.startTime,
-                  endTime: appointment.availableDate.endTime,
-                };
-              })
-              .filter((appointment) => appointment.status === 'COMPLETED' || this.isPast(appointment));
-            this.loading = false;
-          },
-          error: () => {
-            this.loading = false;
-          }
-        });
+        this.history = data
+          .filter((appointment) => appointment.status === 'COMPLETED' || this.isPast(appointment));
+        this.loading = false;
       },
       error: () => {
         this.loading = false;

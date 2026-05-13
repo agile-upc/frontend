@@ -3,14 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { firstValueFrom } from 'rxjs';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { AppDeleteDialogComponent } from 'src/app/shared/components/delete-dialog/delete-dialog.component';
 import { AppointmentDetailed } from '../../../farmer/appointment/appointment-detailed';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
-import { FarmerService } from 'src/app/services/apps/catalog/farmer.service';
-import { ProfileService } from 'src/app/shared/services/profile.service';
 
 @Component({
   selector: 'app-advisor-appointment-detail',
@@ -37,8 +34,6 @@ export class AdvisorAppointmentDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private appointmentService: AppointmentService,
-    private profileService: ProfileService,
-    private farmerService: FarmerService,
     private dialog: MatDialog
   ) {}
 
@@ -56,22 +51,16 @@ export class AdvisorAppointmentDetailComponent implements OnInit {
   loadAppointmentData() {
     this.loading.set(true);
     this.appointmentService.getAppointmentById(this.appointmentId).subscribe({
-      next: async (appointment) => {
+      next: (appointment) => {
         this.appointment.set(appointment);
         this.message.set(appointment.message);
         this.meetingUrl.set(appointment.meetingUrl || '');
         this.scheduledDate.set(appointment.availableDate.scheduledDate);
         this.startTime.set(appointment.availableDate.startTime);
         this.endTime.set(appointment.availableDate.endTime);
-
-        try {
-          const farmer = await firstValueFrom(this.farmerService.getFarmer(appointment.farmerId));
-          const profile = await firstValueFrom(this.profileService.findProfileByUserId(farmer.userId));
-          this.farmerName.set(profile ? `${profile.firstName} ${profile.lastName}` : `Productor #${appointment.farmerId}`);
-          this.farmerPhoto.set(profile?.photo || 'assets/images/profile/user-1.jpg');
-        } finally {
-          this.loading.set(false);
-        }
+        this.farmerName.set(appointment.farmerName || `Productor #${appointment.farmerId}`);
+        this.farmerPhoto.set(appointment.farmerPhoto || 'assets/images/profile/user-1.jpg');
+        this.loading.set(false);
       },
       error: () => {
         this.loading.set(false);
