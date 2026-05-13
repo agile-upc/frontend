@@ -38,6 +38,13 @@ export class AppBookAppointmentComponent implements OnInit {
         this.loadAvailableDates(advisorId);
       }
     });
+
+    this.activatedRoute.queryParamMap.subscribe((params) => {
+      const message = params.get('message');
+      if (message) {
+        this.form.get('comment')!.setValue(message);
+      }
+    });
   }
 
   form = new FormGroup({

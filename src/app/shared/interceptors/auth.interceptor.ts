@@ -22,7 +22,7 @@ export class AuthInterceptor implements HttpInterceptor {
           if (this.authService.isAuthenticated()) {
             this.authService.logout();
           }
-          Swal.fire('SesiÃ³n expirada', 'Su sesiÃ³n ha caducado, por favor vuelva a ingresar al sistema.', 'warning');
+          Swal.fire('Sesión expirada', 'Su sesión ha caducado, por favor vuelva a ingresar al sistema.', 'warning');
           this.router.navigate(['/authentication/login']);
         } else if (error.status === 403) {
           Swal.fire('Acceso denegado', `Hola ${this.authService.user.username} no tienes acceso a este recurso.`, 'warning');

@@ -86,8 +86,7 @@
       </div>
     }
   </div>
-  <div class="chat-box"
-       *ngIf="chatOpen">
+  <div class="chat-box" *ngIf="chatOpen">
     <div class="chat-header b-b-1">
       <span>Chat con IA</span>
       <button mat-icon-button (click)="chatOpen = false">
@@ -99,15 +98,44 @@
         *ngFor="let msg of messages"
         class="bubble"
         [ngClass]="{ 'bg-light-primary ai': msg.from === 'ai', 'bg-light-secondary user': msg.from == 'user' }">
-        <div>{{ msg.text }}</div>
-        <div *ngIf="msg.advisorId" class="recommend-card">
-          <button
-            mat-stroked-button
-            color="primary"
-            [routerLink]="['/apps/farmer/catalog/', msg.advisorId]"
-          >
-            Ver asesor recomendado
-          </button>
+        <div class="message-text">{{ msg.text }}</div>
+        <div *ngIf="msg.selectedMatch" class="recommend-list">
+          <div class="recommend-item">
+            <div class="recommend-name">{{ msg.selectedMatch.fullName }}</div>
+            <div class="recommend-meta">
+              {{ msg.selectedMatch.occupation || 'Asesor' }}
+              <span *ngIf="msg.selectedMatch.city || msg.selectedMatch.country">· {{ msg.selectedMatch.city }}{{ msg.selectedMatch.city && msg.selectedMatch.country ? ', ' : '' }}{{ msg.selectedMatch.country }}</span>
+            </div>
+            <div class="recommend-meta">
+              Rating {{ msg.selectedMatch.rating }} · {{ msg.selectedMatch.experience }} años
+              <span *ngIf="msg.selectedMatch.nextAvailableDate">· Disponible desde {{ msg.selectedMatch.nextAvailableDate | date:'yyyy-MM-dd' }}</span>
+            </div>
+            <div class="recommend-why">{{ msg.selectedMatch.why }}</div>
+            <div class="recommend-actions">
+              <button
+                mat-stroked-button
+                color="primary"
+                (click)="goToAiRecommendation(msg)"
+              >
+                Ver perfil
+              </button>
+              <button
+                *ngIf="msg.draftAppointmentMessage"
+                mat-flat-button
+                color="primary"
+                (click)="goToAiBooking(msg)"
+              >
+                Ir a reservar
+              </button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="msg.draftAppointmentMessage" class="draft-message">
+          <div class="draft-title">Mensaje de reserva sugerido</div>
+          <div>{{ msg.draftAppointmentMessage }}</div>
+        </div>
+        <div *ngIf="msg.fallbackNotice" class="fallback-note">
+          {{ msg.fallbackNotice }}
         </div>
       </div>
       <div *ngIf="loading" class="bubble ai typing">
@@ -146,5 +174,3 @@
     </mat-icon>
   </button>
 }
-
-

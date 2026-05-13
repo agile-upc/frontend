@@ -69,6 +69,7 @@ interface quicklinks {
 })
 export class FullComponent implements OnInit {
   navItems = navItems;
+  homeRoute = '/authentication/login';
 
   @ViewChild('leftsidenav')
   public sidenav: MatSidenav;
@@ -236,6 +237,7 @@ export class FullComponent implements OnInit {
   ngOnInit(): void {
     const user = this.authService.user;
     const role = user.role;
+    this.homeRoute = this.resolveHomeRoute(role);
 
     if (role === 'FARMER') {
       this.navItems = navItemsFarmer;
@@ -328,5 +330,21 @@ export class FullComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['/authentication/login']);
+  }
+
+  private resolveHomeRoute(role: string): string {
+    if (role === 'FARMER') {
+      return '/apps/farmer/catalog';
+    }
+
+    if (role === 'ADVISOR') {
+      return '/apps/advisor/appointments';
+    }
+
+    if (role === 'ADMIN') {
+      return '/apps/profile';
+    }
+
+    return '/authentication/login';
   }
 }

@@ -46,7 +46,7 @@ export class AppSideLoginComponent {
         this.router.navigate(['']);
       },
       error: () => {
-        this.toastr.error('Usuario o contraseÃ±a incorrecta', 'Error de autenticaciÃ³n');
+        this.toastr.error('Usuario o contraseña incorrecta', 'Error de autenticación');
       }
     });
   }

@@ -15,9 +15,12 @@ export class AiService {
     this.environmentUrl = `${environment.apiUrl}/ai`;
   }
 
-  public sendMessage(message: string): Observable<AiAnswer> {
-    return this.httpClient.post<AiAnswer>(this.environmentUrl + `/chat`, {message}).pipe(
+  public sendMessage(message: string, conversationId: string | null = null): Observable<AiAnswer> {
+    return this.httpClient.post<AiAnswer>(this.environmentUrl + `/recommendations`, {
+      message,
+      conversationId
+    }).pipe(
       map(dto => AiAnswer.fromDto(dto))
-    )
+    );
   }
 }
