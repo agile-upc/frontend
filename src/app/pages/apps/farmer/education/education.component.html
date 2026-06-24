@@ -1,0 +1,108 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="education-header">
+      <h2 class="m-0">{{ 'education.title' | translate }}</h2>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="resource-filters">
+      <mat-form-field appearance="outline" class="filter-search hide-hint">
+        <input
+          matInput
+          [(ngModel)]="searchText"
+          [placeholder]="'education.searchPlaceholder' | translate"
+          (keyup)="applyFilters()"
+        />
+        <mat-icon matSuffix>
+          <i-tabler name="search" class="icon-20 d-flex m-t-2"></i-tabler>
+        </mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-select">
+        <mat-label>{{ 'education.typeFilter' | translate }}</mat-label>
+        <mat-select [(ngModel)]="selectedTypes" multiple (selectionChange)="applyFilters()">
+          @for(type of typeOptions; track type) {
+            <mat-option [value]="type">{{ getTypeLabel(type) }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-select">
+        <mat-label>{{ 'education.topicFilter' | translate }}</mat-label>
+        <mat-select [(ngModel)]="selectedTopics" multiple (selectionChange)="applyFilters()">
+          @for(topic of topicOptions; track topic) {
+            <mat-option [value]="topic">{{ topic }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-stroked-button color="primary" class="filter-clear" (click)="clearFilters()">
+        <i-tabler name="filter-off" class="icon-18 d-flex"></i-tabler>
+        {{ 'catalog.clearFilters' | translate }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+@if(loading) {
+  <div class="d-flex justify-content-center p-24">
+    <mat-progress-spinner mode="indeterminate" diameter="36"></mat-progress-spinner>
+  </div>
+}
+@else if(error) {
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="text-center p-y-32">
+      <i-tabler name="alert-circle" class="icon-48 text-dark m-b-16"></i-tabler>
+      <div class="f-s-16 text-dark">{{ error }}</div>
+    </mat-card-content>
+  </mat-card>
+}
+@else if(resources().length === 0) {
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="text-center p-y-32">
+      <i-tabler name="book-off" class="icon-48 text-dark m-b-16"></i-tabler>
+      <div class="f-s-16 text-dark">{{ 'education.empty' | translate }}</div>
+    </mat-card-content>
+  </mat-card>
+}
+@else {
+  <div class="row">
+    @for(resource of resources(); track resource.id) {
+      <div class="col-sm-6 col-lg-4">
+        <mat-card class="cardWithShadow resource-card card-hover cursor-pointer" (click)="openResource(resource)">
+          @if(resource.thumbnailUrl) {
+            <img mat-card-image [src]="resource.thumbnailUrl" [alt]="resource.title" />
+          }
+          <mat-card-content>
+            <div class="resource-meta">
+              <span class="resource-type">{{ getTypeLabel(resource.type) }}</span>
+              <span class="f-s-12 text-muted">{{ resource.sourceName }}</span>
+            </div>
+            <mat-card-title>{{ resource.title }}</mat-card-title>
+            <p class="resource-summary">{{ resource.summary || ('education.noSummary' | translate) }}</p>
+            <div class="resource-topics">
+              @for(topic of resource.topics; track topic) {
+                <span>{{ topic }}</span>
+              }
+            </div>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-flat-button color="primary" class="resource-action-button" (click)="openResource(resource, $event)">
+              <i-tabler name="external-link" class="icon-18 d-flex"></i-tabler>
+              {{ 'education.openResource' | translate }}
+            </button>
+            @if(resource.downloadUrl) {
+              <button mat-stroked-button color="primary" class="resource-action-button" (click)="openDownload(resource, $event)">
+                <i-tabler name="download" class="icon-18 d-flex"></i-tabler>
+                {{ 'education.download' | translate }}
+              </button>
+            }
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    }
+  </div>
+}

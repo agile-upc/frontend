@@ -1,0 +1,135 @@
+.education-header {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: flex-start;
+}
+
+.resource-filters {
+  align-items: flex-start;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 240px) minmax(180px, 240px) auto;
+}
+
+.filter-clear {
+  align-items: center;
+  display: inline-flex;
+  gap: 8px;
+  min-height: 56px;
+  white-space: nowrap;
+}
+
+.resource-card {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 24px);
+  margin-bottom: 24px;
+}
+
+.resource-card img {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.resource-card mat-card-content {
+  flex: 1;
+}
+
+.resource-card mat-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 16px 16px;
+}
+
+.resource-action-button {
+  min-width: max-content;
+  white-space: nowrap;
+}
+
+.filter-clear ::ng-deep .mdc-button__label,
+.resource-action-button ::ng-deep .mdc-button__label {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.resource-meta {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.resource-type {
+  background: #dff7ea;
+  border-radius: 6px;
+  color: #135f35;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 7px 9px;
+}
+
+.resource-summary {
+  color: #5f6b63;
+  font-size: 14px;
+  line-height: 1.45;
+  min-height: 60px;
+}
+
+.resource-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.resource-topics span {
+  background: #f4faf6;
+  border: 1px solid #b9dcc6;
+  border-radius: 6px;
+  color: #315c40;
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 8px;
+}
+
+:host-context(.dark-theme) .resource-type,
+:host-context(.dark) .resource-type,
+:host-context([data-theme='dark']) .resource-type {
+  background: rgba(72, 187, 120, 0.18);
+  color: #9ae6b4;
+}
+
+:host-context(.dark-theme) .resource-topics span,
+:host-context(.dark) .resource-topics span,
+:host-context([data-theme='dark']) .resource-topics span {
+  background: rgba(148, 163, 184, 0.12);
+  border-color: rgba(148, 163, 184, 0.32);
+  color: #cbd5e1;
+}
+
+:host-context(.dark-theme) .resource-summary,
+:host-context(.dark) .resource-summary,
+:host-context([data-theme='dark']) .resource-summary {
+  color: #a7b4ad;
+}
+
+@media (max-width: 960px) {
+  .resource-filters {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .education-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

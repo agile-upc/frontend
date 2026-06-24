@@ -8,6 +8,7 @@ import { AppAppointmentsComponent } from './farmer/appointment/appointments.comp
 import { AppAppointmentsHistoryComponent } from './farmer/appointment/history/appointments-history.component';
 import { AppointmentDetailComponent } from './farmer/appointment/detail/appointment-detail.component';
 import { FarmerTutorialComponent } from './farmer/tutorial/tutorial.component';
+import { EducationComponent } from './farmer/education/education.component';
 import { AdvisoryCalendarComponent } from './shared/advisory-calendar/advisory-calendar.component';
 
 export const FarmerRoutes: Routes = [
@@ -67,6 +68,14 @@ export const FarmerRoutes: Routes = [
           title: 'nav.advisoryCalendar',
           urls: [{ title: 'nav.calendar', url: '/apps/farmer/calendar' }],
         }
+      },
+      {
+        path: 'education',
+        component: EducationComponent,
+        data: {
+          title: 'nav.education',
+          urls: [{ title: 'nav.education', url: '/apps/farmer/education' }],
+        },
       },
       {
         path: 'appointments/history',

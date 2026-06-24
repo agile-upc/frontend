@@ -25,6 +25,14 @@ export const navItemsFarmer: NavItem[] = [
     route: '/apps/farmer/calendar',
   },
   {
+    navCap: 'nav.learning',
+  },
+  {
+    displayName: 'nav.education',
+    iconName: 'book',
+    route: '/apps/farmer/education',
+  },
+  {
     navCap: 'nav.posts',
   },
   {
