@@ -1,4 +1,95 @@
-.delete-button {
-  background-color: #ea4b4b;
-  color: #ffffff;
+.schedule-toolbar,
+.schedule-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.schedule-toolbar {
+  flex-wrap: wrap;
+}
+
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.schedule-card {
+  margin-bottom: 0;
+}
+
+.schedule-row {
+  width: 100%;
+}
+
+.schedule-date {
+  background: color-mix(in srgb, #4f7c5c 16%, transparent);
+  border-radius: 8px;
+  color: #4f7c5c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  min-height: 58px;
+  text-transform: uppercase;
+}
+
+.schedule-day {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.schedule-month {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.schedule-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.schedule-delete {
+  align-items: center;
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  justify-content: center;
+  min-width: 104px;
+  white-space: nowrap;
+}
+
+.schedule-delete ::ng-deep .mdc-button__label,
+.schedule-add-button ::ng-deep .mdc-button__label {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.schedule-add-button {
+  min-width: max-content;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .schedule-toolbar,
+  .schedule-row {
+    align-items: stretch;
+  }
+
+  .schedule-row {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr);
+  }
+
+  .schedule-delete {
+    grid-column: 1 / -1;
+    justify-content: center;
+    width: fit-content;
+  }
 }

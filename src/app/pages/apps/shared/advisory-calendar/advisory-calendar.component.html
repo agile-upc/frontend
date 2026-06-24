@@ -1,0 +1,149 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="calendar-toolbar">
+      <div>
+        <h2 class="m-0 f-s-20 f-w-600">Calendario de asesorías</h2>
+        <p class="m-0 m-t-4 text-muted">
+          {{ isAdvisor ? 'Revisa tus citas y horarios disponibles.' : 'Revisa tus próximas citas programadas.' }}
+        </p>
+      </div>
+
+      <div class="calendar-actions">
+        <button mat-icon-button color="primary" matTooltip="Periodo anterior" (click)="previousPeriod()">
+          <i-tabler name="chevron-left" class="icon-20 d-flex"></i-tabler>
+        </button>
+        <button mat-stroked-button color="primary" (click)="today()">Hoy</button>
+        <button mat-icon-button color="primary" matTooltip="Periodo siguiente" (click)="nextPeriod()">
+          <i-tabler name="chevron-right" class="icon-20 d-flex"></i-tabler>
+        </button>
+
+        <mat-button-toggle-group
+          class="calendar-view-toggle"
+          [value]="view"
+          (change)="setView($event.value)"
+          aria-label="Vista del calendario"
+        >
+          <mat-button-toggle [value]="CalendarView.Month">Mes</mat-button-toggle>
+          <mat-button-toggle [value]="CalendarView.Week">Semana</mat-button-toggle>
+          <mat-button-toggle [value]="CalendarView.Day">Día</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+@if (loading) {
+  <div class="d-flex justify-content-center p-24">
+    <mat-progress-spinner mode="indeterminate" diameter="36"></mat-progress-spinner>
+  </div>
+}
+@else if (errorMessage) {
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="text-center p-y-32">
+      <i-tabler name="alert-circle" class="icon-48 text-dark m-b-16"></i-tabler>
+      <div class="f-s-16 text-dark">{{ errorMessage }}</div>
+    </mat-card-content>
+  </mat-card>
+}
+@else {
+  <div class="row">
+    <div class="col-lg-8">
+      <mat-card class="cardWithShadow">
+        <mat-card-content>
+          <div class="calendar-heading">
+            <h3 class="m-0 f-s-18 f-w-600 text-capitalize">{{ periodLabel }}</h3>
+            <div class="calendar-legend">
+              <span class="legend-item">
+                <span class="legend-dot legend-dot-appointment"></span>
+                Cita
+              </span>
+              @if (isAdvisor) {
+                <span class="legend-item">
+                  <span class="legend-dot legend-dot-availability"></span>
+                  Disponible
+                </span>
+              }
+            </div>
+          </div>
+
+          @if (view === CalendarView.Month) {
+            <mwl-calendar-month-view
+              [viewDate]="viewDate"
+              [events]="events"
+              locale="es"
+              (eventClicked)="handleEventClick($event.event)"
+              (dayClicked)="handleCalendarDateClick($event.day.date)"
+            ></mwl-calendar-month-view>
+          }
+
+          @if (view === CalendarView.Week) {
+            <mwl-calendar-week-view
+              [viewDate]="viewDate"
+              [events]="events"
+              locale="es"
+              (eventClicked)="handleEventClick($event.event)"
+              (dayHeaderClicked)="handleCalendarDateClick($event.day.date)"
+              (hourSegmentClicked)="handleCalendarDateClick($event.date, true)"
+            ></mwl-calendar-week-view>
+          }
+
+          @if (view === CalendarView.Day) {
+            <mwl-calendar-day-view
+              [viewDate]="viewDate"
+              [events]="events"
+              locale="es"
+              (eventClicked)="handleEventClick($event.event)"
+              (hourSegmentClicked)="handleCalendarDateClick($event.date, true)"
+            ></mwl-calendar-day-view>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-lg-4">
+      <mat-card class="cardWithShadow">
+        <mat-card-content>
+          <div class="d-flex align-items-center justify-content-between m-b-16">
+            <h3 class="m-0 f-s-18 f-w-600">Próximos eventos</h3>
+            @if (isAdvisor) {
+              <button mat-icon-button color="primary" matTooltip="Administrar horarios" (click)="goToAvailability()">
+                <i-tabler name="calendar-plus" class="icon-20 d-flex"></i-tabler>
+              </button>
+            }
+          </div>
+
+          @if (upcomingItems.length === 0) {
+            <div class="empty-state">
+              <i-tabler name="calendar-off" class="icon-48 text-dark m-b-16"></i-tabler>
+              <div class="f-s-16 text-dark">No hay eventos próximos.</div>
+            </div>
+          }
+          @else {
+            <div class="upcoming-list">
+              @for (item of upcomingItems; track item.id) {
+                <button
+                  class="upcoming-item"
+                  [class.upcoming-item-availability]="item.type === 'availability'"
+                  [disabled]="item.type !== 'appointment'"
+                  (click)="item.appointmentId && handleEventClick({ start: item.date, title: item.title, meta: { type: 'appointment', appointmentId: item.appointmentId } })"
+                >
+                  <span class="upcoming-date">
+                    <span class="upcoming-day">{{ item.date | date: 'dd' }}</span>
+                    <span class="upcoming-month">{{ item.date | date: 'MMM' : undefined : 'es' }}</span>
+                  </span>
+                  <span class="upcoming-copy">
+                    <span class="f-w-600">{{ item.title }}</span>
+                    <span class="f-s-12 text-muted">
+                      {{ item.startTime | timeFormat }} - {{ item.endTime | timeFormat }}
+                    </span>
+                  </span>
+                  <span class="upcoming-status">{{ statusLabel(item.status) }}</span>
+                </button>
+              }
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+}

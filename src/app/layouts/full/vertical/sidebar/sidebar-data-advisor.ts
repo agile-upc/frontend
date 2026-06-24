@@ -10,6 +10,11 @@ export const navItemsAdvisor: NavItem[] = [
     route: '/apps/advisor/appointments',
   },
   {
+    displayName: 'Calendario',
+    iconName: 'calendar-month',
+    route: '/apps/advisor/calendar',
+  },
+  {
     displayName: 'Mis horarios',
     iconName: 'calendar-event',
     route: '/apps/advisor/available-dates',

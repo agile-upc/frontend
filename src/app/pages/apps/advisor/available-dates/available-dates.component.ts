@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { TablerIconsModule } from 'angular-tabler-icons';
@@ -8,10 +9,11 @@ import { AppDeleteDialogComponent } from 'src/app/shared/components/delete-dialo
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { AvailableDate } from 'src/app/shared/model/available-date';
 import { AvailableDateService } from 'src/app/services/apps/appointment/available-date.service';
+import { TimeFormatPipe } from 'src/app/pipes/filter.pipe';
 
 @Component({
   selector: 'app-available-dates',
-  imports: [MaterialModule, TablerIconsModule],
+  imports: [CommonModule, MaterialModule, TablerIconsModule, TimeFormatPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './available-dates.component.html',
   styleUrl: './available-dates.component.scss'
@@ -40,6 +42,18 @@ export class AvailableDatesComponent implements OnInit {
         ),
       error: (err) => console.error('Error fetching available dates:', err)
     });
+  }
+
+  orderedAvailableDates(): AvailableDate[] {
+    return [...this.availableDates()].sort((a, b) => {
+      const dateDiff = a.scheduledDate.localeCompare(b.scheduledDate);
+      return dateDiff || a.startTime.localeCompare(b.startTime);
+    });
+  }
+
+  parseDate(value: string): Date {
+    const [year, month, day] = value.split('-').map((part) => Number(part));
+    return new Date(year, month - 1, day);
   }
 
   openDeleteDialog(availableDate: AvailableDate): void {

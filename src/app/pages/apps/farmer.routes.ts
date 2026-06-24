@@ -8,6 +8,7 @@ import { AppAppointmentsComponent } from './farmer/appointment/appointments.comp
 import { AppAppointmentsHistoryComponent } from './farmer/appointment/history/appointments-history.component';
 import { AppointmentDetailComponent } from './farmer/appointment/detail/appointment-detail.component';
 import { FarmerTutorialComponent } from './farmer/tutorial/tutorial.component';
+import { AdvisoryCalendarComponent } from './shared/advisory-calendar/advisory-calendar.component';
 
 export const FarmerRoutes: Routes = [
   {
@@ -57,6 +58,14 @@ export const FarmerRoutes: Routes = [
         data: {
           title: 'Mis citas',
           urls: [{ title: 'Citas', url: '/apps/farmer/appointments' }],
+        }
+      },
+      {
+        path: 'calendar',
+        component: AdvisoryCalendarComponent,
+        data: {
+          title: 'Calendario de asesorías',
+          urls: [{ title: 'Calendario', url: '/apps/farmer/calendar' }],
         }
       },
       {

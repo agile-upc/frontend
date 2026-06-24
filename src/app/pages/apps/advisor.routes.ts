@@ -7,6 +7,7 @@ import { AvailableDatesComponent } from './advisor/available-dates/available-dat
 import { AdvisorPostsComponent } from './advisor/posts/advisor-posts.component';
 import { EditPostComponent } from './advisor/posts/edit-post/edit-post.component';
 import { CreatePostComponent } from './advisor/posts/create-post/create-post.component';
+import { AdvisoryCalendarComponent } from './shared/advisory-calendar/advisory-calendar.component';
 
 export const AdvisorRoutes: Routes = [
   {
@@ -19,6 +20,16 @@ export const AdvisorRoutes: Routes = [
           title: 'Mis citas',
           urls: [
             { title: 'Citas', url: '/apps/advisor/appointments' },
+          ],
+        }
+      },
+      {
+        path: 'calendar',
+        component: AdvisoryCalendarComponent,
+        data: {
+          title: 'Calendario de asesorías',
+          urls: [
+            { title: 'Calendario', url: '/apps/advisor/calendar' },
           ],
         }
       },

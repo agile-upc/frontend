@@ -11,6 +11,13 @@ import { AvailableDateService } from 'src/app/services/apps/catalog/available-da
 import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
 import { Advisor } from '../advisor';
 import { AvailableDate } from './available-date';
+import { AppointmentDetailed } from '../../appointment/appointment-detailed';
+
+interface ExistingAppointmentRange {
+  scheduledDate: string;
+  startTime: string;
+  endTime: string;
+}
 
 @Component({
   selector: 'app-advisor-page',
@@ -20,6 +27,8 @@ import { AvailableDate } from './available-date';
 export class AppBookAppointmentComponent implements OnInit {
   protected advisor!: Advisor;
   protected dates: AvailableDate[] = [];
+  protected conflictMessage = '';
+  private existingAppointmentRanges: ExistingAppointmentRange[] = [];
 
   constructor(
     public router: Router,
@@ -31,6 +40,8 @@ export class AppBookAppointmentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadMyAppointments();
+
     this.activatedRoute.params.subscribe((params) => {
       const advisorId = Number(params['advisorId']);
       if (advisorId) {
@@ -65,13 +76,27 @@ export class AppBookAppointmentComponent implements OnInit {
     this.availableDateService.getAvailableDatesByAdvisor(advisorId).subscribe({
       next: (data) => {
         this.dates = data;
-        if (this.dates.length > 0) {
-          this.form.get('date')!.setValue(this.dates[0].dateId);
-        } else {
-          this.form.get('date')!.setValue(null);
-        }
+        this.selectFirstAvailableNonConflictingDate();
       },
       error: (err) => console.error('Error loading available dates:', err)
+    });
+  }
+
+  private loadMyAppointments(): void {
+    this.appointmentService.getMyAppointments().subscribe({
+      next: (appointments: AppointmentDetailed[]) => {
+        this.existingAppointmentRanges = appointments
+          .filter((appointment) => appointment.status !== 'COMPLETED')
+          .map((appointment) => ({
+            scheduledDate: appointment.scheduledDate ?? appointment.availableDate?.scheduledDate ?? '',
+            startTime: appointment.startTime ?? appointment.availableDate?.startTime ?? '',
+            endTime: appointment.endTime ?? appointment.availableDate?.endTime ?? '',
+          }))
+          .filter((appointment) => appointment.scheduledDate && appointment.startTime && appointment.endTime);
+        this.selectFirstAvailableNonConflictingDate();
+        this.updateConflictMessage();
+      },
+      error: (err) => console.error('Error loading current appointments:', err)
     });
   }
 
@@ -83,8 +108,75 @@ export class AppBookAppointmentComponent implements OnInit {
     return `${moment(scheduledDate, 'YYYY-MM-DD').format('DD MMM YYYY')}, ${startTime} - ${endTime}`;
   }
 
+  protected onDateChange(): void {
+    this.updateConflictMessage();
+  }
+
+  protected isDateConflicting(date: AvailableDate): boolean {
+    return this.existingAppointmentRanges.some((appointment) => {
+      if (appointment.scheduledDate !== date.scheduledDate) {
+        return false;
+      }
+
+      const requestedStart = this.parseTimeToMinutes(date.startTime);
+      const requestedEnd = this.parseTimeToMinutes(date.endTime);
+      const existingStart = this.parseTimeToMinutes(appointment.startTime);
+      const existingEnd = this.parseTimeToMinutes(appointment.endTime);
+
+      if (
+        requestedStart === null ||
+        requestedEnd === null ||
+        existingStart === null ||
+        existingEnd === null
+      ) {
+        return false;
+      }
+
+      return requestedStart < existingEnd && requestedEnd > existingStart;
+    });
+  }
+
+  private selectFirstAvailableNonConflictingDate(): void {
+    if (this.dates.length === 0) {
+      this.form.get('date')!.setValue(null);
+      return;
+    }
+
+    const currentDate = this.selectedAvailableDate();
+    if (currentDate && !this.isDateConflicting(currentDate)) {
+      return;
+    }
+
+    const firstNonConflictingDate = this.dates.find((date) => !this.isDateConflicting(date));
+    this.form.get('date')!.setValue(firstNonConflictingDate?.dateId ?? null);
+  }
+
+  private selectedAvailableDate(): AvailableDate | undefined {
+    const selectedId = this.form.get('date')!.value;
+    return this.dates.find((date) => date.dateId === selectedId);
+  }
+
+  private updateConflictMessage(): void {
+    const selectedDate = this.selectedAvailableDate();
+    if (selectedDate && this.isDateConflicting(selectedDate)) {
+      this.conflictMessage = 'Ya tienes una asesoria reservada en ese rango horario. Elige otro horario.';
+      return;
+      this.conflictMessage = 'Ya tienes una asesoría reservada para este día. Elige una fecha diferente.';
+      return;
+    }
+
+    this.conflictMessage = '';
+  }
+
   protected submit() {
+    this.updateConflictMessage();
+
     if (!this.form.valid) {
+      return;
+    }
+
+    if (this.conflictMessage) {
+      this.toastr.warning(this.conflictMessage, 'Horario no disponible');
       return;
     }
 
@@ -96,9 +188,25 @@ export class AppBookAppointmentComponent implements OnInit {
         this.toastr.success('Cita reservada con éxito.', 'Éxito');
         this.router.navigate(['apps/farmer/catalog']);
       },
-      error: () => {
+      error: (err) => {
+        if (err?.status === 409) {
+          this.toastr.warning('Ya tienes una asesoria reservada en ese rango horario. Elige otro horario.', 'Horario no disponible');
+          return;
+          this.toastr.warning('Ya tienes una asesoría reservada para ese día. Elige una fecha diferente.', 'Horario no disponible');
+          return;
+        }
+
         this.toastr.error('Error al reservar la cita. Por favor, inténtelo de nuevo más tarde.', 'Error');
       }
     });
+  }
+
+  private parseTimeToMinutes(time: string): number | null {
+    const [hours, minutes] = time.split(':').map((value) => Number(value));
+    if (Number.isNaN(hours) || Number.isNaN(minutes)) {
+      return null;
+    }
+
+    return hours * 60 + minutes;
   }
 }

@@ -20,6 +20,11 @@ export const navItemsFarmer: NavItem[] = [
     route: '/apps/farmer/appointments',
   },
   {
+    displayName: 'Calendario',
+    iconName: 'calendar-month',
+    route: '/apps/farmer/calendar',
+  },
+  {
     navCap: 'Publicaciones',
   },
   {

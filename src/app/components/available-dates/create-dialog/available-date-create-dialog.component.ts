@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
@@ -10,7 +10,13 @@ import {
   Validators
 } from '@angular/forms';
 import { MaterialModule } from 'src/app/material.module';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+
+export interface AvailableDateCreateDialogData {
+  scheduledDate?: Date | string;
+  startTime?: string;
+  endTime?: string;
+}
 
 function parseTimeToMinutes(time: string): number | null {
   if (!time) return null;
@@ -128,16 +134,25 @@ export class AvailableDateCreateDialogComponent {
   };
 
   form = new FormGroup({
-    scheduledDate: new FormControl('', [Validators.required]),
+    scheduledDate: new FormControl<Date | string | null>(null, [Validators.required]),
     startTime: new FormControl('', [Validators.required]),
     endTime: new FormControl('', [Validators.required]),
   },
     { validators: timeRangeValidator() }
   );
 
-  constructor(private dialogRef: MatDialogRef<AvailableDateCreateDialogComponent>) {
+  constructor(
+    private dialogRef: MatDialogRef<AvailableDateCreateDialogComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) private data?: AvailableDateCreateDialogData,
+  ) {
     this.minDate = new Date();
-    console.log('minDate', this.minDate);
+    if (data?.scheduledDate) {
+      this.form.patchValue({
+        scheduledDate: data.scheduledDate,
+        startTime: data.startTime ?? '',
+        endTime: data.endTime ?? '',
+      });
+    }
   }
 
   close(): void {

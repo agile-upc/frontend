@@ -1,14 +1,17 @@
 <mat-card class="cardWithShadow">
   <mat-card-content>
-    <div class="row justify-content-end">
-      <div class="d-flex align-items-center">
-        <button mat-flat-button color="primary" (click)="openCreateDialog()">
-          <mat-icon matSuffix class="d-none d-sm-flex">
-            <i-tabler name="plus" class="icon-18 d-flex m-0"></i-tabler>
-          </mat-icon>
-          Agregar nuevo horario
-        </button>
+    <div class="schedule-toolbar">
+      <div>
+        <h2 class="m-0 f-s-20 f-w-600">Mis horarios</h2>
+        <p class="m-0 m-t-4 text-muted">Administra los espacios que los productores pueden reservar.</p>
       </div>
+
+      <button mat-flat-button color="primary" class="schedule-add-button" (click)="openCreateDialog()">
+        <mat-icon matSuffix class="d-none d-sm-flex">
+          <i-tabler name="plus" class="icon-18 d-flex m-0"></i-tabler>
+        </mat-icon>
+        Agregar horario
+      </button>
     </div>
   </mat-card-content>
 </mat-card>
@@ -17,29 +20,38 @@
   <mat-card class="cardWithShadow">
     <mat-card-content class="text-center p-y-32">
       <i-tabler name="calendar-event" class="icon-48 text-dark m-b-16"></i-tabler>
-      <div class="f-s-16 text-dark">No tienes horarios programados.</div>
+      <div class="f-s-16 text-dark">No tienes horarios disponibles publicados.</div>
+      <p class="f-s-14 text-muted m-t-8 m-b-0">Agrega tu primer horario para que los productores puedan reservar una asesoria.</p>
     </mat-card-content>
   </mat-card>
 }
+@else {
+  <div class="schedule-list">
+    @for(availableDate of orderedAvailableDates(); track availableDate.id ) {
+      <mat-card class="cardWithShadow schedule-card">
+        <mat-card-content>
+          <div class="schedule-row">
+            <div class="schedule-date">
+              <span class="schedule-day">{{ parseDate(availableDate.scheduledDate) | date: 'dd' }}</span>
+              <span class="schedule-month">{{ parseDate(availableDate.scheduledDate) | date: 'MMM' : undefined : 'es' }}</span>
+            </div>
 
-<div class="row">
-  @for(availableDate of availableDates(); track availableDate.id ) {
-    <div class="col-sm-6 col-lg-4">
-      <mat-card class="cardWithShadow">
-        <mat-card-content class="text-center">
-          <div class="d-flex flex-col gap-20 m-t-16">
-            <div>
-              <h4 mat-card-title>
-                {{ availableDate.scheduledDate }}
-              </h4>
-              <span class="f-s-12">{{ availableDate.startTime }} - {{ availableDate.endTime }}</span>
+            <div class="schedule-main">
+              <h3 class="m-0 f-s-16 f-w-600">
+                {{ parseDate(availableDate.scheduledDate) | date: "EEEE, d 'de' MMMM" : undefined : 'es' }}
+              </h3>
+              <p class="m-0 m-t-4 f-s-14 text-muted">
+                {{ availableDate.startTime | timeFormat }} - {{ availableDate.endTime | timeFormat }}
+              </p>
             </div>
-            <div class="button-container">
-              <button mat-button color="warn" class="delete-button" (click)="openDeleteDialog(availableDate)">Eliminar</button>
-            </div>
+
+            <button mat-stroked-button color="warn" class="schedule-delete" (click)="openDeleteDialog(availableDate)">
+              <i-tabler name="trash" class="icon-18 d-flex"></i-tabler>
+              Eliminar
+            </button>
           </div>
         </mat-card-content>
       </mat-card>
-    </div>
-  }
-</div>
+    }
+  </div>
+}

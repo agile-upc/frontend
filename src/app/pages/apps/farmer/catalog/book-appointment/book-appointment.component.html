@@ -43,16 +43,25 @@
         <mat-card-content>
           <mat-label class="f-s-14 f-w-600 m-b-8 d-block m-t-12">Selecciona un horario para la cita</mat-label>
           <mat-form-field appearance="outline" class="w-100">
-            <mat-select formControlName="date">
+            <mat-select formControlName="date" (selectionChange)="onDateChange()">
               @for(option of dates; track option.dateId) {
-                <mat-option [value]="option.dateId">
+                <mat-option [value]="option.dateId" [disabled]="isDateConflicting(option)">
                   {{ formatAvailableDate(option.scheduledDate, option.startTime, option.endTime) }}
+                  @if(isDateConflicting(option)) {
+                    - horario superpuesto
+                  }
+                  @if(false) {
+                    - ya tienes una asesoría ese día
+                  }
                 </mat-option>
               }
             </mat-select>
           </mat-form-field>
           @if(dates.length == 0) {
             <p class="f-s-14 text-muted m-t-0">Este asesor no tiene horarios disponibles.</p>
+          }
+          @if(conflictMessage) {
+            <p class="f-s-14 text-error m-t-0">{{ conflictMessage }}</p>
           }
 
           <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Agrega un mensaje para el asesor</mat-label>
@@ -63,7 +72,7 @@
         <mat-card-actions class="d-flex justify-content-center">
           <button
             mat-flat-button
-            [disabled]="form.invalid"
+            [disabled]="form.invalid || !!conflictMessage"
             class="text-white"
             type="submit"
           >
