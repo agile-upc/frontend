@@ -5,23 +5,23 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="text-center m-b-24">
-              <img src="{{ advisor.photo }}" class="rounded-circle" width="150"  alt="Advisor Photo"/>
+              <img src="{{ advisor.photo }}" class="rounded-circle" width="150" [alt]="'advisor.photoAlt' | translate"/>
             </div>
             <div class="text-center m-t-16">
-              <mat-card-title>Lugar de residencia</mat-card-title>
+              <mat-card-title>{{ 'advisor.residence' | translate }}</mat-card-title>
               <mat-card-subtitle class="f-s-14">{{ advisor.city }}, {{ advisor.country }}</mat-card-subtitle>
             </div>
             <div class="text-center m-t-16">
-              <mat-card-title>Edad</mat-card-title>
+              <mat-card-title>{{ 'advisor.age' | translate }}</mat-card-title>
               <mat-card-subtitle class="f-s-14">{{ calculateAge(advisor.birthDate) }}</mat-card-subtitle>
             </div>
             <div class="text-center m-t-16">
-              <mat-card-title>Ocupación</mat-card-title>
+              <mat-card-title>{{ 'advisor.profession' | translate }}</mat-card-title>
               <mat-card-subtitle class="f-s-14">{{ advisor.occupation }}</mat-card-subtitle>
             </div>
             <div class="text-center m-t-16">
-              <mat-card-title>Años de experiencia</mat-card-title>
-              <mat-card-subtitle class="f-s-14">{{ advisor.experience }} años</mat-card-subtitle>
+              <mat-card-title>{{ 'advisor.experience' | translate }}</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ advisor.experience }} {{ 'common.years' | translate }}</mat-card-subtitle>
             </div>
           </div>
         </div>
@@ -32,7 +32,7 @@
           class="text-white"
           [routerLink]="['/apps/farmer/catalog', advisor.advisorId]"
         >
-          Regresar
+          {{ 'common.back' | translate }}
         </button>
       </mat-card-actions>
     </mat-card>
@@ -41,30 +41,30 @@
     <form [formGroup]="form" (ngSubmit)="submit()">
       <mat-card class="cardWithShadow">
         <mat-card-content>
-          <mat-label class="f-s-14 f-w-600 m-b-8 d-block m-t-12">Selecciona un horario para la cita</mat-label>
+          <mat-label class="f-s-14 f-w-600 m-b-8 d-block m-t-12">{{ 'booking.selectSchedule' | translate }}</mat-label>
           <mat-form-field appearance="outline" class="w-100">
             <mat-select formControlName="date" (selectionChange)="onDateChange()">
               @for(option of dates; track option.dateId) {
                 <mat-option [value]="option.dateId" [disabled]="isDateConflicting(option)">
                   {{ formatAvailableDate(option.scheduledDate, option.startTime, option.endTime) }}
                   @if(isDateConflicting(option)) {
-                    - horario superpuesto
+                    - {{ 'booking.conflict.overlap' | translate }}
                   }
                   @if(false) {
-                    - ya tienes una asesoría ese día
+                    - {{ 'booking.conflict.short' | translate }}
                   }
                 </mat-option>
               }
             </mat-select>
           </mat-form-field>
           @if(dates.length == 0) {
-            <p class="f-s-14 text-muted m-t-0">Este asesor no tiene horarios disponibles.</p>
+            <p class="f-s-14 text-muted m-t-0">{{ 'availability.advisorNoSlots' | translate }}</p>
           }
           @if(conflictMessage) {
             <p class="f-s-14 text-error m-t-0">{{ conflictMessage }}</p>
           }
 
-          <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Agrega un mensaje para el asesor</mat-label>
+          <mat-label class="f-s-14 f-w-600 m-b-8 d-block">{{ 'booking.messageLabel' | translate }}</mat-label>
           <mat-form-field appearance="outline" class="w-100" color="primary">
             <textarea matInput rows="5" formControlName="comment"></textarea>
           </mat-form-field>
@@ -76,7 +76,7 @@
             class="text-white"
             type="submit"
           >
-            Reservar
+            {{ 'booking.submit' | translate }}
           </button>
         </mat-card-actions>
       </mat-card>
@@ -87,7 +87,7 @@
   <div class="col-12">
     <mat-card class="cardWithShadow">
       <mat-card-content>
-        <mat-card-title>Asesor no encontrado.</mat-card-title>
+        <mat-card-title>{{ 'advisor.notFound' | translate }}</mat-card-title>
       </mat-card-content>
     </mat-card>
   </div>

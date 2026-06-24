@@ -6,7 +6,7 @@
           <mat-icon matSuffix class="d-none d-sm-flex">
             <i-tabler name="arrow-left" class="icon-18 d-flex m-0"></i-tabler>
           </mat-icon>
-          Volver
+          {{ 'common.back' | translate }}
         </button>
       </div>
     </div>
@@ -38,7 +38,7 @@
         <div class="col-md-8">
           <!-- Fecha programada -->
           <div class="m-b-20">
-            <h5 class="text-muted f-s-14 m-b-8">Fecha programada</h5>
+            <h5 class="text-muted f-s-14 m-b-8">{{ 'appointments.scheduledDate' | translate }}</h5>
             <p class="m-b-0 f-s-16">
               {{ formattedDate() }}, {{ startTime() }} - {{ endTime() }}
             </p>
@@ -46,7 +46,7 @@
 
           <!-- Link de videoconferencia -->
           <div class="m-b-20">
-            <h5 class="text-muted f-s-14 m-b-8">Link de la videoconferencia</h5>
+            <h5 class="text-muted f-s-14 m-b-8">{{ 'appointments.meetingLink' | translate }}</h5>
             <a [href]="meetingUrl()" target="_blank" class="text-primary f-s-16">
               {{ meetingUrl() }}
             </a>
@@ -54,7 +54,7 @@
 
           <!-- Comentario del usuario -->
           <div class="m-b-24">
-            <h5 class="text-muted f-s-14 m-b-8">Comentario brindado por el usuario</h5>
+            <h5 class="text-muted f-s-14 m-b-8">{{ 'appointments.userComment' | translate }}</h5>
             <p class="m-b-0 f-s-16">
               {{ message() }}
             </p>
@@ -66,7 +66,7 @@
               <mat-icon matSuffix class="d-none d-sm-flex">
                 <i-tabler name="x" class="icon-18 d-flex m-0"></i-tabler>
               </mat-icon>
-              Cancelar cita
+              {{ 'appointments.cancel' | translate }}
             </button>
           </div>
 

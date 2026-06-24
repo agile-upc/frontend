@@ -10,10 +10,12 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import { AvailableDate } from 'src/app/shared/model/available-date';
 import { AvailableDateService } from 'src/app/services/apps/appointment/available-date.service';
 import { TimeFormatPipe } from 'src/app/pipes/filter.pipe';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LocalizedDatePipe } from 'src/app/pipes/localized-date.pipe';
 
 @Component({
   selector: 'app-available-dates',
-  imports: [CommonModule, MaterialModule, TablerIconsModule, TimeFormatPipe],
+  imports: [CommonModule, MaterialModule, TablerIconsModule, TimeFormatPipe, LocalizedDatePipe, TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './available-dates.component.html',
   styleUrl: './available-dates.component.scss'
@@ -27,6 +29,7 @@ export class AvailableDatesComponent implements OnInit {
     private authService: AuthService,
     private dialog: MatDialog,
     private toastr: ToastrService,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit() {
@@ -59,7 +62,7 @@ export class AvailableDatesComponent implements OnInit {
   openDeleteDialog(availableDate: AvailableDate): void {
     const ref = this.dialog.open(AppDeleteDialogComponent, {
       width: '420px',
-      data: { id: availableDate.id, name: `${availableDate.scheduledDate}: ${availableDate.startTime} - ${availableDate.endTime}`, type: 'horario' },
+      data: { id: availableDate.id, name: `${availableDate.scheduledDate}: ${availableDate.startTime} - ${availableDate.endTime}`, type: this.translate.instant('availability.schedule') },
       autoFocus: false,
       restoreFocus: true,
       disableClose: true,
@@ -68,12 +71,12 @@ export class AvailableDatesComponent implements OnInit {
       if (!confirm) return;
       this.availableDateService.delete(availableDate.id).subscribe({
         next: () => {
-          this.toastr.success('Horario eliminado', 'Éxito');
+          this.toastr.success(this.translate.instant('availability.success.deleted'), this.translate.instant('common.success'));
           this.availableDates.set(this.availableDates().filter((ad) => ad.id !== availableDate.id));
         },
         error: (err) => {
           console.error('No se pudo eliminar el horario:', err);
-          this.toastr.error('No se pudo eliminar el horario', 'Error');
+          this.toastr.error(this.translate.instant('availability.error.delete'), this.translate.instant('common.error'));
         }
       });
     });
@@ -102,11 +105,11 @@ export class AvailableDatesComponent implements OnInit {
       this.availableDateService.create(availableDate).subscribe({
         next: (created) => {
           this.availableDates.set([created, ...this.availableDates()]);
-          this.toastr.success('Horario agregado', 'Éxito');
+          this.toastr.success(this.translate.instant('availability.success.created'), this.translate.instant('common.success'));
         },
         error: (err) => {
           console.error('No se pudo agregar el horario:', err);
-          this.toastr.error('No se pudo agregar el horario', 'Error');
+          this.toastr.error(this.translate.instant('availability.error.create'), this.translate.instant('common.error'));
         }
       });
     });

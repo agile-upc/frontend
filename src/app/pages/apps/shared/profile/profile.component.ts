@@ -8,6 +8,8 @@ import { Profile } from 'src/app/shared/model/profile';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SweetAlertService } from 'src/app/shared/services/sweet-alert.service';
 import { DateAdapter, MAT_DATE_FORMATS, NativeDateAdapter } from '@angular/material/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LocalizedDatePipe } from 'src/app/pipes/localized-date.pipe';
 
 // Adaptador para mostrar siempre yyyy-MM-dd en el input del datepicker
 export class YMDDateAdapter extends NativeDateAdapter {
@@ -32,7 +34,7 @@ export const YMD_DATE_FORMATS = {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, MaterialModule, TablerIconsModule, ReactiveFormsModule],
+  imports: [CommonModule, MaterialModule, TablerIconsModule, ReactiveFormsModule, TranslateModule, LocalizedDatePipe],
   templateUrl: './profile.component.html',
   providers: [
     { provide: DateAdapter, useClass: YMDDateAdapter },
@@ -60,7 +62,8 @@ export class AppProfileComponent implements OnInit {
     private profileService: ProfileService,
     private authService: AuthService,
     private fb: FormBuilder,
-    private alert: SweetAlertService
+    private alert: SweetAlertService,
+    private translate: TranslateService
   ) {
     this.form = this.fb.group({
       firstName: ['', Validators.required],
@@ -82,7 +85,7 @@ export class AppProfileComponent implements OnInit {
     const profileId = this.authService.user.profileId;
     if (profileId == null) {
       this.loading.set(false);
-      this.error.set('No se encontró el usuario');
+      this.error.set(this.translate.instant('profile.error.userNotFound'));
       return;
     }
     this.loadProfile();
@@ -98,7 +101,7 @@ export class AppProfileComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error cargando perfil:', err);
-        this.error.set('No se pudo cargar el perfil');
+        this.error.set(this.translate.instant('profile.error.load'));
         this.loading.set(false);
       }
     })
@@ -173,12 +176,12 @@ export class AppProfileComponent implements OnInit {
         this.profile.set(updated);
         this.patchForm(updated);
         this.editing.set(false);
-        this.alert.saved('Perfil actualizado correctamente');
+        this.alert.saved(this.translate.instant('profile.success.updated'));
         this.selectedPhotoFile = null; // limpiar selección tras guardar
       },
       error: (err) => {
         console.error('Error al actualizar perfil:', err);
-        this.alert.hasServerError('No se pudo actualizar el perfil');
+        this.alert.hasServerError(this.translate.instant('profile.error.update'));
       }
     })
   }

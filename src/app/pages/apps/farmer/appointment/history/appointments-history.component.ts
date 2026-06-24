@@ -5,8 +5,10 @@ import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TablerIconsModule } from 'angular-tabler-icons';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MaterialModule } from '../../../../../material.module';
 import { TimeFormatPipe } from '../../../../../pipes/filter.pipe';
+import { LocalizedDatePipe } from 'src/app/pipes/localized-date.pipe';
 import { ReviewDialogComponent } from 'src/app/shared/components/review-dialog/review-dialog.component';
 import { AppointmentDetailed, parseAppointmentDate } from '../appointment-detailed';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
@@ -15,7 +17,7 @@ import { AppointmentService } from 'src/app/services/apps/appointment/appointmen
   selector: 'app-appointments-history',
   standalone: true,
   templateUrl: './appointments-history.component.html',
-  imports: [CommonModule, FormsModule, RouterLink, MaterialModule, TablerIconsModule, TimeFormatPipe]
+  imports: [CommonModule, FormsModule, RouterLink, MaterialModule, TablerIconsModule, TimeFormatPipe, LocalizedDatePipe, TranslateModule]
 })
 export class AppAppointmentsHistoryComponent implements OnInit {
   private allHistory: AppointmentDetailed[] = [];
@@ -29,7 +31,8 @@ export class AppAppointmentsHistoryComponent implements OnInit {
 
   constructor(
     private appointmentService: AppointmentService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -47,7 +50,7 @@ export class AppAppointmentsHistoryComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.errorMessage = 'No se pudo cargar el historial de citas.';
+        this.errorMessage = this.translate.instant('appointments.error.loadHistory');
         this.loading = false;
       }
     });
@@ -86,7 +89,7 @@ export class AppAppointmentsHistoryComponent implements OnInit {
       data: {
         appointmentId: appointment.id,
         advisorId: appointment.availableDate.advisorId,
-        advisorName: appointment.advisorName || 'Asesor',
+        advisorName: appointment.advisorName || this.translate.instant('advisor.default'),
         advisorPhoto: appointment.advisorPhoto
       }
     });

@@ -8,10 +8,11 @@ import { MaterialModule } from '../../../material.module';
 import { CoreService } from 'src/app/services/core.service';
 import { User } from '../../../shared/model/user';
 import { AuthService } from '../../../shared/services/auth.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-side-login',
-  imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, BrandingComponent, TablerIconsModule],
+  imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, BrandingComponent, TablerIconsModule, TranslateModule],
   templateUrl: './side-login.component.html',
   styleUrls: ['./side-login.component.scss']
 })
@@ -24,7 +25,8 @@ export class AppSideLoginComponent {
     private settings: CoreService,
     private authService: AuthService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private translate: TranslateService
   ) {}
 
   form = new FormGroup({
@@ -49,7 +51,10 @@ export class AppSideLoginComponent {
         this.router.navigate(['']);
       },
       error: () => {
-        this.toastr.error('Usuario o contraseña incorrecta', 'Error de autenticación');
+        this.toastr.error(
+          this.translate.instant('auth.login.errorMessage'),
+          this.translate.instant('auth.login.errorTitle'),
+        );
       }
     });
   }

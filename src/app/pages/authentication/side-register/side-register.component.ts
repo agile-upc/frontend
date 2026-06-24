@@ -8,10 +8,11 @@ import { BrandingComponent } from '../../../layouts/full/vertical/sidebar/brandi
 import { MaterialModule } from '../../../material.module';
 import { CoreService } from 'src/app/services/core.service';
 import { AuthService } from '../../../shared/services/auth.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-side-register',
-  imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, BrandingComponent, NgIf, TablerIconsModule],
+  imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, BrandingComponent, NgIf, TablerIconsModule, TranslateModule],
   templateUrl: './side-register.component.html',
   styleUrls: ['./side-register.component.scss']
 })
@@ -22,9 +23,9 @@ export class AppSideRegisterComponent implements OnInit {
   imageName = '';
   hidePassword = true;
   readonly languageOptions = [
-    'Español',
-    'Quechua',
-    'Aymara',
+    { value: 'Español', labelKey: 'language.spanish' },
+    { value: 'Quechua', labelKey: 'language.quechua' },
+    { value: 'Aymara', labelKey: 'language.aymara' },
   ];
 
   today = new Date();
@@ -38,7 +39,8 @@ export class AppSideRegisterComponent implements OnInit {
     private settings: CoreService,
     private authService: AuthService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private translate: TranslateService
   ) {}
 
   form = new FormGroup({
@@ -127,11 +129,11 @@ export class AppSideRegisterComponent implements OnInit {
     this.authService.signup(formData).subscribe({
       next: (session) => {
         this.authService.saveSession(session);
-        this.toastr.success('Usuario registrado con éxito', 'Registro exitoso');
+        this.toastr.success(this.translate.instant('auth.register.successMessage'), this.translate.instant('auth.register.successTitle'));
         this.router.navigate(['']);
       },
       error: () => {
-        this.toastr.error('Error al registrar el usuario', 'Error de registro');
+        this.toastr.error(this.translate.instant('auth.register.errorMessage'), this.translate.instant('auth.register.errorTitle'));
       }
     });
   }

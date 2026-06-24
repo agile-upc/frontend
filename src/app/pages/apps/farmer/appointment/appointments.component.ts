@@ -4,15 +4,17 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TablerIconsModule } from 'angular-tabler-icons';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MaterialModule } from 'src/app/material.module';
 import { TimeFormatPipe } from 'src/app/pipes/filter.pipe';
+import { LocalizedDatePipe } from 'src/app/pipes/localized-date.pipe';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
 import { AppointmentDetailed, parseAppointmentDate } from 'src/app/pages/apps/farmer/appointment/appointment-detailed';
 
 @Component({
   selector: 'app-appointments',
   templateUrl: './appointments.component.html',
-  imports: [CommonModule, FormsModule, TimeFormatPipe, RouterLink, MaterialModule, TablerIconsModule]
+  imports: [CommonModule, FormsModule, TimeFormatPipe, LocalizedDatePipe, RouterLink, MaterialModule, TablerIconsModule, TranslateModule]
 })
 export class AppAppointmentsComponent implements OnInit {
   private allAppointments: AppointmentDetailed[] = [];
@@ -26,7 +28,8 @@ export class AppAppointmentsComponent implements OnInit {
 
   constructor(
     private appointmentService: AppointmentService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   goToDetail(id: number) {
@@ -48,7 +51,7 @@ export class AppAppointmentsComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.errorMessage = 'No se pudieron cargar tus citas.';
+        this.errorMessage = this.translate.instant('appointments.error.load');
         this.loading = false;
       }
     });

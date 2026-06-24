@@ -5,35 +5,35 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="text-center m-b-24">
-              <img src="{{ advisor.photo }}" class="rounded-circle" width="150" alt="Foto del asesor"/>
+              <img src="{{ advisor.photo }}" class="rounded-circle" width="150" [alt]="'advisor.photoAlt' | translate"/>
             </div>
             <div class="text-center m-t-16">
-              <mat-card-title>Lugar de residencia</mat-card-title>
+              <mat-card-title>{{ 'advisor.residence' | translate }}</mat-card-title>
               <mat-card-subtitle class="f-s-14">{{ advisor.city }}, {{ advisor.country }}</mat-card-subtitle>
             </div>
             <div class="text-center m-t-16">
-              <mat-card-title>Edad</mat-card-title>
+              <mat-card-title>{{ 'advisor.age' | translate }}</mat-card-title>
               <mat-card-subtitle class="f-s-14">{{ calculateAge(advisor.birthDate) }}</mat-card-subtitle>
             </div>
             <div class="text-center m-t-16">
-              <mat-card-title>Profesión</mat-card-title>
-              <mat-card-subtitle class="f-s-14">{{ advisor.occupation || 'Asesor especializado' }}</mat-card-subtitle>
+              <mat-card-title>{{ 'advisor.profession' | translate }}</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ advisor.occupation || ('advisor.specialized' | translate) }}</mat-card-subtitle>
             </div>
             <div class="text-center m-t-16">
-              <mat-card-title>Años de experiencia</mat-card-title>
-              <mat-card-subtitle class="f-s-14">{{ advisor.experience }} años</mat-card-subtitle>
+              <mat-card-title>{{ 'advisor.experience' | translate }}</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ advisor.experience }} {{ 'common.years' | translate }}</mat-card-subtitle>
             </div>
             <div class="text-center m-t-16">
-              <mat-card-title>Calificación</mat-card-title>
-              <mat-card-subtitle class="f-s-14">{{ advisor.rating || 'Sin calificación' }}</mat-card-subtitle>
+              <mat-card-title>{{ 'reviews.rating' | translate }}</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ advisor.rating || ('reviews.noRating' | translate) }}</mat-card-subtitle>
             </div>
             <div class="text-center m-t-16">
               <mat-card-title>{{ 'advisor.languages' | translate }}</mat-card-title>
-              <mat-card-subtitle class="f-s-14">{{ advisor.spokenLanguages || 'Español' }}</mat-card-subtitle>
+              <mat-card-subtitle class="f-s-14">{{ advisor.spokenLanguages || ('language.spanish' | translate) }}</mat-card-subtitle>
             </div>
             <div class="text-center m-t-16">
-              <mat-card-title>Disponibilidad</mat-card-title>
-              <mat-card-subtitle class="f-s-14">{{ hasDates ? 'Horarios disponibles' : 'Sin horarios disponibles' }}</mat-card-subtitle>
+              <mat-card-title>{{ 'availability.title' | translate }}</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ hasDates ? ('availability.hasSlots' | translate) : ('availability.noSlots' | translate) }}</mat-card-subtitle>
             </div>
           </div>
         </div>
@@ -52,8 +52,8 @@
   <div class="col-md-8">
     <mat-card class="cardWithShadow">
       <mat-card-content>
-        <mat-card-title>Sobre {{ advisor.firstName }} {{ advisor.lastName }}</mat-card-title>
-        <p>{{ advisor.description || 'Este asesor aún no agregó una descripción.' }}</p>
+        <mat-card-title>{{ 'advisor.about' | translate }} {{ advisor.firstName }} {{ advisor.lastName }}</mat-card-title>
+        <p>{{ advisor.description || ('advisor.noDescription' | translate) }}</p>
       </mat-card-content>
     </mat-card>
     <app-review [advisorId]="advisor.advisorId"></app-review>
@@ -63,7 +63,7 @@
   <div class="col-12">
     <mat-card class="cardWithShadow">
       <mat-card-content>
-        <mat-card-title>Asesor no encontrado.</mat-card-title>
+        <mat-card-title>{{ 'advisor.notFound' | translate }}</mat-card-title>
       </mat-card-content>
     </mat-card>
   </div>

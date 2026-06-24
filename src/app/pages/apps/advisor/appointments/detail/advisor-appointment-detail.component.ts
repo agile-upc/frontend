@@ -8,13 +8,14 @@ import { MaterialModule } from 'src/app/material.module';
 import { AppDeleteDialogComponent } from 'src/app/shared/components/delete-dialog/delete-dialog.component';
 import { AppointmentDetailed, parseAppointmentDate } from '../../../farmer/appointment/appointment-detailed';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-advisor-appointment-detail',
   standalone: true,
   templateUrl: './advisor-appointment-detail.component.html',
   styleUrls: ['./advisor-appointment-detail.component.scss'],
-  imports: [CommonModule, FormsModule, MaterialModule, TablerIconsModule]
+  imports: [CommonModule, FormsModule, MaterialModule, TablerIconsModule, TranslateModule]
 })
 export class AdvisorAppointmentDetailComponent implements OnInit {
   appointmentId!: number;
@@ -35,7 +36,8 @@ export class AdvisorAppointmentDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private appointmentService: AppointmentService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -60,7 +62,7 @@ export class AdvisorAppointmentDetailComponent implements OnInit {
         this.formattedDate.set(this.formatDate(appointment.availableDate.scheduledDate));
         this.startTime.set(appointment.availableDate.startTime);
         this.endTime.set(appointment.availableDate.endTime);
-        this.farmerName.set(appointment.farmerName || `Productor #${appointment.farmerId}`);
+        this.farmerName.set(appointment.farmerName || this.translate.instant('farmer.withId', { id: appointment.farmerId }));
         this.farmerPhoto.set(appointment.farmerPhoto || 'assets/images/profile/user-1.jpg');
         this.loading.set(false);
       },
@@ -75,7 +77,12 @@ export class AdvisorAppointmentDetailComponent implements OnInit {
     if (!dateVal) return '';
     const date = parseAppointmentDate(dateVal);
     if (!date) return '';
-    return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+    return date.toLocaleDateString(this.currentLocale, { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  private get currentLocale(): string {
+    const lang = this.translate.currentLang || this.translate.defaultLang || 'es';
+    return ({ es: 'es-PE', qu: 'qu-PE', ay: 'ay-PE' } as Record<string, string>)[lang] ?? 'es-PE';
   }
 
   openCancelModal() {
@@ -87,8 +94,8 @@ export class AdvisorAppointmentDetailComponent implements OnInit {
       autoFocus: false,
       data: {
         id: appointment.id,
-        name: `cita con ${this.farmerName()}`,
-        type: 'cita'
+        name: this.translate.instant('appointments.with', { name: this.farmerName() }),
+        type: this.translate.instant('appointments.singular')
       }
     });
 
@@ -110,7 +117,7 @@ export class AdvisorAppointmentDetailComponent implements OnInit {
       },
       error: (err) => {
         this.cancelLoading.set(false);
-        this.errorMessage.set('Error al cancelar la cita. Por favor intenta nuevamente.');
+        this.errorMessage.set(this.translate.instant('appointments.error.cancel'));
         console.error('Error al cancelar cita:', err);
       }
     });

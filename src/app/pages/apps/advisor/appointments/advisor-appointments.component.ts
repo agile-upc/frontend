@@ -6,8 +6,10 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from '../../../../material.module';
 import { TimeFormatPipe } from 'src/app/pipes/filter.pipe';
+import { LocalizedDatePipe } from 'src/app/pipes/localized-date.pipe';
 import { AppointmentDetailed, parseAppointmentDate } from '../../farmer/appointment/appointment-detailed';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface EnrichedAppointment {
   id: number;
@@ -25,7 +27,7 @@ interface EnrichedAppointment {
   selector: 'app-advisor-appointments',
   standalone: true,
   templateUrl: './advisor-appointments.component.html',
-  imports: [CommonModule, FormsModule, MaterialModule, TablerIconsModule, RouterLink, TimeFormatPipe]
+  imports: [CommonModule, FormsModule, MaterialModule, TablerIconsModule, RouterLink, TimeFormatPipe, LocalizedDatePipe, TranslateModule]
 })
 export class AdvisorAppointmentsComponent implements OnInit {
   private allAppointments: EnrichedAppointment[] = [];
@@ -39,7 +41,8 @@ export class AdvisorAppointmentsComponent implements OnInit {
 
   constructor(
     private appointmentService: AppointmentService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -59,7 +62,7 @@ export class AdvisorAppointmentsComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => {
-        this.errorMessage.set('No se pudieron cargar tus citas.');
+        this.errorMessage.set(this.translate.instant('appointments.error.load'));
         this.loading.set(false);
       }
     });
@@ -118,7 +121,7 @@ export class AdvisorAppointmentsComponent implements OnInit {
     return {
       id: appointment.id,
       farmerId: appointment.farmerId,
-      farmerName: appointment.farmerName || `Productor #${appointment.farmerId}`,
+      farmerName: appointment.farmerName || this.translate.instant('farmer.withId', { id: appointment.farmerId }),
       farmerPhoto: appointment.farmerPhoto || 'assets/images/profile/user-1.jpg',
       date: appointment.availableDate.scheduledDate,
       startTime: appointment.availableDate.startTime,

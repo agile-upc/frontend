@@ -19,13 +19,23 @@
           <input
             matInput
             [matDatepicker]="picker"
-            placeholder="Selecciona una fecha"
+            [placeholder]="'catalog.datePlaceholder' | translate"
             [(ngModel)]="selectedDate"
             (dateChange)="onDateChange($event)"
           />
-          <mat-hint>DD/MM/YYYY</mat-hint>
+          <mat-hint>{{ 'catalog.dateHint' | translate }}</mat-hint>
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="filter-field filter-field-language">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'catalog.languageFilter' | translate }}</mat-label>
+          <mat-select [(ngModel)]="selectedLanguages" multiple (selectionChange)="onLanguagesChange()">
+            @for(language of languageOptions; track language.value) {
+              <mat-option [value]="language.value">{{ language.labelKey | translate }}</mat-option>
+            }
+          </mat-select>
         </mat-form-field>
       </div>
       <div class="filter-actions">
@@ -69,20 +79,20 @@
               src="{{ advisor.photo }}"
               class="rounded-circle border p-5"
               width="100"
-              alt="Foto del asesor"
+              [alt]="'advisor.photoAlt' | translate"
             />
             <div class="d-flex flex-col gap-20 m-t-16">
               <div>
                 <h4 mat-card-title>
                   {{ advisor.firstName }} {{ advisor.lastName }}
                 </h4>
-                <span class="f-s-12">{{ advisor.occupation || 'Asesor especializado' }}</span>
+                <span class="f-s-12">{{ advisor.occupation || ('advisor.specialized' | translate) }}</span>
               </div>
               <p class="f-s-13 m-0 text-muted">
-                {{ advisor.experience }} años de experiencia
+                {{ advisor.experience }} {{ 'advisor.yearsExperience' | translate }}
               </p>
               <p class="f-s-13 m-0 text-muted">
-                {{ 'advisor.languages' | translate }}: {{ advisor.spokenLanguages || 'Español' }}
+                {{ 'advisor.languages' | translate }}: {{ advisor.spokenLanguages || ('language.spanish' | translate) }}
               </p>
               <div class="d-flex gap-8 justify-content-center">
                 <button
@@ -90,7 +100,7 @@
                   class="text-white"
                   [routerLink]="['/apps/farmer/catalog/', advisor.advisorId]"
                 >
-                  Ver más
+                  {{ 'common.viewMore' | translate }}
                 </button>
               </div>
               <span class="f-s-14"> {{ advisor.city + ", " + advisor.country }}</span>
@@ -103,7 +113,7 @@
                 class="advisor-rating-link text-decoration-none f-s-14 f-w-500"
               >
                 <i-tabler name="star" class="icon-18 d-flex"></i-tabler>
-                {{ advisor.rating || 'Sin calificación' }}
+                {{ advisor.rating || ('reviews.noRating' | translate) }}
               </a>
           </div>
         </mat-card>
@@ -114,7 +124,7 @@
 
 <div class="chat-box" *ngIf="chatOpen">
   <div class="chat-header b-b-1">
-    <span>Chat con IA</span>
+    <span>{{ 'ai.chatTitle' | translate }}</span>
     <button mat-icon-button (click)="toggleChat()">
       <mat-icon>close</mat-icon>
     </button>
@@ -129,15 +139,15 @@
         <div class="recommend-item">
           <div class="recommend-name">{{ msg.selectedMatch.fullName }}</div>
           <div class="recommend-meta">
-            {{ msg.selectedMatch.occupation || 'Asesor' }}
+            {{ msg.selectedMatch.occupation || ('advisor.default' | translate) }}
             <span *ngIf="msg.selectedMatch.city || msg.selectedMatch.country"> - {{ msg.selectedMatch.city }}{{ msg.selectedMatch.city && msg.selectedMatch.country ? ', ' : '' }}{{ msg.selectedMatch.country }}</span>
           </div>
           <div class="recommend-meta">
-            Calificación {{ msg.selectedMatch.rating || 'sin calificación' }} - {{ msg.selectedMatch.experience }} años de experiencia
-            <span *ngIf="msg.selectedMatch.nextAvailableDate"> - Disponible desde {{ msg.selectedMatch.nextAvailableDate | date:'yyyy-MM-dd' }}</span>
+            {{ 'reviews.rating' | translate }} {{ msg.selectedMatch.rating || ('reviews.noRatingLower' | translate) }} - {{ msg.selectedMatch.experience }} {{ 'advisor.yearsExperience' | translate }}
+            <span *ngIf="msg.selectedMatch.nextAvailableDate"> - {{ 'availability.availableFrom' | translate }} {{ msg.selectedMatch.nextAvailableDate | localizedDate:'shortDate' }}</span>
           </div>
           <div class="recommend-meta">
-            {{ 'advisor.languages' | translate }}: {{ msg.selectedMatch.spokenLanguages || 'Español' }}
+            {{ 'advisor.languages' | translate }}: {{ msg.selectedMatch.spokenLanguages || ('language.spanish' | translate) }}
           </div>
           <div class="recommend-why">{{ msg.selectedMatch.why }}</div>
           <div class="recommend-actions">
@@ -146,7 +156,7 @@
               color="primary"
               (click)="goToAiRecommendation(msg)"
             >
-              Ver perfil
+              {{ 'advisor.viewProfile' | translate }}
             </button>
             <button
               *ngIf="msg.draftAppointmentMessage"
@@ -154,13 +164,13 @@
               color="primary"
               (click)="goToAiBooking(msg)"
             >
-              Ir a reservar
+              {{ 'booking.goToBooking' | translate }}
             </button>
           </div>
         </div>
       </div>
       <div *ngIf="msg.draftAppointmentMessage" class="draft-message">
-        <div class="draft-title">Mensaje de reserva sugerido</div>
+        <div class="draft-title">{{ 'ai.draftMessageTitle' | translate }}</div>
         <div>{{ msg.draftAppointmentMessage }}</div>
       </div>
       <div *ngIf="msg.fallbackNotice" class="fallback-note">
@@ -182,7 +192,7 @@
         rows="1"
         [disabled]="loading"
         [(ngModel)]="message"
-        placeholder="Describe la asesoría que necesitas"
+        [placeholder]="'ai.inputPlaceholder' | translate"
         (keydown.enter)="sendMessage()"
       ></textarea>
       <button

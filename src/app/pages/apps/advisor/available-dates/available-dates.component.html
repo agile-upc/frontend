@@ -2,15 +2,15 @@
   <mat-card-content>
     <div class="schedule-toolbar">
       <div>
-        <h2 class="m-0 f-s-20 f-w-600">Mis horarios</h2>
-        <p class="m-0 m-t-4 text-muted">Administra los espacios que los productores pueden reservar.</p>
+        <h2 class="m-0 f-s-20 f-w-600">{{ 'nav.mySchedule' | translate }}</h2>
+        <p class="m-0 m-t-4 text-muted">{{ 'availability.manageDescription' | translate }}</p>
       </div>
 
       <button mat-flat-button color="primary" class="schedule-add-button" (click)="openCreateDialog()">
         <mat-icon matSuffix class="d-none d-sm-flex">
           <i-tabler name="plus" class="icon-18 d-flex m-0"></i-tabler>
         </mat-icon>
-        Agregar horario
+        {{ 'availability.addSchedule' | translate }}
       </button>
     </div>
   </mat-card-content>
@@ -20,8 +20,8 @@
   <mat-card class="cardWithShadow">
     <mat-card-content class="text-center p-y-32">
       <i-tabler name="calendar-event" class="icon-48 text-dark m-b-16"></i-tabler>
-      <div class="f-s-16 text-dark">No tienes horarios disponibles publicados.</div>
-      <p class="f-s-14 text-muted m-t-8 m-b-0">Agrega tu primer horario para que los productores puedan reservar una asesoría.</p>
+      <div class="f-s-16 text-dark">{{ 'availability.emptyPublished' | translate }}</div>
+      <p class="f-s-14 text-muted m-t-8 m-b-0">{{ 'availability.emptyHint' | translate }}</p>
     </mat-card-content>
   </mat-card>
 }
@@ -32,13 +32,13 @@
         <mat-card-content>
           <div class="schedule-row">
             <div class="schedule-date">
-              <span class="schedule-day">{{ parseDate(availableDate.scheduledDate) | date: 'dd' }}</span>
-              <span class="schedule-month">{{ parseDate(availableDate.scheduledDate) | date: 'MMM' : undefined : 'es' }}</span>
+              <span class="schedule-day">{{ parseDate(availableDate.scheduledDate) | localizedDate:'day' }}</span>
+              <span class="schedule-month">{{ parseDate(availableDate.scheduledDate) | localizedDate:'shortMonth' }}</span>
             </div>
 
             <div class="schedule-main">
               <h3 class="m-0 f-s-16 f-w-600">
-                {{ parseDate(availableDate.scheduledDate) | date: "EEEE, d 'de' MMMM" : undefined : 'es' }}
+                {{ parseDate(availableDate.scheduledDate) | localizedDate:'weekdayMonth' }}
               </h3>
               <p class="m-0 m-t-4 f-s-14 text-muted">
                 {{ availableDate.startTime | timeFormat }} - {{ availableDate.endTime | timeFormat }}
@@ -47,7 +47,7 @@
 
             <button mat-stroked-button color="warn" class="schedule-delete" (click)="openDeleteDialog(availableDate)">
               <i-tabler name="trash" class="icon-18 d-flex"></i-tabler>
-              Eliminar
+              {{ 'common.delete' | translate }}
             </button>
           </div>
         </mat-card-content>

@@ -2,41 +2,41 @@ import { NavItem } from './nav-item/nav-item';
 
 export const navItemsAdvisor: NavItem[] = [
   {
-    navCap: 'Citas',
+    navCap: 'nav.appointments',
   },
   {
-    displayName: 'Mis citas',
+    displayName: 'nav.myAppointments',
     iconName: 'calendar',
     route: '/apps/advisor/appointments',
   },
   {
-    displayName: 'Calendario',
+    displayName: 'nav.calendar',
     iconName: 'calendar-month',
     route: '/apps/advisor/calendar',
   },
   {
-    displayName: 'Mis horarios',
+    displayName: 'nav.mySchedule',
     iconName: 'calendar-event',
     route: '/apps/advisor/available-dates',
   },
   {
-    navCap: 'Publicaciones',
+    navCap: 'nav.posts',
   },
   {
-    displayName: 'Mis publicaciones',
+    displayName: 'nav.myPosts',
     iconName: 'news',
     route: '/apps/advisor/posts',
   },
   {
-    navCap: 'Perfil',
+    navCap: 'nav.profile',
   },
   {
-    displayName: 'Mi perfil',
+    displayName: 'nav.profile',
     iconName: 'user-circle',
     route: '/apps/profile',
   },
   {
-    displayName: 'Mis notificaciones',
+    displayName: 'nav.myNotifications',
     iconName: 'notification',
     route: '/apps/notifications',
   }

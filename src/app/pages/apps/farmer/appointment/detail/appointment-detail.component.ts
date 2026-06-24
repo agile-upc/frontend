@@ -8,11 +8,12 @@ import { MaterialModule } from 'src/app/material.module';
 import { AppDeleteDialogComponent } from 'src/app/shared/components/delete-dialog/delete-dialog.component';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
 import { AppointmentDetailed, parseAppointmentDate } from 'src/app/pages/apps/farmer/appointment/appointment-detailed';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-appointment-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, MaterialModule, TablerIconsModule],
+  imports: [CommonModule, FormsModule, MaterialModule, TablerIconsModule, TranslateModule],
   templateUrl: './appointment-detail.component.html',
   styleUrls: ['./appointment-detail.component.scss']
 })
@@ -29,7 +30,8 @@ export class AppointmentDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private appointmentService: AppointmentService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -58,7 +60,12 @@ export class AppointmentDetailComponent implements OnInit {
     if (!dateVal) return '';
     const date = parseAppointmentDate(dateVal);
     if (!date) return '';
-    return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+    return date.toLocaleDateString(this.currentLocale, { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  private get currentLocale(): string {
+    const lang = this.translate.currentLang || this.translate.defaultLang || 'es';
+    return ({ es: 'es-PE', qu: 'qu-PE', ay: 'ay-PE' } as Record<string, string>)[lang] ?? 'es-PE';
   }
 
   formatTime(start?: string, end?: string): string {
@@ -77,8 +84,8 @@ export class AppointmentDetailComponent implements OnInit {
       autoFocus: false,
       data: {
         id: this.appointment.id,
-        name: `cita con ${this.appointment.advisorName}`,
-        type: 'cita'
+        name: this.translate.instant('appointments.with', { name: this.appointment.advisorName }),
+        type: this.translate.instant('appointments.singular')
       }
     });
 
@@ -100,7 +107,7 @@ export class AppointmentDetailComponent implements OnInit {
       },
       error: () => {
         this.cancelLoading = false;
-        this.errorMessage = 'No se pudo cancelar la cita. Intenta de nuevo.';
+        this.errorMessage = this.translate.instant('appointments.error.cancel');
       }
     });
   }

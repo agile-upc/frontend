@@ -27,7 +27,7 @@
   <button
     mat-button
     [matMenuTriggerFor]="languageMenu"
-    aria-label="Cambiar idioma"
+    [attr.aria-label]="'language.change' | translate"
     class="m-x-5"
   >
     {{ selectedLanguage.shortLabel }}
@@ -56,7 +56,7 @@
   <button
     mat-icon-button
     [matMenuTriggerFor]="notificationmenu"
-    aria-label="Notifications" class="m-x-5"
+    [attr.aria-label]="'common.notifications' | translate" class="m-x-5"
   >
     <i-tabler
       class="d-flex"
@@ -67,7 +67,7 @@
   </button>
   <mat-menu #notificationmenu="matMenu" class="topbar-dd cardWithShadow">
     <div class="d-flex align-items-center p-x-32 p-y-16">
-      <h6 class="f-s-16 f-w-600 m-0 ">Notificaciones</h6>
+      <h6 class="f-s-16 f-w-600 m-0 ">{{ 'common.notifications' | translate }}</h6>
     </div>
 
     @for(notification of notifications.slice(0, 6); track notification.id) {
@@ -85,7 +85,7 @@
     @if(notifications.length==0){
       <div class="p-x-32 p-y-16">
         <h5 class="f-s-14 f-w-600 m-0 ">
-          No hay notificaciones
+          {{ 'notifications.empty' | translate }}
         </h5>
       </div>
     }
@@ -93,7 +93,7 @@
       <button
         [routerLink]="['/apps/notifications']"
         mat-stroked-button
-        color="primary">Ver notificaciones</button>
+        color="primary">{{ 'notifications.view' | translate }}</button>
     </div>
   </mat-menu>
 
@@ -103,20 +103,20 @@
   <button
     mat-icon-button
     [matMenuTriggerFor]="profilemenu"
-    aria-label="Notifications" class="m-l-8"
+    [attr.aria-label]="'profile.userProfile' | translate" class="m-l-8"
   >
     <img
       [src]="photo || fallbackPhoto"
       (error)="useFallbackPhoto($event)"
       class="rounded-circle object-cover icon-35 profile-dd"
       width="35"
-      alt="Foto de perfil"
+      [alt]="'profile.photo' | translate"
     />
   </button>
   <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">
     <ng-scrollbar class="position-relative" style="height: 400px">
       <div class="p-x-32 p-y-16">
-        <h6 class="f-s-16 f-w-600 m-0 ">Perfil de usuario</h6>
+        <h6 class="f-s-16 f-w-600 m-0 ">{{ 'profile.userProfile' | translate }}</h6>
 
         <div class="d-flex align-items-center p-b-24 b-b-1 m-t-16">
           <img
@@ -125,11 +125,11 @@
             class="rounded-circle object-cover"
             width="95"
             height="95"
-            alt="Foto de perfil"
+            [alt]="'profile.photo' | translate"
           />
           <div class="m-l-16">
             <h6 class="f-s-14 f-w-600 m-0 ">{{ username }}</h6>
-            <span class="f-s-14 d-block m-b-4">{{ role }}</span>
+            <span class="f-s-14 d-block m-b-4">{{ role | translate }}</span>
           </div>
         </div>
       </div>
@@ -151,9 +151,9 @@
               <h5
                 class="f-s-14 f-w-600 m-0 textprimary  hover-text"
               >
-                {{ profile.title }}
+                {{ profile.title | translate }}
               </h5>
-              <span class="f-s-14 text-body">{{ profile.subtitle }}</span>
+              <span class="f-s-14 text-body">{{ profile.subtitle | translate }}</span>
             </div>
           </div>
         </a>
@@ -166,7 +166,7 @@
           mat-stroked-button
           color="primary"
           class="w-100"
-          >Cerrar sesión</a
+          >{{ 'auth.logout' | translate }}</a
         >
       </div>
     </ng-scrollbar>

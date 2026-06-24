@@ -2,7 +2,7 @@
   @if (dataSource.data.length === 0) {
     <mat-card-content class="text-center p-y-32">
       <i-tabler name="bell-off" class="icon-48 text-dark m-b-16"></i-tabler>
-      <div class="f-s-16 text-dark">No hay notificaciones disponibles.</div>
+      <div class="f-s-16 text-dark">{{ 'notifications.emptyAvailable' | translate }}</div>
     </mat-card-content>
   } @else {
     <mat-card-content>
@@ -16,25 +16,25 @@
 
           <!-- Name Column -->
           <ng-container matColumnDef="title">
-            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600" mat-sort-header>Título</th>
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600" mat-sort-header>{{ 'notifications.title' | translate }}</th>
             <td mat-cell class="f-s-14" *matCellDef="let row">{{ row.title }}</td>
           </ng-container>
 
           <!-- Capacity Column -->
           <ng-container matColumnDef="message">
-            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600" mat-sort-header>Mensaje</th>
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600" mat-sort-header>{{ 'notifications.message' | translate }}</th>
             <td mat-cell class="f-s-14" *matCellDef="let row">{{ row.message }}</td>
           </ng-container>
 
           <!-- Type Column -->
           <ng-container matColumnDef="sendAt">
-            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600" mat-sort-header>Fecha de envio</th>
-            <td mat-cell class="f-s-14" *matCellDef="let row">{{ row.sendAt | date:'dd/MM/yyyy, HH:mm' }}</td>
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600" mat-sort-header>{{ 'notifications.sentAt' | translate }}</th>
+            <td mat-cell class="f-s-14" *matCellDef="let row">{{ row.sendAt | localizedDate:'shortDateTime' }}</td>
           </ng-container>
 
           <!-- Actions Column -->
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">Acciones</th>
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'common.actions' | translate }}</th>
             <td mat-cell *matCellDef="let row" class="action-link f-s-14 text-center">
               <a
                 (click)="onDelete(row)"

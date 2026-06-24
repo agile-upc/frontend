@@ -6,7 +6,7 @@
           <mat-icon matSuffix class="d-none d-sm-flex">
             <i-tabler name="plus" class="icon-18 d-flex m-0"></i-tabler>
           </mat-icon>
-          Agregar publicación
+          {{ 'posts.add' | translate }}
         </button>
       </div>
     </div>
@@ -17,7 +17,7 @@
   <mat-card class="cardWithShadow">
     <mat-card-content class="text-center p-y-32">
       <i-tabler name="file-search" class="icon-48 text-dark m-b-16"></i-tabler>
-      <div class="f-s-16 text-dark">No tienes publicaciones.</div>
+      <div class="f-s-16 text-dark">{{ 'posts.emptyOwn' | translate }}</div>
     </mat-card-content>
   </mat-card>
 }
@@ -35,8 +35,8 @@
         <mat-card-content>
           <p>{{ post.description }}</p>
           <div class="button-container">
-            <button mat-flat-button color="primary" class="edit-button" (click)="editPost(post.id)">Editar</button>
-            <button mat-button color="warn" class="delete-button" (click)="deletePost(post.id)">Eliminar</button>
+            <button mat-flat-button color="primary" class="edit-button" (click)="editPost(post.id)">{{ 'common.edit' | translate }}</button>
+            <button mat-button color="warn" class="delete-button" (click)="deletePost(post.id)">{{ 'common.delete' | translate }}</button>
           </div>
         </mat-card-content>
       </mat-card>

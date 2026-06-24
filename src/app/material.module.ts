@@ -87,7 +87,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   providers: [
     provideNativeDateAdapter(),
-    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
+    { provide: MAT_DATE_LOCALE, useValue: 'es-PE' }
   ]
 })
 export class MaterialModule {}

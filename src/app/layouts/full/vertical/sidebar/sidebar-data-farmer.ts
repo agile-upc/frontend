@@ -2,46 +2,46 @@ import { NavItem } from './nav-item/nav-item';
 
 export const navItemsFarmer: NavItem[] = [
   {
-    navCap: 'Citas',
+    navCap: 'nav.appointments',
   },
   {
-    displayName: 'Guía rápida',
+    displayName: 'nav.quickGuide',
     iconName: 'help-circle',
     route: '/apps/farmer/tutorial',
   },
   {
-    displayName: 'Catálogo',
+    displayName: 'nav.catalog',
     iconName: 'aperture',
     route: '/apps/farmer/catalog',
   },
   {
-    displayName: 'Mis citas',
+    displayName: 'nav.myAppointments',
     iconName: 'calendar',
     route: '/apps/farmer/appointments',
   },
   {
-    displayName: 'Calendario',
+    displayName: 'nav.calendar',
     iconName: 'calendar-month',
     route: '/apps/farmer/calendar',
   },
   {
-    navCap: 'Publicaciones',
+    navCap: 'nav.posts',
   },
   {
-    displayName: 'Publicaciones',
+    displayName: 'nav.posts',
     iconName: 'news',
     route: '/apps/farmer/posts',
   },
   {
-    navCap: 'Perfil',
+    navCap: 'nav.profile',
   },
   {
-    displayName: 'Mi perfil',
+    displayName: 'nav.profile',
     iconName: 'user-circle',
     route: '/apps/profile',
   },
   {
-    displayName: 'Mis notificaciones',
+    displayName: 'nav.myNotifications',
     iconName: 'notification',
     route: '/apps/notifications',
   }

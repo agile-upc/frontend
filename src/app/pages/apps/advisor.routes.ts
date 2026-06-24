@@ -17,9 +17,9 @@ export const AdvisorRoutes: Routes = [
         path: 'appointments',
         component: AdvisorAppointmentsComponent,
         data: {
-          title: 'Mis citas',
+          title: 'nav.myAppointments',
           urls: [
-            { title: 'Citas', url: '/apps/advisor/appointments' },
+            { title: 'nav.appointments', url: '/apps/advisor/appointments' },
           ],
         }
       },
@@ -27,9 +27,9 @@ export const AdvisorRoutes: Routes = [
         path: 'calendar',
         component: AdvisoryCalendarComponent,
         data: {
-          title: 'Calendario de asesorías',
+          title: 'nav.advisoryCalendar',
           urls: [
-            { title: 'Calendario', url: '/apps/advisor/calendar' },
+            { title: 'nav.calendar', url: '/apps/advisor/calendar' },
           ],
         }
       },
@@ -37,10 +37,10 @@ export const AdvisorRoutes: Routes = [
         path: 'appointments/history',
         component: AdvisorHistoryComponent,
         data: {
-          title: 'Historial de citas',
+          title: 'appointments.history',
           urls: [
-            { title: 'Citas', url: '/apps/advisor/appointments' },
-            { title: 'Historial' },
+            { title: 'nav.appointments', url: '/apps/advisor/appointments' },
+            { title: 'appointments.historyShort' },
           ],
         }
       },
@@ -48,10 +48,10 @@ export const AdvisorRoutes: Routes = [
         path: 'appointments/:id',
         component: AdvisorAppointmentDetailComponent,
         data: {
-          title: 'Detalle de cita',
+          title: 'appointments.detail',
           urls: [
-            { title: 'Citas', url: '/apps/advisor/appointments' },
-            { title: 'Detalle' },
+            { title: 'nav.appointments', url: '/apps/advisor/appointments' },
+            { title: 'common.detail' },
           ],
         }
       },
@@ -59,9 +59,9 @@ export const AdvisorRoutes: Routes = [
         path: 'posts',
         component: AdvisorPostsComponent,
         data: {
-          title: 'Mis publicaciones',
+          title: 'nav.myPosts',
           urls: [
-            { title: 'Publicaciones',  url: '/apps/advisor/posts' },
+            { title: 'nav.posts',  url: '/apps/advisor/posts' },
           ]
         }
       },
@@ -69,9 +69,9 @@ export const AdvisorRoutes: Routes = [
         path: 'posts/create',
         component: CreatePostComponent,
         data: {
-          title: 'Crear nueva publicación',
+          title: 'posts.createNew',
           urls: [
-            { title: 'Crear publicación', url: '/apps/advisor/posts' }
+            { title: 'posts.create', url: '/apps/advisor/posts' }
           ],
         }
       },
@@ -79,9 +79,9 @@ export const AdvisorRoutes: Routes = [
         path: 'posts/:id',
         component: EditPostComponent,
         data: {
-          title: 'Detalle de publicación',
+          title: 'posts.detail',
           urls: [
-            { title: 'Editar publicación', url: '/apps/advisor/posts' },
+            { title: 'posts.edit', url: '/apps/advisor/posts' },
           ],
         }
       },
@@ -89,9 +89,9 @@ export const AdvisorRoutes: Routes = [
         path: 'available-dates',
         component: AvailableDatesComponent,
         data: {
-          title: 'Mis horarios',
+          title: 'nav.mySchedule',
           urls: [
-            { title: 'Horarios disponibles', url: '/apps/advisor/available-dates' },
+            { title: 'availability.availableSlots', url: '/apps/advisor/available-dates' },
           ]
         }
       },

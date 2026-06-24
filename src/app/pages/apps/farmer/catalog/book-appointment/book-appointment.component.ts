@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
@@ -21,7 +22,7 @@ interface ExistingAppointmentRange {
 
 @Component({
   selector: 'app-advisor-page',
-  imports: [MaterialModule, TablerIconsModule, NgIf, RouterLink, FormsModule, ReactiveFormsModule],
+  imports: [MaterialModule, TablerIconsModule, NgIf, RouterLink, FormsModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './book-appointment.component.html'
 })
 export class AppBookAppointmentComponent implements OnInit {
@@ -36,7 +37,8 @@ export class AppBookAppointmentComponent implements OnInit {
     public advisorService: AdvisorService,
     public availableDateService: AvailableDateService,
     public appointmentService: AppointmentService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -105,7 +107,17 @@ export class AppBookAppointmentComponent implements OnInit {
   }
 
   protected formatAvailableDate(scheduledDate: string, startTime: string, endTime: string): string {
-    return `${moment(scheduledDate, 'YYYY-MM-DD').format('DD MMM YYYY')}, ${startTime} - ${endTime}`;
+    const date = moment(scheduledDate, 'YYYY-MM-DD').toDate();
+    return `${new Intl.DateTimeFormat(this.currentLocale, {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    }).format(date)}, ${startTime} - ${endTime}`;
+  }
+
+  private get currentLocale(): string {
+    const lang = this.translate.currentLang || this.translate.defaultLang || 'es';
+    return ({ es: 'es-PE', qu: 'qu-PE', ay: 'ay-PE' } as Record<string, string>)[lang] ?? 'es-PE';
   }
 
   protected onDateChange(): void {
@@ -159,9 +171,9 @@ export class AppBookAppointmentComponent implements OnInit {
   private updateConflictMessage(): void {
     const selectedDate = this.selectedAvailableDate();
     if (selectedDate && this.isDateConflicting(selectedDate)) {
-      this.conflictMessage = 'Ya tienes una asesoría reservada en ese rango horario. Elige otro horario.';
+      this.conflictMessage = this.translate.instant('booking.conflict.range');
       return;
-      this.conflictMessage = 'Ya tienes una asesoría reservada para este día. Elige una fecha diferente.';
+      this.conflictMessage = this.translate.instant('booking.conflict.day');
       return;
     }
 
@@ -176,7 +188,7 @@ export class AppBookAppointmentComponent implements OnInit {
     }
 
     if (this.conflictMessage) {
-      this.toastr.warning(this.conflictMessage, 'Horario no disponible');
+      this.toastr.warning(this.conflictMessage, this.translate.instant('booking.warning.unavailableSchedule'));
       return;
     }
 
@@ -186,18 +198,18 @@ export class AppBookAppointmentComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.availableDateService.clearCache();
-        this.toastr.success('Cita reservada con éxito.', 'Éxito');
+        this.toastr.success(this.translate.instant('booking.success.created'), this.translate.instant('common.success'));
         this.router.navigate(['apps/farmer/catalog']);
       },
       error: (err) => {
         if (err?.status === 409) {
-          this.toastr.warning('Ya tienes una asesoría reservada en ese rango horario. Elige otro horario.', 'Horario no disponible');
+          this.toastr.warning(this.translate.instant('booking.conflict.range'), this.translate.instant('booking.warning.unavailableSchedule'));
           return;
-          this.toastr.warning('Ya tienes una asesoría reservada para ese día. Elige una fecha diferente.', 'Horario no disponible');
+          this.toastr.warning(this.translate.instant('booking.conflict.day'), this.translate.instant('booking.warning.unavailableSchedule'));
           return;
         }
 
-        this.toastr.error('Error al reservar la cita. Por favor, inténtelo de nuevo más tarde.', 'Error');
+        this.toastr.error(this.translate.instant('booking.error.create'), this.translate.instant('common.error'));
       }
     });
   }

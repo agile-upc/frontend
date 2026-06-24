@@ -9,32 +9,32 @@
       <div class="p-32 d-flex align-items-start align-items-lg-center justify-content-center h-100">
         <div class="row justify-content-center w-100">
           <div class="col-lg-9 max-width-form">
-            <h4 class="f-w-700 f-s-24 m-0">Bienvenido a AgroTech</h4>
+            <h4 class="f-w-700 f-s-24 m-0">{{ 'auth.register.welcome' | translate }}</h4>
 
             <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">
-              <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Correo electrónico</mat-label>
+              <mat-label class="f-s-14 f-w-600 m-b-12 d-block">{{ 'auth.email' | translate }}</mat-label>
               <mat-form-field appearance="outline" class="w-100" color="primary">
                 <input matInput formControlName="uname" />
                 @if(f['uname'].touched && f['uname'].invalid) {
                   <mat-hint class="m-b-16 error-msg">
                     @if(f['uname'].errors && f['uname'].errors['required']) {
-                          <div class="text-error">El correo electrónico es obligatorio.</div>
+                          <div class="text-error">{{ 'auth.validation.emailRequired' | translate }}</div>
                     }
                     @if(f['uname'].errors && f['uname'].errors['email']) {
-                      <div class="text-error">Debe ser un correo electrónico válido.</div>
+                      <div class="text-error">{{ 'auth.validation.emailInvalid' | translate }}</div>
                     }
                   </mat-hint>
                 }
               </mat-form-field>
 
-              <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Contraseña</mat-label>
+              <mat-label class="f-s-14 f-w-600 m-b-12 d-block">{{ 'auth.password' | translate }}</mat-label>
               <mat-form-field appearance="outline" class="w-100" color="primary">
                 <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" />
                 <button
                   mat-icon-button
                   matSuffix
                   type="button"
-                  [attr.aria-label]="hidePassword ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+                  [attr.aria-label]="hidePassword ? ('auth.password.show' | translate) : ('auth.password.hide' | translate)"
                   (click)="hidePassword = !hidePassword"
                 >
                   <i-tabler [name]="hidePassword ? 'eye' : 'eye-off'" class="icon-20 d-flex"></i-tabler>
@@ -42,40 +42,40 @@
                 @if(f['password'].touched && f['password'].invalid) {
                   <mat-hint class="m-b-16 error-msg">
                     @if(f['password'].errors && f['password'].errors['required']) {
-                      <div class="text-error">La contraseña es obligatoria.</div>
+                      <div class="text-error">{{ 'auth.validation.passwordRequired' | translate }}</div>
                     }
                   </mat-hint>
                 }
               </mat-form-field>
 
-              <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Rol</mat-label>
+              <mat-label class="f-s-14 f-w-600 m-b-12 d-block">{{ 'auth.role' | translate }}</mat-label>
               <mat-button-toggle-group formControlName="role" style="margin-bottom: 10px;">
-                <mat-button-toggle value="FARMER">Productor agrícola</mat-button-toggle>
-                <mat-button-toggle value="ADVISOR">Asesor especializado</mat-button-toggle>
+                <mat-button-toggle value="FARMER">{{ 'role.farmer' | translate }}</mat-button-toggle>
+                <mat-button-toggle value="ADVISOR">{{ 'role.advisor' | translate }}</mat-button-toggle>
               </mat-button-toggle-group>
 
               <div class="row">
                 <div class="col-md-6">
-                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Nombre</mat-label>
+                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">{{ 'profile.firstName' | translate }}</mat-label>
                   <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput formControlName="firstName" />
                     @if(f['firstName'].touched && f['firstName'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['firstName'].errors && f['firstName'].errors['required']) {
-                          <div class="text-error">El nombre es obligatorio.</div>
+                          <div class="text-error">{{ 'profile.validation.firstNameRequired' | translate }}</div>
                         }
                       </mat-hint>
                     }
                   </mat-form-field>
                 </div>
                 <div class="col-md-6">
-                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Apellido</mat-label>
+                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">{{ 'profile.lastName' | translate }}</mat-label>
                   <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput formControlName="lastName" />
                     @if(f['lastName'].touched && f['lastName'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['lastName'].errors && f['lastName'].errors['required']) {
-                          <div class="text-error">El apellido es obligatorio.</div>
+                          <div class="text-error">{{ 'profile.validation.lastNameRequired' | translate }}</div>
                         }
                       </mat-hint>
                     }
@@ -85,26 +85,26 @@
 
               <div class="row">
                 <div class="col-md-6">
-                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Ciudad</mat-label>
+                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">{{ 'profile.city' | translate }}</mat-label>
                   <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput formControlName="city" />
                     @if(f['city'].touched && f['city'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['city'].errors && f['city'].errors['required']) {
-                          <div class="text-error">La ciudad es obligatoria.</div>
+                          <div class="text-error">{{ 'profile.validation.cityRequired' | translate }}</div>
                         }
                       </mat-hint>
                     }
                   </mat-form-field>
                 </div>
                 <div class="col-md-6">
-                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">País</mat-label>
+                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">{{ 'profile.country' | translate }}</mat-label>
                   <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput formControlName="country" />
                     @if(f['country'].touched && f['country'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['country'].errors && f['country'].errors['required']) {
-                          <div class="text-error">El país es obligatorio.</div>
+                          <div class="text-error">{{ 'profile.validation.countryRequired' | translate }}</div>
                         }
                       </mat-hint>
                     }
@@ -114,7 +114,7 @@
 
               <div class="row">
                 <div class="col-md-6">
-                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Fecha de nacimiento</mat-label>
+                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">{{ 'profile.birthDate' | translate }}</mat-label>
                   <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput [matDatepicker]="picker" formControlName="birthDate" [max]="maxBirthDate" readonly />
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -122,14 +122,14 @@
                     @if(f['birthDate'].touched && f['birthDate'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['birthDate'].errors && f['birthDate'].errors['required']) {
-                          <div class="text-error">La fecha es obligatoria.</div>
+                          <div class="text-error">{{ 'profile.validation.birthDateRequired' | translate }}</div>
                         }
                       </mat-hint>
                     }
                   </mat-form-field>
                 </div>
                 <div class="col-md-6">
-                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Foto de perfil</mat-label>
+                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">{{ 'profile.photo' | translate }}</mat-label>
                   <div class="d-flex align-items-center">
                     <span class="upload-btn" (click)="fileInput.click()">
                       <mat-icon matSuffix>
@@ -143,10 +143,10 @@
                           class="rounded-circle object-cover profile-dd"
                           width="100"
                           height="100"
-                          alt="Foto seleccionada"
+                          [alt]="'profile.selectedPhoto' | translate"
                         />
                       } @else {
-                        Subir foto
+                        {{ 'profile.uploadPhoto' | translate }}
                       }
                     </span>
                     <input #fileInput type="file" accept="image/*" style="display: none" (change)="onFileSelected($event)" />
@@ -154,46 +154,46 @@
                 </div>
               </div>
 
-              <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Descripción</mat-label>
+              <mat-label class="f-s-14 f-w-600 m-b-12 d-block">{{ 'profile.description' | translate }}</mat-label>
               <mat-form-field appearance="outline" class="w-100" color="primary">
                 <textarea matInput formControlName="description"></textarea>
               </mat-form-field>
 
               <div class="row" *ngIf="isAdvisor()">
                 <div class="col-md-6">
-                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Ocupación</mat-label>
+                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">{{ 'advisor.profession' | translate }}</mat-label>
                   <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput formControlName="occupation" />
                     @if(f['occupation'].touched && f['occupation'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['occupation'].errors && f['occupation'].errors['required']) {
-                          <div class="text-error">La ocupación es obligatoria.</div>
+                          <div class="text-error">{{ 'profile.validation.occupationRequired' | translate }}</div>
                         }
                       </mat-hint>
                     }
                   </mat-form-field>
                 </div>
                 <div class="col-md-6">
-                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Experiencia</mat-label>
+                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">{{ 'advisor.experience' | translate }}</mat-label>
                   <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput type="number" formControlName="experience" [min]="1" />
                     @if(f['experience'].touched && f['experience'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['experience'].errors && f['experience'].errors['required']) {
-                          <div class="text-error">La experiencia es obligatoria.</div>
+                          <div class="text-error">{{ 'profile.validation.experienceRequired' | translate }}</div>
                         } @else if (f['experience'].errors && f['experience'].errors['min']) {
-                          <div class="text-error">La experiencia debe ser de al menos 1 año.</div>
+                          <div class="text-error">{{ 'profile.validation.experienceMin' | translate }}</div>
                         }
                       </mat-hint>
                     }
                   </mat-form-field>
                 </div>
                 <div class="col-12">
-                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Idiomas de atención</mat-label>
+                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">{{ 'advisor.languages' | translate }}</mat-label>
                   <mat-form-field appearance="outline" class="w-100" color="primary">
                     <mat-select formControlName="spokenLanguages" multiple>
-                      @for(language of languageOptions; track language) {
-                        <mat-option [value]="language">{{ language }}</mat-option>
+                      @for(language of languageOptions; track language.value) {
+                        <mat-option [value]="language.value">{{ language.labelKey | translate }}</mat-option>
                       }
                     </mat-select>
                   </mat-form-field>
@@ -201,16 +201,16 @@
               </div>
 
               <button mat-flat-button color="primary" class="w-100 m-t-24" [disabled]="!form.valid">
-                Registrarse
+                {{ 'auth.register.submit' | translate }}
               </button>
             </form>
             <span class="d-block f-w-500 d-block m-t-24">
-              ¿Ya tienes una cuenta?
+              {{ 'auth.register.hasAccount' | translate }}
               <a
                 [routerLink]="['/authentication/login']"
                 class="text-decoration-none text-primary f-w-500 f-s-14"
               >
-                Inicia sesión
+                {{ 'landing.actions.login' | translate }}
               </a>
             </span>
           </div>

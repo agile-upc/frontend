@@ -20,42 +20,42 @@
                   <mat-icon matSuffix class="d-none d-sm-flex m-r-8">
                     <i-tabler name="photo" class="icon-18 d-flex m-0"></i-tabler>
                   </mat-icon>
-                  Cambiar foto
+                  {{ 'profile.changePhoto' | translate }}
                 </button>
                 <input #photoInput id="photoInput" type="file" accept="image/*" class="d-none" (change)="onPhotoSelected($event)" />
               </div>
 
               <div class="col-sm-6">
-                <span class="text-secondary f-s-12">Nombre</span>
+                <span class="text-secondary f-s-12">{{ 'profile.firstName' | translate }}</span>
                 <div *ngIf="!editing()" class="f-w-600">{{ profile()?.firstName }}</div>
                 <mat-form-field *ngIf="editing()" appearance="outline" class="w-100">
                   <input matInput formControlName="firstName" />
                 </mat-form-field>
               </div>
               <div class="col-sm-6">
-                <span class="text-secondary f-s-12">Apellido</span>
+                <span class="text-secondary f-s-12">{{ 'profile.lastName' | translate }}</span>
                 <div *ngIf="!editing()" class="f-w-600">{{ profile()?.lastName }}</div>
                 <mat-form-field *ngIf="editing()" appearance="outline" class="w-100">
                   <input matInput formControlName="lastName" />
                 </mat-form-field>
               </div>
               <div class="col-sm-6">
-                <span class="text-secondary f-s-12">Ciudad</span>
+                <span class="text-secondary f-s-12">{{ 'profile.city' | translate }}</span>
                 <div *ngIf="!editing()" class="f-w-600">{{ profile()?.city }}</div>
                 <mat-form-field *ngIf="editing()" appearance="outline" class="w-100">
                   <input matInput formControlName="city" />
                 </mat-form-field>
               </div>
               <div class="col-sm-6">
-                <span class="text-secondary f-s-12">País</span>
+                <span class="text-secondary f-s-12">{{ 'profile.country' | translate }}</span>
                 <div *ngIf="!editing()" class="f-w-600">{{ profile()?.country }}</div>
                 <mat-form-field *ngIf="editing()" appearance="outline" class="w-100">
                   <input matInput formControlName="country" />
                 </mat-form-field>
               </div>
               <div class="col-sm-6">
-                <span class="text-secondary f-s-12">Fecha de nacimiento</span>
-                <div *ngIf="!editing()" class="f-w-600">{{ profile()?.birthDate | date:'yyyy-MM-dd' }}</div>
+                <span class="text-secondary f-s-12">{{ 'profile.birthDate' | translate }}</span>
+                <div *ngIf="!editing()" class="f-w-600">{{ profile()?.birthDate | localizedDate:'shortDate' }}</div>
                 <mat-form-field *ngIf="editing()" appearance="outline" class="w-100">
                   <input matInput [matDatepicker]="picker" formControlName="birthDate" />
                   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -66,22 +66,22 @@
               <!-- Solo advisors -->
               <ng-container *ngIf="isAdvisor">
                 <div class="col-sm-6">
-                  <span class="text-secondary f-s-12">Experiencia</span>
-                  <div *ngIf="!editing()" class="f-w-600">{{ profile()?.experience }} años</div>
+                  <span class="text-secondary f-s-12">{{ 'advisor.experience' | translate }}</span>
+                  <div *ngIf="!editing()" class="f-w-600">{{ profile()?.experience }} {{ 'common.years' | translate }}</div>
                   <mat-form-field *ngIf="editing()" appearance="outline" class="w-100">
                     <input matInput type="number" formControlName="experience" />
                   </mat-form-field>
                 </div>
                 <div class="col-sm-6">
-                  <span class="text-secondary f-s-12">Ocupación</span>
+                  <span class="text-secondary f-s-12">{{ 'advisor.profession' | translate }}</span>
                   <div *ngIf="!editing()">{{ profile()?.occupation }}</div>
                   <mat-form-field *ngIf="editing()" appearance="outline" class="w-100">
                     <input matInput formControlName="occupation" />
                   </mat-form-field>
                 </div>
                 <div class="col-sm-6">
-                  <span class="text-secondary f-s-12">Idiomas de atención</span>
-                  <div *ngIf="!editing()">{{ profile()?.spokenLanguages || 'Español' }}</div>
+                  <span class="text-secondary f-s-12">{{ 'advisor.languages' | translate }}</span>
+                  <div *ngIf="!editing()">{{ profile()?.spokenLanguages || ('language.spanish' | translate) }}</div>
                   <mat-form-field *ngIf="editing()" appearance="outline" class="w-100">
                     <mat-select formControlName="spokenLanguages" multiple>
                       @for(language of languageOptions; track language) {
@@ -94,7 +94,7 @@
 
               <!-- Descripción para todos -->
               <div class="col-12">
-                <span class="text-secondary f-s-12">Descripción</span>
+                <span class="text-secondary f-s-12">{{ 'profile.description' | translate }}</span>
                 <div *ngIf="!editing()">{{ profile()?.description }}</div>
                 <mat-form-field *ngIf="editing()" appearance="outline" class="w-100">
                   <textarea matInput rows="3" formControlName="description"></textarea>
@@ -105,7 +105,7 @@
         </div>
       </form>
     } @else {
-      <div class="p-16 text-center text-secondary">No hay datos de perfil.</div>
+      <div class="p-16 text-center text-secondary">{{ 'profile.empty' | translate }}</div>
     }
   </mat-card-content>
 </mat-card>
@@ -117,13 +117,13 @@
         <mat-icon matSuffix class="d-none d-sm-flex m-r-8">
           <i-tabler name="edit" class="icon-18 d-flex m-0"></i-tabler>
         </mat-icon>
-        Editar
+        {{ 'common.edit' | translate }}
       </button>
       <button mat-flat-button color="warn" class="text-white" (click)="onDelete()">
         <mat-icon matSuffix class="d-none d-sm-flex m-r-8">
           <i-tabler name="trash" class="icon-18 d-flex m-0"></i-tabler>
         </mat-icon>
-        Eliminar cuenta
+        {{ 'profile.deleteAccount' | translate }}
       </button>
     </ng-container>
     <ng-template #editButtons>
@@ -131,13 +131,13 @@
         <mat-icon matSuffix class="d-none d-sm-flex m-r-8">
           <i-tabler name="check" class="icon-18 d-flex m-0"></i-tabler>
         </mat-icon>
-        Guardar
+        {{ 'common.save' | translate }}
       </button>
       <button mat-stroked-button (click)="onCancel()">
         <mat-icon matSuffix class="d-none d-sm-flex m-r-8">
           <i-tabler name="x" class="icon-18 d-flex m-0"></i-tabler>
         </mat-icon>
-        Cancelar
+        {{ 'common.cancel' | translate }}
       </button>
     </ng-template>
   </mat-card-content>

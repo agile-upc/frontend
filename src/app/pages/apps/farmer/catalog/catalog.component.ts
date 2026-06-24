@@ -6,8 +6,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Subject, finalize, takeUntil } from 'rxjs';
 import { TablerIconsModule } from 'angular-tabler-icons';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MaterialModule } from 'src/app/material.module';
+import { LocalizedDatePipe } from 'src/app/pipes/localized-date.pipe';
 import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
 import { AvailableDateService } from '../../../../services/apps/catalog/available-date.service';
 import { AiService } from '../../../../services/apps/catalog/ai.service';
@@ -25,6 +26,7 @@ import { AiAnswer, AiRecommendationMatch } from './ai-answer';
     CommonModule,
     RouterLink,
     TranslateModule,
+    LocalizedDatePipe,
   ],
 })
 export class AppCatalogComponent implements OnInit, OnDestroy {
@@ -35,7 +37,13 @@ export class AppCatalogComponent implements OnInit, OnDestroy {
 
   advisors = signal<Advisor[]>([]);
   searchText = signal<string>('');
+  selectedLanguages: string[] = [];
   selectedDate: Date | null = null;
+  readonly languageOptions = [
+    { value: 'Español', labelKey: 'language.spanish' },
+    { value: 'Quechua', labelKey: 'language.quechua' },
+    { value: 'Aymara', labelKey: 'language.aymara' },
+  ];
   chatOpen = false;
   loading = false;
   catalogLoading = true;
@@ -48,7 +56,8 @@ export class AppCatalogComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private advisorService: AdvisorService,
     private availableDatesService: AvailableDateService,
-    private aiService: AiService
+    private aiService: AiService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -139,8 +148,13 @@ export class AppCatalogComponent implements OnInit, OnDestroy {
     this.filterAdvisors();
   }
 
+  onLanguagesChange(): void {
+    this.filterAdvisors();
+  }
+
   clearFilters(): void {
     this.searchText.set('');
+    this.selectedLanguages = [];
     this.selectedDate = null;
     this.advisors.set(this.originalAdvisors);
   }
@@ -156,7 +170,7 @@ export class AppCatalogComponent implements OnInit, OnDestroy {
           this.advisors.set(data);
         },
         error: () => {
-          this.catalogError = 'No se pudo cargar el catálogo de asesores.';
+          this.catalogError = this.translate.instant('catalog.error.load');
           this.advisors.set([]);
         },
       });
@@ -165,11 +179,16 @@ export class AppCatalogComponent implements OnInit, OnDestroy {
   private filterAdvisors(): void {
     this.catalogError = '';
     const text = this.searchText().toLowerCase();
-    const filtered = this.originalAdvisors.filter((advisor) =>
-      `${advisor.firstName} ${advisor.lastName} ${advisor.occupation} ${advisor.description} ${advisor.spokenLanguages}`
+    const languages = this.selectedLanguages.map((language) => language.toLowerCase());
+    const filtered = this.originalAdvisors.filter((advisor) => {
+      const spokenLanguages = advisor.spokenLanguages?.toLowerCase() ?? '';
+      const textMatch = `${advisor.firstName} ${advisor.lastName} ${advisor.occupation} ${advisor.description} ${advisor.spokenLanguages}`
         .toLowerCase()
-        .includes(text)
-    );
+        .includes(text);
+      const languageMatch = languages.length === 0 || languages.some((language) => spokenLanguages.includes(language));
+
+      return textMatch && languageMatch;
+    });
 
     if (!this.selectedDate) {
       this.advisors.set(filtered);
@@ -186,7 +205,7 @@ export class AppCatalogComponent implements OnInit, OnDestroy {
           this.advisors.set(filtered.filter((advisor) => availableAdvisorIds.has(advisor.advisorId)));
         },
         error: () => {
-          this.catalogError = 'No se pudo filtrar por fecha. Intenta nuevamente.';
+          this.catalogError = this.translate.instant('catalog.error.filterDate');
           this.advisors.set(filtered);
         }
       });
@@ -194,7 +213,7 @@ export class AppCatalogComponent implements OnInit, OnDestroy {
 
   private buildAiMessage(answer: AiAnswer): ChatMessage {
     const fallbackNotice = answer.usedFallback
-      ? 'Respuesta generada con lógica de respaldo.'
+        ? this.translate.instant('ai.fallbackNotice')
       : null;
     const selectedMatch = answer.selectedAdvisorId != null
       ? answer.matches.find((match) => match.advisorId === answer.selectedAdvisorId) ?? null
@@ -202,14 +221,14 @@ export class AppCatalogComponent implements OnInit, OnDestroy {
 
     if (answer.status === 'NEEDS_MORE_INFO') {
       const retryMessage = !answer.conversationId
-        ? 'No pude iniciar la sesión de aclaración. Intenta reformular tu solicitud.'
+        ? this.translate.instant('ai.error.startClarification')
         : null;
 
       return new ChatMessage(
         'ai',
         [answer.summary, answer.clarifyingQuestion, retryMessage]
           .filter((value): value is string => Boolean(value))
-          .join('\n\n') || 'Necesito un poco más de detalle para recomendarte un asesor.',
+          .join('\n\n') || this.translate.instant('ai.needsMoreInfo'),
         null,
         null,
         null,
@@ -220,7 +239,7 @@ export class AppCatalogComponent implements OnInit, OnDestroy {
     if (answer.status === 'UNAVAILABLE') {
       return new ChatMessage(
         'ai',
-        answer.summary || 'No encontré una recomendación disponible en este momento.',
+        answer.summary || this.translate.instant('ai.unavailable'),
         null,
         null,
         null,
@@ -230,7 +249,7 @@ export class AppCatalogComponent implements OnInit, OnDestroy {
 
     return new ChatMessage(
       'ai',
-      answer.summary || 'Encontré asesores que podrían ayudarte.',
+      answer.summary || this.translate.instant('ai.ready'),
       answer.selectedAdvisorId,
       selectedMatch,
       answer.draftAppointmentMessage,
@@ -239,7 +258,7 @@ export class AppCatalogComponent implements OnInit, OnDestroy {
   }
 
   private getAiErrorMessage(error: HttpErrorResponse): string {
-    return error.error?.message || 'Lo siento, hubo un error al procesar tu solicitud.';
+    return error.error?.message || this.translate.instant('ai.error.process');
   }
 
   private syncConversation(answer: AiAnswer): void {
@@ -314,7 +333,7 @@ export class AppCatalogComponent implements OnInit, OnDestroy {
     return [
       new ChatMessage(
         'ai',
-        'Hola. Te ayudaré a encontrar el asesor ideal. Cuéntame qué necesitas.'
+        this.translate.instant('ai.defaultGreeting')
       )
     ];
   }

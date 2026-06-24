@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Reseña del productor</h2>
+<h2 mat-dialog-title>{{ 'reviews.farmerReview' | translate }}</h2>
 
 <mat-dialog-content>
   <div class="review-content" *ngIf="!loading">
@@ -12,7 +12,7 @@
     </div>
 
     <div class="rating-section">
-      <label>Calificación</label>
+      <label>{{ 'reviews.rating' | translate }}</label>
       <div class="stars">
         <span
           *ngFor="let star of [1,2,3,4,5]"
@@ -24,7 +24,7 @@
     </div>
 
     <div class="comment-section" *ngIf="comment">
-      <label>Comentario</label>
+      <label>{{ 'reviews.comment' | translate }}</label>
       <mat-form-field appearance="outline" class="w-100">
         <textarea
           matInput
@@ -37,16 +37,16 @@
     </div>
 
     <div class="no-review" *ngIf="rating === 0">
-      <p>Este productor no ha dejado una reseña todavía.</p>
+      <p>{{ 'reviews.noFarmerReview' | translate }}</p>
     </div>
   </div>
 
   <div class="loading-state" *ngIf="loading">
     <mat-spinner diameter="30"></mat-spinner>
-    <p>Cargando reseña...</p>
+    <p>{{ 'reviews.loading' | translate }}</p>
   </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-flat-button color="primary" (click)="close()">Cerrar</button>
+  <button mat-flat-button color="primary" (click)="close()">{{ 'common.close' | translate }}</button>
 </mat-dialog-actions>

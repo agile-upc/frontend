@@ -20,6 +20,8 @@ import {
 } from '../../farmer/appointment/appointment-detailed';
 import { AvailableDate } from 'src/app/shared/model/available-date';
 import { AvailableDateCreateDialogComponent } from 'src/app/components/available-dates/create-dialog/available-date-create-dialog.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LocalizedDatePipe } from 'src/app/pipes/localized-date.pipe';
 
 interface CalendarMeta {
   type: 'appointment' | 'availability';
@@ -40,7 +42,7 @@ interface CalendarListItem {
 @Component({
   selector: 'app-advisory-calendar',
   standalone: true,
-  imports: [CommonModule, CalendarModule, MaterialModule, TablerIconsModule, TimeFormatPipe],
+  imports: [CommonModule, CalendarModule, MaterialModule, TablerIconsModule, TimeFormatPipe, LocalizedDatePipe, TranslateModule],
   templateUrl: './advisory-calendar.component.html',
   styleUrl: './advisory-calendar.component.scss',
 })
@@ -70,15 +72,20 @@ export class AdvisoryCalendarComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private toastr: ToastrService,
+    private translate: TranslateService,
   ) {}
 
   get isAdvisor(): boolean {
     return this.authService.user.role === 'ADVISOR';
   }
 
+  get calendarLocale(): string {
+    return this.currentLocale;
+  }
+
   get periodLabel(): string {
     if (this.view === CalendarView.Day) {
-      return this.viewDate.toLocaleDateString('es-PE', {
+      return this.viewDate.toLocaleDateString(this.currentLocale, {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
@@ -87,16 +94,21 @@ export class AdvisoryCalendarComponent implements OnInit {
     }
 
     if (this.view === CalendarView.Week) {
-      return `Semana del ${this.viewDate.toLocaleDateString('es-PE', {
+      return `${this.translate.instant('calendar.weekOf')} ${this.viewDate.toLocaleDateString(this.currentLocale, {
         day: 'numeric',
         month: 'long',
       })}`;
     }
 
-    return this.viewDate.toLocaleDateString('es-PE', {
+    return this.viewDate.toLocaleDateString(this.currentLocale, {
       month: 'long',
       year: 'numeric',
     });
+  }
+
+  private get currentLocale(): string {
+    const lang = this.translate.currentLang || this.translate.defaultLang || 'es';
+    return ({ es: 'es-PE', qu: 'qu-PE', ay: 'ay-PE' } as Record<string, string>)[lang] ?? 'es-PE';
   }
 
   ngOnInit(): void {
@@ -168,11 +180,17 @@ export class AdvisoryCalendarComponent implements OnInit {
 
       this.availableDateService.create(availableDate).subscribe({
         next: () => {
-          this.toastr.success('Horario agregado', 'Exito');
+          this.toastr.success(
+            this.translate.instant('availability.success.created'),
+            this.translate.instant('common.success'),
+          );
           this.loadCalendar();
         },
         error: () => {
-          this.toastr.error('No se pudo agregar el horario', 'Error');
+          this.toastr.error(
+            this.translate.instant('availability.error.create'),
+            this.translate.instant('common.error'),
+          );
         },
       });
     });
@@ -201,13 +219,13 @@ export class AdvisoryCalendarComponent implements OnInit {
             );
           },
           error: () => {
-            this.errorMessage = 'No se pudieron cargar tus horarios disponibles.';
+            this.errorMessage = this.translate.instant('availability.error.load');
             this.loading = false;
           },
         });
       },
       error: () => {
-        this.errorMessage = 'No se pudo cargar el calendario de asesorías.';
+        this.errorMessage = this.translate.instant('calendar.error.load');
         this.loading = false;
       },
     });
@@ -235,8 +253,8 @@ export class AdvisoryCalendarComponent implements OnInit {
       start,
       end,
       title: this.isAdvisor
-        ? `Cita con ${appointment.farmerName}`
-        : `Cita con ${appointment.advisorName}`,
+        ? this.translate.instant('appointments.with', { name: appointment.farmerName })
+        : this.translate.instant('appointments.with', { name: appointment.advisorName }),
       color: this.appointmentColor,
       cssClass: 'calendar-event-appointment',
       meta: { type: 'appointment', appointmentId: appointment.id },
@@ -251,7 +269,7 @@ export class AdvisoryCalendarComponent implements OnInit {
     return {
       start,
       end,
-      title: 'Horario disponible',
+      title: this.translate.instant('availability.slotAvailable'),
       color: this.availabilityColor,
       cssClass: 'calendar-event-availability',
       meta: { type: 'availability' },
@@ -260,12 +278,12 @@ export class AdvisoryCalendarComponent implements OnInit {
 
   protected statusLabel(status: string): string {
     const labels: Record<string, string> = {
-      PENDING: 'Pendiente',
-      ONGOING: 'En curso',
-      COMPLETED: 'Completada',
-      DISPONIBLE: 'Disponible',
-      AVAILABLE: 'Disponible',
-      UNAVAILABLE: 'No disponible',
+      PENDING: this.translate.instant('status.pending'),
+      ONGOING: this.translate.instant('status.ongoing'),
+      COMPLETED: this.translate.instant('status.completed'),
+      DISPONIBLE: this.translate.instant('status.available'),
+      AVAILABLE: this.translate.instant('status.available'),
+      UNAVAILABLE: this.translate.instant('status.unavailable'),
     };
 
     return labels[status?.toUpperCase()] ?? status;
@@ -283,8 +301,8 @@ export class AdvisoryCalendarComponent implements OnInit {
         return {
           id: `appointment-${appointment.id}`,
           title: this.isAdvisor
-            ? `Cita con ${appointment.farmerName}`
-            : `Cita con ${appointment.advisorName}`,
+            ? this.translate.instant('appointments.with', { name: appointment.farmerName })
+            : this.translate.instant('appointments.with', { name: appointment.advisorName }),
           date,
           startTime: appointment.startTime ?? '',
           endTime: appointment.endTime ?? '',
@@ -302,7 +320,7 @@ export class AdvisoryCalendarComponent implements OnInit {
 
         return {
           id: `availability-${availableDate.id}`,
-          title: 'Horario disponible',
+          title: this.translate.instant('availability.slotAvailable'),
           date,
           startTime: availableDate.startTime,
           endTime: availableDate.endTime,

@@ -8,12 +8,14 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { UserNotification } from 'src/app/shared/model/userNotification';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LocalizedDatePipe } from 'src/app/pipes/localized-date.pipe';
 
 @Component({
   selector: 'app-notifications',
   templateUrl: './notifications.component.html',
   standalone: true,
-  imports: [CommonModule, MaterialModule, TablerIconsModule],
+  imports: [CommonModule, MaterialModule, TablerIconsModule, TranslateModule, LocalizedDatePipe],
 })
 export class AppNotificationsComponent implements OnInit {
   displayedColumns: string[] = ['id', 'title', 'message', 'sendAt', 'actions'];
@@ -24,7 +26,8 @@ export class AppNotificationsComponent implements OnInit {
 
   constructor(
     private notificationService: NotificationService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +41,7 @@ export class AppNotificationsComponent implements OnInit {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
-      error: () => this.toastr.error('Error al cargar notificaciones'),
+      error: () => this.toastr.error(this.translate.instant('notifications.error.load')),
     });
   }
 
@@ -49,10 +52,10 @@ export class AppNotificationsComponent implements OnInit {
   onDelete(row: UserNotification): void {
     this.notificationService.deleteNotification(row.id).subscribe({
       next: () => {
-        this.toastr.success('Notificación eliminada');
+        this.toastr.success(this.translate.instant('notifications.success.deleted'));
         this.loadNotifications();
       },
-      error: () => this.toastr.error('Error al eliminar notificación'),
+      error: () => this.toastr.error(this.translate.instant('notifications.error.delete')),
     });
   }
 }

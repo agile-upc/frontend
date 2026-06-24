@@ -7,7 +7,8 @@ import {
 } from '@angular/core';
 import { CoreService } from 'src/app/services/core.service';
 import { MatDialog } from '@angular/material/dialog';
-import { TranslateService } from '@ngx-translate/core';
+import { DateAdapter } from '@angular/material/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import {Router, RouterModule} from '@angular/router';
@@ -52,6 +53,7 @@ interface quicklinks {
         NgScrollbarModule,
         TablerIconsModule,
         MaterialModule,
+        TranslateModule,
     ],
     templateUrl: './header.component.html',
     encapsulation: ViewEncapsulation.None
@@ -102,13 +104,15 @@ export class HeaderComponent {
     private authService: AuthService,
     public dialog: MatDialog,
     private translate: TranslateService,
-    private router: Router
+    private router: Router,
+    private dateAdapter: DateAdapter<Date>
   ) {
     const savedLanguage = localStorage.getItem('agrotech-language') ?? 'es';
     this.selectedLanguage = this.languages.find((lang) => lang.code === savedLanguage) ?? this.languages[0];
     translate.addLangs(this.languages.map((lang) => lang.code));
     translate.setDefaultLang('es');
     translate.use(this.selectedLanguage.code);
+    this.dateAdapter.setLocale(this.resolveDateLocale(this.selectedLanguage.code));
   }
 
   options = this.settings.getOptions();
@@ -134,7 +138,12 @@ export class HeaderComponent {
   changeLanguage(lang: any): void {
     this.translate.use(lang.code);
     this.selectedLanguage = lang;
+    this.dateAdapter.setLocale(this.resolveDateLocale(lang.code));
     localStorage.setItem('agrotech-language', lang.code);
+  }
+
+  private resolveDateLocale(lang: string): string {
+    return ({ es: 'es-PE', qu: 'qu-PE', ay: 'ay-PE' } as Record<string, string>)[lang] ?? 'es-PE';
   }
 
   logout() {
@@ -155,15 +164,15 @@ export class HeaderComponent {
     {
       id: 1,
       img: '/assets/images/svgs/icon-account.svg',
-      title: 'Mi perfil',
-      subtitle: 'Configuración de la cuenta',
+      title: 'nav.profile',
+      subtitle: 'nav.accountSettings',
       link: '/apps/profile',
     },
     {
       id: 2,
       img: '/assets/images/svgs/icon-inbox.svg',
-      title: 'Mis notificaciones',
-      subtitle: 'Notificaciones',
+      title: 'nav.myNotifications',
+      subtitle: 'common.notifications',
       link: '/apps/notifications',
     },
   ];
@@ -172,36 +181,36 @@ export class HeaderComponent {
     {
       id: 1,
       img: '/assets/images/svgs/icon-dd-chat.svg',
-      title: 'Catálogo de asesores',
-      subtitle: 'Buscar especialistas',
+      title: 'nav.advisorCatalog',
+      subtitle: 'nav.searchSpecialists',
       link: '/apps/farmer/catalog',
     },
     {
       id: 2,
       img: '/assets/images/svgs/icon-dd-date.svg',
-      title: 'Mis citas',
-      subtitle: 'Asesorías programadas',
+      title: 'nav.myAppointments',
+      subtitle: 'nav.scheduledAdvisories',
       link: '/apps/farmer/appointments',
     },
     {
       id: 3,
       img: '/assets/images/svgs/icon-dd-invoice.svg',
-      title: 'Mis horarios',
-      subtitle: 'Disponibilidad del asesor',
+      title: 'nav.mySchedule',
+      subtitle: 'nav.advisorAvailability',
       link: '/apps/advisor/available-dates',
     },
     {
       id: 4,
       img: '/assets/images/svgs/icon-dd-date.svg',
-      title: 'Notificaciones',
-      subtitle: 'Avisos importantes',
+      title: 'common.notifications',
+      subtitle: 'nav.importantNotices',
       link: '/apps/notifications',
     },
     {
       id: 5,
       img: '/assets/images/svgs/icon-account.svg',
-      title: 'Mi perfil',
-      subtitle: 'Datos de usuario',
+      title: 'nav.profile',
+      subtitle: 'nav.userData',
       link: '/apps/profile',
     },
   ];
@@ -209,22 +218,22 @@ export class HeaderComponent {
   quicklinks: quicklinks[] = [
     {
       id: 1,
-      title: 'Catálogo de asesores',
+      title: 'nav.advisorCatalog',
       link: '/apps/farmer/catalog',
     },
     {
       id: 2,
-      title: 'Mis citas',
+      title: 'nav.myAppointments',
       link: '/apps/farmer/appointments',
     },
     {
       id: 3,
-      title: 'Mis horarios',
+      title: 'nav.mySchedule',
       link: '/apps/advisor/available-dates',
     },
     {
       id: 4,
-      title: 'Mi perfil',
+      title: 'nav.profile',
       link: '/apps/profile',
     },
   ];
@@ -232,7 +241,7 @@ export class HeaderComponent {
 
 @Component({
     selector: 'search-dialog',
-    imports: [RouterModule, MaterialModule, TablerIconsModule, FormsModule],
+    imports: [RouterModule, MaterialModule, TablerIconsModule, FormsModule, TranslateModule],
     templateUrl: 'search-dialog.component.html'
 })
 export class AppSearchDialogComponent {

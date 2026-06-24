@@ -3,17 +3,18 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface TutorialStep {
   icon: string;
-  title: string;
-  text: string;
+  titleKey: string;
+  textKey: string;
 }
 
 @Component({
   selector: 'app-farmer-tutorial',
   standalone: true,
-  imports: [CommonModule, RouterLink, MaterialModule, TablerIconsModule],
+  imports: [CommonModule, RouterLink, MaterialModule, TablerIconsModule, TranslateModule],
   templateUrl: './tutorial.component.html',
   styleUrl: './tutorial.component.scss'
 })
@@ -21,33 +22,33 @@ export class FarmerTutorialComponent {
   readonly steps: TutorialStep[] = [
     {
       icon: 'search',
-      title: 'Busca un asesor',
-      text: 'Usa el catálogo para encontrar especialistas por nombre, profesión, experiencia o fecha disponible.'
+      titleKey: 'tutorial.steps.search.title',
+      textKey: 'tutorial.steps.search.text'
     },
     {
       icon: 'user-check',
-      title: 'Revisa su perfil',
-      text: 'Mira su experiencia, ubicación, calificación y horarios antes de reservar.'
+      titleKey: 'tutorial.steps.profile.title',
+      textKey: 'tutorial.steps.profile.text'
     },
     {
       icon: 'calendar-event',
-      title: 'Elige un horario',
-      text: 'Selecciona una fecha libre. Cuando confirmas, ese horario deja de estar disponible para otros productores.'
+      titleKey: 'tutorial.steps.schedule.title',
+      textKey: 'tutorial.steps.schedule.text'
     },
     {
       icon: 'message-2',
-      title: 'Describe tu consulta',
-      text: 'Explica el problema de tu cultivo o producción para que el asesor llegue preparado.'
+      titleKey: 'tutorial.steps.message.title',
+      textKey: 'tutorial.steps.message.text'
     },
     {
       icon: 'video',
-      title: 'Únete a la consulta',
-      text: 'Cuando llegue la fecha, entra desde tus citas y abre el enlace de la videoconferencia.'
+      titleKey: 'tutorial.steps.join.title',
+      textKey: 'tutorial.steps.join.text'
     },
     {
       icon: 'star',
-      title: 'Califica la atención',
-      text: 'Después de la cita, deja una reseña para ayudar a otros productores a elegir mejor.'
+      titleKey: 'tutorial.steps.review.title',
+      textKey: 'tutorial.steps.review.text'
     }
   ];
 }

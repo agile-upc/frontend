@@ -2,18 +2,18 @@
   <mat-card-content>
     <div class="calendar-toolbar">
       <div>
-        <h2 class="m-0 f-s-20 f-w-600">Calendario de asesorías</h2>
+        <h2 class="m-0 f-s-20 f-w-600">{{ 'nav.advisoryCalendar' | translate }}</h2>
         <p class="m-0 m-t-4 text-muted">
-          {{ isAdvisor ? 'Revisa tus citas y horarios disponibles.' : 'Revisa tus próximas citas programadas.' }}
+          {{ (isAdvisor ? 'calendar.subtitleAdvisor' : 'calendar.subtitleFarmer') | translate }}
         </p>
       </div>
 
       <div class="calendar-actions">
-        <button mat-icon-button color="primary" matTooltip="Periodo anterior" (click)="previousPeriod()">
+        <button mat-icon-button color="primary" [matTooltip]="'calendar.previousPeriod' | translate" (click)="previousPeriod()">
           <i-tabler name="chevron-left" class="icon-20 d-flex"></i-tabler>
         </button>
-        <button mat-stroked-button color="primary" (click)="today()">Hoy</button>
-        <button mat-icon-button color="primary" matTooltip="Periodo siguiente" (click)="nextPeriod()">
+        <button mat-stroked-button color="primary" (click)="today()">{{ 'calendar.today' | translate }}</button>
+        <button mat-icon-button color="primary" [matTooltip]="'calendar.nextPeriod' | translate" (click)="nextPeriod()">
           <i-tabler name="chevron-right" class="icon-20 d-flex"></i-tabler>
         </button>
 
@@ -21,11 +21,11 @@
           class="calendar-view-toggle"
           [value]="view"
           (change)="setView($event.value)"
-          aria-label="Vista del calendario"
+          [attr.aria-label]="'calendar.view' | translate"
         >
-          <mat-button-toggle [value]="CalendarView.Month">Mes</mat-button-toggle>
-          <mat-button-toggle [value]="CalendarView.Week">Semana</mat-button-toggle>
-          <mat-button-toggle [value]="CalendarView.Day">Día</mat-button-toggle>
+          <mat-button-toggle [value]="CalendarView.Month">{{ 'calendar.month' | translate }}</mat-button-toggle>
+          <mat-button-toggle [value]="CalendarView.Week">{{ 'calendar.week' | translate }}</mat-button-toggle>
+          <mat-button-toggle [value]="CalendarView.Day">{{ 'calendar.day' | translate }}</mat-button-toggle>
         </mat-button-toggle-group>
       </div>
     </div>
@@ -55,12 +55,12 @@
             <div class="calendar-legend">
               <span class="legend-item">
                 <span class="legend-dot legend-dot-appointment"></span>
-                Cita
+                {{ 'nav.appointments' | translate }}
               </span>
               @if (isAdvisor) {
                 <span class="legend-item">
                   <span class="legend-dot legend-dot-availability"></span>
-                  Disponible
+                  {{ 'status.available' | translate }}
                 </span>
               }
             </div>
@@ -70,7 +70,7 @@
             <mwl-calendar-month-view
               [viewDate]="viewDate"
               [events]="events"
-              locale="es"
+              [locale]="calendarLocale"
               (eventClicked)="handleEventClick($event.event)"
               (dayClicked)="handleCalendarDateClick($event.day.date)"
             ></mwl-calendar-month-view>
@@ -80,7 +80,7 @@
             <mwl-calendar-week-view
               [viewDate]="viewDate"
               [events]="events"
-              locale="es"
+              [locale]="calendarLocale"
               (eventClicked)="handleEventClick($event.event)"
               (dayHeaderClicked)="handleCalendarDateClick($event.day.date)"
               (hourSegmentClicked)="handleCalendarDateClick($event.date, true)"
@@ -91,7 +91,7 @@
             <mwl-calendar-day-view
               [viewDate]="viewDate"
               [events]="events"
-              locale="es"
+              [locale]="calendarLocale"
               (eventClicked)="handleEventClick($event.event)"
               (hourSegmentClicked)="handleCalendarDateClick($event.date, true)"
             ></mwl-calendar-day-view>
@@ -104,9 +104,9 @@
       <mat-card class="cardWithShadow">
         <mat-card-content>
           <div class="d-flex align-items-center justify-content-between m-b-16">
-            <h3 class="m-0 f-s-18 f-w-600">Próximos eventos</h3>
+            <h3 class="m-0 f-s-18 f-w-600">{{ 'calendar.upcomingEvents' | translate }}</h3>
             @if (isAdvisor) {
-              <button mat-icon-button color="primary" matTooltip="Administrar horarios" (click)="goToAvailability()">
+              <button mat-icon-button color="primary" [matTooltip]="'availability.manage' | translate" (click)="goToAvailability()">
                 <i-tabler name="calendar-plus" class="icon-20 d-flex"></i-tabler>
               </button>
             }
@@ -115,7 +115,7 @@
           @if (upcomingItems.length === 0) {
             <div class="empty-state">
               <i-tabler name="calendar-off" class="icon-48 text-dark m-b-16"></i-tabler>
-              <div class="f-s-16 text-dark">No hay eventos próximos.</div>
+              <div class="f-s-16 text-dark">{{ 'calendar.emptyUpcoming' | translate }}</div>
             </div>
           }
           @else {
@@ -128,8 +128,8 @@
                   (click)="item.appointmentId && handleEventClick({ start: item.date, title: item.title, meta: { type: 'appointment', appointmentId: item.appointmentId } })"
                 >
                   <span class="upcoming-date">
-                    <span class="upcoming-day">{{ item.date | date: 'dd' }}</span>
-                    <span class="upcoming-month">{{ item.date | date: 'MMM' : undefined : 'es' }}</span>
+                    <span class="upcoming-day">{{ item.date | localizedDate:'day' }}</span>
+                    <span class="upcoming-month">{{ item.date | localizedDate:'shortMonth' }}</span>
                   </span>
                   <span class="upcoming-copy">
                     <span class="f-w-600">{{ item.title }}</span>

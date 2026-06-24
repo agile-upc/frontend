@@ -3,7 +3,7 @@
   <div class="row">
     <div class="col-sm-8">
       <h4 class="page-title m-0 f-s-20 f-w-600 m-b-16">
-        {{ pageInfo?.['title'] }}
+        {{ pageInfo?.['title'] | translate }}
       </h4>
       <div class="d-flex align-items-center overflow-hidden">
         <ul class="breadcrumb">
@@ -11,13 +11,13 @@
           = $last ) { @if(!last){
 
           <li class="breadcrumb-item" [routerLink]="url.url">
-            <a [routerLink]="url.url">{{ url.title }}</a>
+            <a [routerLink]="url.url">{{ url.title | translate }}</a>
           </li>
           }@else {
           <li class="breadcrumb-item">
             <i-tabler name="circle-filled" class="icon-8"></i-tabler>
           </li>
-          <li class="breadcrumb-item active f-s-14">{{ url.title }}</li>
+          <li class="breadcrumb-item active f-s-14">{{ url.title | translate }}</li>
           } }
         </ul>
       </div>

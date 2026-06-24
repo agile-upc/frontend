@@ -2,7 +2,7 @@
   <mat-card class="cardWithShadow">
     <mat-card-content class="text-center p-y-32">
       <i-tabler name="file-search" class="icon-48 text-dark m-b-16"></i-tabler>
-      <div class="f-s-16 text-dark">No hay publicaciones disponibles.</div>
+      <div class="f-s-16 text-dark">{{ 'posts.emptyAvailable' | translate }}</div>
     </mat-card-content>
   </mat-card>
 }
@@ -17,7 +17,7 @@
           <img
             mat-card-avatar
             [src]="getAdvisor(post.advisorId).photo"
-            alt="Asesor {{ getAdvisor(post.advisorId).firstName }} {{ getAdvisor(post.advisorId).lastName }}"
+            [alt]="'advisor.photoAlt' | translate"
             (error)="onImageError($event)"
           />
           <mat-card-title>

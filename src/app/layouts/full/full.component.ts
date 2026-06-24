@@ -24,6 +24,7 @@ import {navItemsAdvisor} from "./vertical/sidebar/sidebar-data-advisor";
 import {ProfileService} from "../../shared/services/profile.service";
 import {UserNotification} from "../../shared/model/userNotification";
 import {NotificationService} from "../../shared/services/notification.service";
+import { TranslateModule } from '@ngx-translate/core';
 
 const MOBILE_VIEW = 'screen and (max-width: 768px)';
 const TABLET_VIEW = 'screen and (min-width: 769px) and (max-width: 1024px)';
@@ -58,6 +59,7 @@ interface quicklinks {
         HeaderComponent,
         AppBreadcrumbComponent,
         CustomizerComponent,
+        TranslateModule,
     ],
     templateUrl: './full.component.html',
     styleUrls: [],
@@ -92,36 +94,36 @@ export class FullComponent implements OnInit {
     {
       id: 1,
       img: '/assets/images/svgs/icon-dd-date.svg',
-      title: 'Catálogo de asesores',
-      subtitle: 'Buscar especialistas',
+      title: 'nav.advisorCatalog',
+      subtitle: 'nav.searchSpecialists',
       link: '/apps/farmer/catalog',
     },
     {
       id: 2,
       img: '/assets/images/svgs/icon-dd-date.svg',
-      title: 'Mis citas',
-      subtitle: 'Asesorías programadas',
+      title: 'nav.myAppointments',
+      subtitle: 'nav.scheduledAdvisories',
       link: '/apps/farmer/appointments',
     },
     {
       id: 3,
       img: '/assets/images/svgs/icon-dd-date.svg',
-      title: 'Mis horarios',
-      subtitle: 'Disponibilidad del asesor',
+      title: 'nav.mySchedule',
+      subtitle: 'nav.advisorAvailability',
       link: '/apps/advisor/available-dates',
     },
     {
       id: 4,
       img: '/assets/images/svgs/icon-dd-date.svg',
-      title: 'Notificaciones',
-      subtitle: 'Avisos importantes',
+      title: 'common.notifications',
+      subtitle: 'nav.importantNotices',
       link: '/apps/notifications',
     },
     {
       id: 5,
       img: '/assets/images/svgs/icon-account.svg',
-      title: 'Mi perfil',
-      subtitle: 'Datos de usuario',
+      title: 'nav.profile',
+      subtitle: 'nav.userData',
       link: '/apps/profile',
     },
   ];
@@ -129,22 +131,22 @@ export class FullComponent implements OnInit {
   quicklinks: quicklinks[] = [
     {
       id: 1,
-      title: 'Catálogo de asesores',
+      title: 'nav.advisorCatalog',
       link: '/apps/farmer/catalog',
     },
     {
       id: 2,
-      title: 'Mis citas',
+      title: 'nav.myAppointments',
       link: '/apps/farmer/appointments',
     },
     {
       id: 3,
-      title: 'Mis horarios',
+      title: 'nav.mySchedule',
       link: '/apps/advisor/available-dates',
     },
     {
       id: 4,
-      title: 'Mi perfil',
+      title: 'nav.profile',
       link: '/apps/profile',
     },
   ];
@@ -196,17 +198,17 @@ export class FullComponent implements OnInit {
 
     if (role === 'FARMER') {
       this.navItems = navItemsFarmer;
-      this.role = "Productor agrícola";
+      this.role = "role.farmer";
     }
 
     if (role === 'ADVISOR') {
       this.navItems = navItemsAdvisor;
-      this.role = "Asesor especializado"
+      this.role = "role.advisor"
     }
 
     if (role === 'ADMIN') {
       this.navItems = [];
-      this.role = 'Administrador';
+      this.role = 'role.admin';
     }
 
     this.profileService.fetchMyProfile().subscribe({

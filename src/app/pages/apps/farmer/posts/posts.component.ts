@@ -6,10 +6,11 @@ import { MaterialModule } from 'src/app/material.module';
 import { PostService } from 'src/app/services/apps/post/post.service';
 import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
 import { Advisor } from '../catalog/advisor';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-posts',
-  imports: [TablerIconsModule, CommonModule, MaterialModule],
+  imports: [TablerIconsModule, CommonModule, MaterialModule, TranslateModule],
   templateUrl: './posts.component.html',
   standalone: true,
 })

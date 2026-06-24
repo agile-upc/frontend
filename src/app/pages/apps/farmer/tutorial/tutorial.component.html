@@ -4,23 +4,23 @@
       <div>
         <div class="summary-eyebrow text-primary">
           <i-tabler name="help-circle" class="icon-18 d-flex"></i-tabler>
-          Guía rápida para productores
+          {{ 'tutorial.eyebrow' | translate }}
         </div>
         <mat-card-title class="f-s-20 f-w-600 m-b-8">
-          Reserva asesoría agrícola en pocos pasos
+          {{ 'tutorial.title' | translate }}
         </mat-card-title>
         <p class="text-muted f-s-14 m-0 summary-copy">
-          Sigue este recorrido para encontrar un asesor, preparar tu consulta y revisar tu historial de atenciones.
+          {{ 'tutorial.subtitle' | translate }}
         </p>
       </div>
       <div class="summary-actions">
         <button mat-flat-button color="primary" class="tutorial-action-button" [routerLink]="['/apps/farmer/catalog']">
           <i-tabler name="search" class="icon-18 d-flex"></i-tabler>
-          Buscar asesor
+          {{ 'tutorial.actions.search' | translate }}
         </button>
         <button mat-stroked-button color="primary" class="tutorial-action-button" [routerLink]="['/apps/farmer/appointments']">
           <i-tabler name="calendar" class="icon-18 d-flex"></i-tabler>
-          Ver mis citas
+          {{ 'tutorial.actions.appointments' | translate }}
         </button>
       </div>
     </div>
@@ -28,7 +28,7 @@
 </mat-card>
 
 <div class="tutorial-steps">
-  @for(step of steps; track step.title; let index = $index) {
+  @for(step of steps; track step.titleKey; let index = $index) {
     <mat-card class="cardWithShadow tutorial-step">
       <mat-card-content>
         <div class="step-header">
@@ -37,9 +37,9 @@
           </div>
           <div class="step-index">{{ index + 1 }}</div>
         </div>
-        <h3 class="f-s-16 f-w-600 m-b-8">{{ step.title }}</h3>
+        <h3 class="f-s-16 f-w-600 m-b-8">{{ step.titleKey | translate }}</h3>
         <p class="text-muted f-s-14 m-0">
-          {{ step.text }}
+          {{ step.textKey | translate }}
         </p>
       </mat-card-content>
     </mat-card>
@@ -49,9 +49,9 @@
 <mat-card class="cardWithShadow">
   <mat-card-content class="support-layout">
     <div>
-      <mat-card-title class="f-s-18 f-w-600 m-b-8">También puedes pedir ayuda a la IA</mat-card-title>
+      <mat-card-title class="f-s-18 f-w-600 m-b-8">{{ 'tutorial.ai.title' | translate }}</mat-card-title>
       <p class="text-muted f-s-14 m-0 support-copy">
-        En el catálogo, abre el chat y describe tu necesidad. La IA recomendará asesores y puede llevar tu mensaje a la reserva.
+        {{ 'tutorial.ai.text' | translate }}
       </p>
     </div>
     <button
@@ -62,7 +62,7 @@
       [queryParams]="{ openChat: 'true' }"
     >
       <i-tabler name="message" class="icon-18 d-flex"></i-tabler>
-      Abrir catálogo
+      {{ 'tutorial.actions.openCatalog' | translate }}
     </button>
   </mat-card-content>
 </mat-card>

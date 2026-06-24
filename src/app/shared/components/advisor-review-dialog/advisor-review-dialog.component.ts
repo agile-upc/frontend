@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
 import { ReviewService } from 'src/app/services/apps/appointment/review.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 export interface AdvisorReviewDialogData {
   appointmentId: number;
@@ -13,7 +14,7 @@ export interface AdvisorReviewDialogData {
 @Component({
   selector: 'app-advisor-review-dialog',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
+  imports: [CommonModule, MaterialModule, TranslateModule],
   templateUrl: './advisor-review-dialog.component.html',
   styleUrl: './advisor-review-dialog.component.scss'
 })
@@ -28,7 +29,8 @@ export class AdvisorReviewDialogComponent implements OnInit {
     private dialogRef: MatDialogRef<AdvisorReviewDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AdvisorReviewDialogData,
     private reviewService: ReviewService,
-    private appointmentService: AppointmentService
+    private appointmentService: AppointmentService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -40,7 +42,7 @@ export class AdvisorReviewDialogComponent implements OnInit {
     this.appointmentService.getAppointmentById(this.data.appointmentId).subscribe({
       next: async (appointment) => {
         try {
-          this.farmerName = `Productor #${appointment.farmerId}`;
+          this.farmerName = this.translate.instant('farmer.withId', { id: appointment.farmerId });
           this.farmerPhoto = 'assets/images/profile/user-1.jpg';
 
           const reviews = await firstValueFrom(

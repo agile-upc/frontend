@@ -18,26 +18,26 @@ export const FarmerRoutes: Routes = [
         path: 'tutorial',
         component: FarmerTutorialComponent,
         data: {
-          title: 'Guía rápida',
-          urls: [{ title: 'Guía rápida', url: '/apps/farmer/tutorial' }],
+          title: 'nav.quickGuide',
+          urls: [{ title: 'nav.quickGuide', url: '/apps/farmer/tutorial' }],
         },
       },
       {
         path: 'catalog',
         component: AppCatalogComponent,
         data: {
-          title: 'Catálogo de asesores',
-          urls: [{ title: 'Catálogo', url: '/apps/farmer/catalog' }],
+          title: 'nav.advisorCatalog',
+          urls: [{ title: 'nav.catalog', url: '/apps/farmer/catalog' }],
         },
       },
       {
         path: 'catalog/:advisorId',
         component: AppAdvisorDetailComponent,
         data: {
-          title: 'Detalle del asesor',
+          title: 'advisor.detail',
           urls: [
-            { title: 'Catálogo', url: '/apps/farmer/catalog' },
-            { title: 'Detalle del asesor' },
+            { title: 'nav.catalog', url: '/apps/farmer/catalog' },
+            { title: 'advisor.detail' },
           ]
         }
       },
@@ -45,10 +45,10 @@ export const FarmerRoutes: Routes = [
         path: 'catalog/:advisorId/book',
         component: AppBookAppointmentComponent,
         data: {
-          title: 'Reservar cita',
+          title: 'booking.title',
           urls: [
-            { title: 'Catálogo', url: '/apps/farmer/catalog' },
-            { title: 'Reservar cita' },
+            { title: 'nav.catalog', url: '/apps/farmer/catalog' },
+            { title: 'booking.title' },
           ]
         }
       },
@@ -56,26 +56,26 @@ export const FarmerRoutes: Routes = [
         path: 'appointments',
         component: AppAppointmentsComponent,
         data: {
-          title: 'Mis citas',
-          urls: [{ title: 'Citas', url: '/apps/farmer/appointments' }],
+          title: 'nav.myAppointments',
+          urls: [{ title: 'nav.appointments', url: '/apps/farmer/appointments' }],
         }
       },
       {
         path: 'calendar',
         component: AdvisoryCalendarComponent,
         data: {
-          title: 'Calendario de asesorías',
-          urls: [{ title: 'Calendario', url: '/apps/farmer/calendar' }],
+          title: 'nav.advisoryCalendar',
+          urls: [{ title: 'nav.calendar', url: '/apps/farmer/calendar' }],
         }
       },
       {
         path: 'appointments/history',
         component: AppAppointmentsHistoryComponent,
         data: {
-          title: 'Historial de citas',
+          title: 'appointments.history',
           urls: [
-            { title: 'Citas', url: '/apps/farmer/appointments' },
-            { title: 'Historial' },
+            { title: 'nav.appointments', url: '/apps/farmer/appointments' },
+            { title: 'appointments.historyShort' },
           ],
         }
       },
@@ -83,10 +83,10 @@ export const FarmerRoutes: Routes = [
         path: 'appointments/:id',
         component: AppointmentDetailComponent,
         data: {
-          title: 'Detalle de la cita',
+          title: 'appointments.detail',
           urls: [
-            { title: 'Citas', url: '/apps/farmer/appointments' },
-            { title: 'Detalle de la cita' },
+            { title: 'nav.appointments', url: '/apps/farmer/appointments' },
+            { title: 'appointments.detail' },
           ],
         }
       },
@@ -94,8 +94,8 @@ export const FarmerRoutes: Routes = [
         path: 'posts',
         component: AppPostsComponent,
         data: {
-          title: 'Publicaciones de asesores',
-          urls: [{ title: 'Publicaciones', url: '/apps/farmer/posts' }]
+          title: 'posts.advisorPosts',
+          urls: [{ title: 'nav.posts', url: '/apps/farmer/posts' }]
         }
       }
     ],

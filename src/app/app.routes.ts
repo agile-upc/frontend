@@ -29,9 +29,9 @@ export const routes: Routes = [
             path: 'notifications',
             component: AppNotificationsComponent,
             data: {
-              title: 'Notificaciones',
+              title: 'common.notifications',
               urls: [
-                { title: 'Notificaciones', url: '/apps/notifications' }
+                { title: 'common.notifications', url: '/apps/notifications' }
               ]
             },
           },
@@ -39,9 +39,9 @@ export const routes: Routes = [
             path: 'profile',
             component: AppProfileComponent,
             data: {
-              title: 'Mi perfil',
+              title: 'nav.profile',
               urls: [
-                { title: 'Mi perfil' },
+                { title: 'nav.profile' },
               ],
             },
           },

@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { CoreService } from 'src/app/services/core.service';
 import { MaterialModule } from 'src/app/material.module';
+import { DateAdapter } from '@angular/material/core';
 import { BrandingComponent } from '../../../layouts/full/vertical/sidebar/branding.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -45,7 +46,8 @@ export class AppLandingpageComponent {
   constructor(
     private settings: CoreService,
     private scroller: ViewportScroller,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dateAdapter: DateAdapter<Date>
   ) {
     this.htmlElement = document.querySelector('html')!;
     const savedLanguage = localStorage.getItem('agrotech-language') ?? 'es';
@@ -53,6 +55,7 @@ export class AppLandingpageComponent {
     this.translate.addLangs(this.languages.map((lang) => lang.code));
     this.translate.setDefaultLang('es');
     this.translate.use(this.selectedLanguage.code);
+    this.dateAdapter.setLocale(this.resolveDateLocale(this.selectedLanguage.code));
     this.applyThemeClass(this.options.theme);
   }
 
@@ -69,8 +72,13 @@ export class AppLandingpageComponent {
   changeLanguage(lang: { language: string; code: string; shortLabel: string }): void {
     this.selectedLanguage = lang;
     this.translate.use(lang.code);
+    this.dateAdapter.setLocale(this.resolveDateLocale(lang.code));
     this.settings.setLanguage(lang.code);
     localStorage.setItem('agrotech-language', lang.code);
+  }
+
+  private resolveDateLocale(lang: string): string {
+    return ({ es: 'es-PE', qu: 'qu-PE', ay: 'ay-PE' } as Record<string, string>)[lang] ?? 'es-PE';
   }
 
   private applyThemeClass(theme: string): void {

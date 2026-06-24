@@ -6,7 +6,7 @@
         color="primary"
         class="hide-hint w-100"
       >
-        <input matInput placeholder="Search here" [(ngModel)]="searchText" />
+        <input matInput [placeholder]="'search.placeholder' | translate" [(ngModel)]="searchText" />
       </mat-form-field>
     </div>
     <div class="col-2 d-flex justify-content-end">
@@ -22,7 +22,7 @@
 </div>
 <mat-divider></mat-divider>
 <mat-dialog-content class="mat-typography search-dialog">
-  <h4 class="f-s-18 f-w-600  m-b-16">Quick Page Links</h4>
+  <h4 class="f-s-18 f-w-600  m-b-16">{{ 'nav.quickLinks' | translate }}</h4>
 
   @for(item of navItemsData; track item.displayName) {
   <a
@@ -31,7 +31,7 @@
     class="p-y-12 text-decoration-none d-block"
   >
     <h5 class="f-s-14 f-w-500 d-block  m-0">
-      {{ item.displayName }}
+      {{ (item.displayName ?? '') | translate }}
     </h5>
     <span class="f-s-12 f-s-16">{{ item.route }}</span>
   </a>

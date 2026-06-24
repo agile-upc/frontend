@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { MaterialModule } from 'src/app/material.module';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface AvailableDateCreateDialogData {
   scheduledDate?: Date | string;
@@ -118,7 +119,7 @@ function timeRangeValidator(): ValidatorFn {
 @Component({
   selector: 'app-available-date-create-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MaterialModule],
+  imports: [CommonModule, ReactiveFormsModule, MaterialModule, TranslateModule],
   templateUrl: 'available-date-create-dialog.component.html',
 })
 export class AvailableDateCreateDialogComponent {
