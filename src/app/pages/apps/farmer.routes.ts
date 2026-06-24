@@ -7,11 +7,20 @@ import { AppBookAppointmentComponent } from './farmer/catalog/book-appointment/b
 import { AppAppointmentsComponent } from './farmer/appointment/appointments.component';
 import { AppAppointmentsHistoryComponent } from './farmer/appointment/history/appointments-history.component';
 import { AppointmentDetailComponent } from './farmer/appointment/detail/appointment-detail.component';
+import { FarmerTutorialComponent } from './farmer/tutorial/tutorial.component';
 
 export const FarmerRoutes: Routes = [
   {
     path: '',
     children: [
+      {
+        path: 'tutorial',
+        component: FarmerTutorialComponent,
+        data: {
+          title: 'Guía rápida',
+          urls: [{ title: 'Guía rápida', url: '/apps/farmer/tutorial' }],
+        },
+      },
       {
         path: 'catalog',
         component: AppCatalogComponent,

@@ -1,13 +1,12 @@
 import { Routes } from '@angular/router';
 
-import {AdvisorAppointmentsComponent} from "./advisor/appointments/advisor-appointments.component";
-import {AdvisorAppointmentDetailComponent} from "./advisor/appointments/detail/advisor-appointment-detail.component";
-import {AdvisorHistoryComponent} from "./advisor/appointments/history/advisor-history.component";
-import {AvailableDatesComponent} from "./advisor/available-dates/available-dates.component";
-import {AdvisorPostsComponent} from "./advisor/posts/advisor-posts.component";
-import {EditPostComponent} from "./advisor/posts/edit-post/edit-post.component";
-import {CreatePostComponent} from "./advisor/posts/create-post/create-post.component";
-
+import { AdvisorAppointmentsComponent } from './advisor/appointments/advisor-appointments.component';
+import { AdvisorAppointmentDetailComponent } from './advisor/appointments/detail/advisor-appointment-detail.component';
+import { AdvisorHistoryComponent } from './advisor/appointments/history/advisor-history.component';
+import { AvailableDatesComponent } from './advisor/available-dates/available-dates.component';
+import { AdvisorPostsComponent } from './advisor/posts/advisor-posts.component';
+import { EditPostComponent } from './advisor/posts/edit-post/edit-post.component';
+import { CreatePostComponent } from './advisor/posts/create-post/create-post.component';
 
 export const AdvisorRoutes: Routes = [
   {
@@ -19,7 +18,7 @@ export const AdvisorRoutes: Routes = [
         data: {
           title: 'Mis citas',
           urls: [
-            { title: 'Appointments', url: '/apps/advisor/appointments' },
+            { title: 'Citas', url: '/apps/advisor/appointments' },
           ],
         }
       },
@@ -29,8 +28,8 @@ export const AdvisorRoutes: Routes = [
         data: {
           title: 'Historial de citas',
           urls: [
-            { title: 'Appointments', url: '/apps/advisor/appointments' },
-            { title: 'History' },
+            { title: 'Citas', url: '/apps/advisor/appointments' },
+            { title: 'Historial' },
           ],
         }
       },
@@ -40,8 +39,8 @@ export const AdvisorRoutes: Routes = [
         data: {
           title: 'Detalle de cita',
           urls: [
-            { title: 'Appointments', url: '/apps/advisor/appointments' },
-            { title: 'Detail' },
+            { title: 'Citas', url: '/apps/advisor/appointments' },
+            { title: 'Detalle' },
           ],
         }
       },
@@ -51,7 +50,7 @@ export const AdvisorRoutes: Routes = [
         data: {
           title: 'Mis publicaciones',
           urls: [
-            { title: 'Posts',  url: '/apps/advisor/posts' },
+            { title: 'Publicaciones',  url: '/apps/advisor/posts' },
           ]
         }
       },
@@ -59,9 +58,9 @@ export const AdvisorRoutes: Routes = [
         path: 'posts/create',
         component: CreatePostComponent,
         data: {
-          title: 'Crear nueva publicacion',
+          title: 'Crear nueva publicación',
           urls: [
-            { title: 'Create Posts', url: '/apps/advisor/posts' }
+            { title: 'Crear publicación', url: '/apps/advisor/posts' }
           ],
         }
       },
@@ -69,9 +68,9 @@ export const AdvisorRoutes: Routes = [
         path: 'posts/:id',
         component: EditPostComponent,
         data: {
-          title: 'Detalle de publicacion',
+          title: 'Detalle de publicación',
           urls: [
-            { title: 'Edit Post', url: '/apps/advisor/posts' },
+            { title: 'Editar publicación', url: '/apps/advisor/posts' },
           ],
         }
       },
@@ -79,9 +78,9 @@ export const AdvisorRoutes: Routes = [
         path: 'available-dates',
         component: AvailableDatesComponent,
         data: {
-          title: 'Mis Horarios',
+          title: 'Mis horarios',
           urls: [
-            { title: 'Available Dates', url: '/apps/advisor/available-dates' },
+            { title: 'Horarios disponibles', url: '/apps/advisor/available-dates' },
           ]
         }
       },

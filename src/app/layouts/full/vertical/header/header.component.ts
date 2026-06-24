@@ -66,6 +66,7 @@ export class HeaderComponent {
   @Input() username = "Usuario";
   @Input() role = "Rol";
   @Input() photo = "/assets/images/profile/user-1.jpg";
+  readonly fallbackPhoto = "/assets/images/profile/user-1.jpg";
   showFiller = false;
   @Input() notifications: UserNotification[] = [];
 
@@ -145,18 +146,27 @@ export class HeaderComponent {
     this.router.navigate(['/authentication/login']);
   }
 
+  useFallbackPhoto(event: Event): void {
+    const image = event.target as HTMLImageElement;
+    if (image.src.includes(this.fallbackPhoto)) {
+      return;
+    }
+
+    image.src = this.fallbackPhoto;
+  }
+
   profiledd: profiledd[] = [
     {
       id: 1,
       img: '/assets/images/svgs/icon-account.svg',
-      title: 'Mi Perfil',
+      title: 'Mi perfil',
       subtitle: 'Configuración de la cuenta',
       link: '/apps/profile',
     },
     {
       id: 2,
       img: '/assets/images/svgs/icon-inbox.svg',
-      title: 'Mi Inbox',
+      title: 'Mis notificaciones',
       subtitle: 'Notificaciones',
       link: '/apps/notifications',
     },

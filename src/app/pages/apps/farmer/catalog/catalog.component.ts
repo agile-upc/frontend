@@ -1,10 +1,10 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { finalize } from 'rxjs';
+import { Subject, finalize, takeUntil } from 'rxjs';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
@@ -25,8 +25,9 @@ import { AiAnswer, AiRecommendationMatch } from './ai-answer';
     RouterLink,
   ],
 })
-export class AppCatalogComponent implements OnInit {
+export class AppCatalogComponent implements OnInit, OnDestroy {
   private readonly chatSessionKey = 'farmer-catalog-ai-chat';
+  private readonly destroy$ = new Subject<void>();
   private originalAdvisors: Advisor[] = [];
   private aiConversationId: string | null = null;
 
@@ -35,16 +36,14 @@ export class AppCatalogComponent implements OnInit {
   selectedDate: Date | null = null;
   chatOpen = false;
   loading = false;
+  catalogLoading = true;
+  catalogError = '';
   message = '';
-  messages = [
-    new ChatMessage(
-      'ai',
-      'Hola. Te ayudaré a encontrar el asesor ideal. Cuéntame qué necesitas.'
-    )
-  ];
+  messages = this.createDefaultMessages();
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private advisorService: AdvisorService,
     private availableDatesService: AvailableDateService,
     private aiService: AiService
@@ -52,7 +51,13 @@ export class AppCatalogComponent implements OnInit {
 
   ngOnInit(): void {
     this.restoreChatSession();
+    this.watchOpenChatRouteParam();
     this.loadAdvisors();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   sendMessage() {
@@ -122,16 +127,6 @@ export class AppCatalogComponent implements OnInit {
     );
   }
 
-  private loadAdvisors(): void {
-    this.advisorService.getAdvisorCatalog().subscribe({
-      next: (data) => {
-        this.originalAdvisors = data;
-        this.advisors.set(data);
-      },
-      error: (err) => console.error('Error loading advisors:', err),
-    });
-  }
-
   applyFilter(event: Event): void {
     this.searchText.set((event.target as HTMLInputElement).value.toLowerCase());
     this.filterAdvisors();
@@ -142,7 +137,31 @@ export class AppCatalogComponent implements OnInit {
     this.filterAdvisors();
   }
 
+  clearFilters(): void {
+    this.searchText.set('');
+    this.selectedDate = null;
+    this.advisors.set(this.originalAdvisors);
+  }
+
+  private loadAdvisors(): void {
+    this.catalogLoading = true;
+    this.catalogError = '';
+    this.advisorService.getAdvisorCatalog()
+      .pipe(finalize(() => this.catalogLoading = false))
+      .subscribe({
+        next: (data) => {
+          this.originalAdvisors = data;
+          this.advisors.set(data);
+        },
+        error: () => {
+          this.catalogError = 'No se pudo cargar el catálogo de asesores.';
+          this.advisors.set([]);
+        },
+      });
+  }
+
   private filterAdvisors(): void {
+    this.catalogError = '';
     const text = this.searchText().toLowerCase();
     const filtered = this.originalAdvisors.filter((advisor) =>
       `${advisor.firstName} ${advisor.lastName} ${advisor.occupation} ${advisor.description}`
@@ -156,13 +175,19 @@ export class AppCatalogComponent implements OnInit {
     }
 
     const dateStr = this.toLocalDateString(this.selectedDate);
-    this.availableDatesService.getAvailableDatesByDate(dateStr).subscribe({
-      next: (slots) => {
-        const availableAdvisorIds = new Set(slots.map((slot) => slot.advisorId));
-        this.advisors.set(filtered.filter((advisor) => availableAdvisorIds.has(advisor.advisorId)));
-      },
-      error: (err) => console.error(err)
-    });
+    this.catalogLoading = true;
+    this.availableDatesService.getAvailableDatesByDate(dateStr)
+      .pipe(finalize(() => this.catalogLoading = false))
+      .subscribe({
+        next: (slots) => {
+          const availableAdvisorIds = new Set(slots.map((slot) => slot.advisorId));
+          this.advisors.set(filtered.filter((advisor) => availableAdvisorIds.has(advisor.advisorId)));
+        },
+        error: () => {
+          this.catalogError = 'No se pudo filtrar por fecha. Intenta nuevamente.';
+          this.advisors.set(filtered);
+        }
+      });
   }
 
   private buildAiMessage(answer: AiAnswer): ChatMessage {
@@ -260,6 +285,19 @@ export class AppCatalogComponent implements OnInit {
       sessionStorage.removeItem(this.chatSessionKey);
       this.messages = this.createDefaultMessages();
     }
+  }
+
+  private watchOpenChatRouteParam(): void {
+    this.route.queryParamMap
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((params) => {
+        if (params.get('openChat') !== 'true') {
+          return;
+        }
+
+        this.chatOpen = true;
+        this.persistChatSession();
+      });
   }
 
   private persistChatSession(): void {

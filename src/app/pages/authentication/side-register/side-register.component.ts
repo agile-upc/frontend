@@ -20,6 +20,7 @@ export class AppSideRegisterComponent implements OnInit {
   image: File | null = null;
   imageUrl = '';
   imageName = '';
+  hidePassword = true;
 
   today = new Date();
   maxBirthDate = new Date(
@@ -35,11 +36,6 @@ export class AppSideRegisterComponent implements OnInit {
     private toastr: ToastrService
   ) {}
 
-  ngOnInit() {
-    this.form.get('role')?.valueChanges.subscribe(() => this.updateRequirement());
-    this.updateRequirement();
-  }
-
   form = new FormGroup({
     uname: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
@@ -54,6 +50,11 @@ export class AppSideRegisterComponent implements OnInit {
     experience: new FormControl<number | null>(null, []),
     photo: new FormControl('', []),
   });
+
+  ngOnInit() {
+    this.form.get('role')?.valueChanges.subscribe(() => this.updateRequirement());
+    this.updateRequirement();
+  }
 
   updateRequirement() {
     if (this.form.get('role')?.value === 'ADVISOR') {
@@ -89,6 +90,7 @@ export class AppSideRegisterComponent implements OnInit {
 
   submit() {
     if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
 
@@ -115,7 +117,7 @@ export class AppSideRegisterComponent implements OnInit {
     this.authService.signup(formData).subscribe({
       next: (session) => {
         this.authService.saveSession(session);
-        this.toastr.success('Usuario registrado con Éxito', 'Registro exitoso');
+        this.toastr.success('Usuario registrado con éxito', 'Registro exitoso');
         this.router.navigate(['']);
       },
       error: () => {

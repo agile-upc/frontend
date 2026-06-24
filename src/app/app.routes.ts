@@ -10,6 +10,7 @@ export const routes: Routes = [
     path: '',
     component: FullComponent,
     canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
     children: [
       {
         path: 'apps',
@@ -30,7 +31,7 @@ export const routes: Routes = [
             data: {
               title: 'Notificaciones',
               urls: [
-                { title: 'Notifications', url: '/apps/notifications' }
+                { title: 'Notificaciones', url: '/apps/notifications' }
               ]
             },
           },
@@ -40,7 +41,7 @@ export const routes: Routes = [
             data: {
               title: 'Mi perfil',
               urls: [
-                { title: 'Profile' },
+                { title: 'Mi perfil' },
               ],
             },
           },
@@ -57,6 +58,13 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./pages/authentication/authentication.routes').then(
             (m) => m.AuthenticationRoutes
+          ),
+      },
+      {
+        path: 'landingpage',
+        loadChildren: () =>
+          import('./pages/theme-pages/landingpage/landingpage.routes').then(
+            (m) => m.LandingPageRoutes
           ),
       },
     ],

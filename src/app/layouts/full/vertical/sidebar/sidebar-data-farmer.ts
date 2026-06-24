@@ -5,17 +5,22 @@ export const navItemsFarmer: NavItem[] = [
     navCap: 'Citas',
   },
   {
+    displayName: 'Guía rápida',
+    iconName: 'help-circle',
+    route: '/apps/farmer/tutorial',
+  },
+  {
     displayName: 'Catálogo',
     iconName: 'aperture',
     route: '/apps/farmer/catalog',
   },
   {
-    displayName: 'Mis Citas',
+    displayName: 'Mis citas',
     iconName: 'calendar',
     route: '/apps/farmer/appointments',
   },
   {
-    navCap: 'Posts',
+    navCap: 'Publicaciones',
   },
   {
     displayName: 'Publicaciones',
@@ -26,12 +31,12 @@ export const navItemsFarmer: NavItem[] = [
     navCap: 'Perfil',
   },
   {
-    displayName: 'Mi Perfil',
+    displayName: 'Mi perfil',
     iconName: 'user-circle',
     route: '/apps/profile',
   },
   {
-    displayName: 'Mis Notificaciones',
+    displayName: 'Mis notificaciones',
     iconName: 'notification',
     route: '/apps/notifications',
   }

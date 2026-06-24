@@ -90,9 +90,11 @@
     aria-label="Notifications" class="m-l-8"
   >
     <img
-      [src]="photo"
+      [src]="photo || fallbackPhoto"
+      (error)="useFallbackPhoto($event)"
       class="rounded-circle object-cover icon-35 profile-dd"
       width="35"
+      alt="Foto de perfil"
     />
   </button>
   <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">
@@ -102,10 +104,12 @@
 
         <div class="d-flex align-items-center p-b-24 b-b-1 m-t-16">
           <img
-            [src]="photo"
+            [src]="photo || fallbackPhoto"
+            (error)="useFallbackPhoto($event)"
             class="rounded-circle object-cover"
             width="95"
             height="95"
+            alt="Foto de perfil"
           />
           <div class="m-l-16">
             <h6 class="f-s-14 f-w-600 m-0 ">{{ username }}</h6>

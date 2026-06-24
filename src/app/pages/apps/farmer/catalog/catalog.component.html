@@ -1,11 +1,12 @@
 <mat-card class="cardWithShadow">
   <mat-card-content>
-    <div class="row justify-content-between align-items-center gap-16">
-      <div class="col-sm-4">
+    <div class="filter-toolbar">
+      <div class="filter-field filter-field-search">
         <mat-form-field appearance="outline" class="w-100 hide-hint">
           <input
             matInput
-            placeholder="Busca aquí..."
+            placeholder="Busca por nombre, profesión o especialidad"
+            [ngModel]="searchText()"
             (keyup)="applyFilter($event)"
           />
           <mat-icon matSuffix>
@@ -13,12 +14,13 @@
           </mat-icon>
         </mat-form-field>
       </div>
-      <div class="col-sm-4">
+      <div class="filter-field filter-field-date">
         <mat-form-field appearance="outline" class="w-100">
           <input
             matInput
             [matDatepicker]="picker"
             placeholder="Selecciona una fecha"
+            [(ngModel)]="selectedDate"
             (dateChange)="onDateChange($event)"
           />
           <mat-hint>DD/MM/YYYY</mat-hint>
@@ -26,15 +28,34 @@
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
       </div>
+      <div class="filter-actions">
+        <button mat-stroked-button color="primary" class="filter-action-button" (click)="clearFilters()">
+          <i-tabler name="filter-off" class="icon-18 d-flex"></i-tabler>
+          Limpiar filtros
+        </button>
+      </div>
     </div>
   </mat-card-content>
 </mat-card>
 
-@if(advisors().length == 0) {
+@if(catalogLoading) {
+  <div class="d-flex justify-content-center p-24">
+    <mat-progress-spinner mode="indeterminate" diameter="36"></mat-progress-spinner>
+  </div>
+}
+@else if(catalogError) {
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="text-center p-y-32">
+      <i-tabler name="alert-circle" class="icon-48 text-dark m-b-16"></i-tabler>
+      <div class="f-s-16 text-dark">{{ catalogError }}</div>
+    </mat-card-content>
+  </mat-card>
+}
+@else if(advisors().length == 0) {
   <mat-card class="cardWithShadow">
     <mat-card-content class="text-center p-y-32">
       <i-tabler name="file-search" class="icon-48 text-dark m-b-16"></i-tabler>
-      <div class="f-s-16 text-dark">No hay asesores disponibles.</div>
+      <div class="f-s-16 text-dark">No hay asesores disponibles con esos filtros.</div>
     </mat-card-content>
   </mat-card>
 }
@@ -73,108 +94,105 @@
             </div>
           </mat-card-content>
           <mat-divider></mat-divider>
-          <div class="row">
-            <div class="col-4 p-y-12"></div>
-            <div class="col-4 p-y-12">
+          <div class="advisor-rating-row p-y-12">
               <a
                 [routerLink]="['/apps/farmer/catalog/', advisor.advisorId]"
-                class="text-decoration-none f-s-14 f-w-500 d-flex justify-content-center align-items-center gap-4"
+                class="advisor-rating-link text-decoration-none f-s-14 f-w-500"
               >
                 <i-tabler name="star" class="icon-18 d-flex"></i-tabler>
                 {{ advisor.rating || 'Sin calificación' }}
               </a>
-            </div>
-            <div class="col-4 p-y-12"></div>
           </div>
         </mat-card>
       </div>
     }
   </div>
-  <div class="chat-box" *ngIf="chatOpen">
-    <div class="chat-header b-b-1">
-      <span>Chat con IA</span>
-      <button mat-icon-button (click)="chatOpen = false">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-    <div class="chat-body">
-      <div
-        *ngFor="let msg of messages"
-        class="bubble"
-        [ngClass]="{ 'bg-light-primary ai': msg.from === 'ai', 'bg-light-secondary user': msg.from == 'user' }">
-        <div class="message-text">{{ msg.text }}</div>
-        <div *ngIf="msg.selectedMatch" class="recommend-list">
-          <div class="recommend-item">
-            <div class="recommend-name">{{ msg.selectedMatch.fullName }}</div>
-            <div class="recommend-meta">
-              {{ msg.selectedMatch.occupation || 'Asesor' }}
-              <span *ngIf="msg.selectedMatch.city || msg.selectedMatch.country"> · {{ msg.selectedMatch.city }}{{ msg.selectedMatch.city && msg.selectedMatch.country ? ', ' : '' }}{{ msg.selectedMatch.country }}</span>
-            </div>
-            <div class="recommend-meta">
-              Rating {{ msg.selectedMatch.rating || 'sin calificación' }} · {{ msg.selectedMatch.experience }} años de experiencia
-              <span *ngIf="msg.selectedMatch.nextAvailableDate"> · Disponible desde {{ msg.selectedMatch.nextAvailableDate | date:'yyyy-MM-dd' }}</span>
-            </div>
-            <div class="recommend-why">{{ msg.selectedMatch.why }}</div>
-            <div class="recommend-actions">
-              <button
-                mat-stroked-button
-                color="primary"
-                (click)="goToAiRecommendation(msg)"
-              >
-                Ver perfil
-              </button>
-              <button
-                *ngIf="msg.draftAppointmentMessage"
-                mat-flat-button
-                color="primary"
-                (click)="goToAiBooking(msg)"
-              >
-                Ir a reservar
-              </button>
-            </div>
+}
+
+<div class="chat-box" *ngIf="chatOpen">
+  <div class="chat-header b-b-1">
+    <span>Chat con IA</span>
+    <button mat-icon-button (click)="toggleChat()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="chat-body">
+    <div
+      *ngFor="let msg of messages"
+      class="bubble"
+      [ngClass]="{ 'bg-light-primary ai': msg.from === 'ai', 'bg-light-secondary user': msg.from == 'user' }">
+      <div class="message-text">{{ msg.text }}</div>
+      <div *ngIf="msg.selectedMatch" class="recommend-list">
+        <div class="recommend-item">
+          <div class="recommend-name">{{ msg.selectedMatch.fullName }}</div>
+          <div class="recommend-meta">
+            {{ msg.selectedMatch.occupation || 'Asesor' }}
+            <span *ngIf="msg.selectedMatch.city || msg.selectedMatch.country"> - {{ msg.selectedMatch.city }}{{ msg.selectedMatch.city && msg.selectedMatch.country ? ', ' : '' }}{{ msg.selectedMatch.country }}</span>
+          </div>
+          <div class="recommend-meta">
+            Calificación {{ msg.selectedMatch.rating || 'sin calificación' }} - {{ msg.selectedMatch.experience }} años de experiencia
+            <span *ngIf="msg.selectedMatch.nextAvailableDate"> - Disponible desde {{ msg.selectedMatch.nextAvailableDate | date:'yyyy-MM-dd' }}</span>
+          </div>
+          <div class="recommend-why">{{ msg.selectedMatch.why }}</div>
+          <div class="recommend-actions">
+            <button
+              mat-stroked-button
+              color="primary"
+              (click)="goToAiRecommendation(msg)"
+            >
+              Ver perfil
+            </button>
+            <button
+              *ngIf="msg.draftAppointmentMessage"
+              mat-flat-button
+              color="primary"
+              (click)="goToAiBooking(msg)"
+            >
+              Ir a reservar
+            </button>
           </div>
         </div>
-        <div *ngIf="msg.draftAppointmentMessage" class="draft-message">
-          <div class="draft-title">Mensaje de reserva sugerido</div>
-          <div>{{ msg.draftAppointmentMessage }}</div>
-        </div>
-        <div *ngIf="msg.fallbackNotice" class="fallback-note">
-          {{ msg.fallbackNotice }}
-        </div>
       </div>
-      <div *ngIf="loading" class="bubble ai typing">
-        <span class="typing-dot"></span>
-        <span class="typing-dot"></span>
-        <span class="typing-dot"></span>
+      <div *ngIf="msg.draftAppointmentMessage" class="draft-message">
+        <div class="draft-title">Mensaje de reserva sugerido</div>
+        <div>{{ msg.draftAppointmentMessage }}</div>
+      </div>
+      <div *ngIf="msg.fallbackNotice" class="fallback-note">
+        {{ msg.fallbackNotice }}
       </div>
     </div>
-    <div class="chat-footer b-t-1">
-      <mat-form-field appearance="outline" class="w-100 hide-hint">
-        <textarea
-          matInput
-          cdkTextareaAutosize
-          cdkAutosizeMaxRows="3"
-          rows="1"
-          [disabled]="loading"
-          [(ngModel)]="message"
-          placeholder="Describe tu asesoría ideal..."
-          (keydown.enter)="sendMessage()"
-        ></textarea>
-        <button
-          [disabled]="loading"
-          mat-icon-button
-          matSuffix
-          (click)="sendMessage()">
-          <mat-icon matSuffix>
-            <i-tabler name="send" class="icon-20 d-flex m-t-2"></i-tabler>
-          </mat-icon>
-        </button>
-      </mat-form-field>
+    <div *ngIf="loading" class="bubble ai typing">
+      <span class="typing-dot"></span>
+      <span class="typing-dot"></span>
+      <span class="typing-dot"></span>
     </div>
   </div>
-  <button mat-fab color="primary" class="fab-fixed d-none d-sm-flex" (click)="toggleChat()">
-    <mat-icon>
-      <i-tabler name="message" class="icon-24 d-flex m-0"></i-tabler>
-    </mat-icon>
-  </button>
-}
+  <div class="chat-footer b-t-1">
+    <mat-form-field appearance="outline" class="w-100 hide-hint">
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        cdkAutosizeMaxRows="3"
+        rows="1"
+        [disabled]="loading"
+        [(ngModel)]="message"
+        placeholder="Describe la asesoría que necesitas"
+        (keydown.enter)="sendMessage()"
+      ></textarea>
+      <button
+        [disabled]="loading"
+        mat-icon-button
+        matSuffix
+        (click)="sendMessage()">
+        <mat-icon matSuffix>
+          <i-tabler name="send" class="icon-20 d-flex m-t-2"></i-tabler>
+        </mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+</div>
+<button mat-fab color="primary" class="fab-fixed d-none d-sm-flex" (click)="toggleChat()">
+  <mat-icon>
+    <i-tabler name="message" class="icon-24 d-flex m-0"></i-tabler>
+  </mat-icon>
+</button>

@@ -1,7 +1,9 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { TimeFormatPipe } from 'src/app/pipes/time-format.pipe';
@@ -18,18 +20,24 @@ interface EnrichedAppointment {
   startTime: string;
   endTime: string;
   status: 'PENDING' | 'ONGOING' | 'COMPLETED';
+  message: string;
 }
 
 @Component({
   selector: 'app-advisor-history',
   standalone: true,
   templateUrl: './advisor-history.component.html',
-  imports: [CommonModule, MaterialModule, TablerIconsModule, TimeFormatPipe]
+  imports: [CommonModule, FormsModule, MaterialModule, TablerIconsModule, TimeFormatPipe]
 })
 export class AdvisorHistoryComponent implements OnInit {
+  private allAppointments: EnrichedAppointment[] = [];
+
   appointments = signal<EnrichedAppointment[]>([]);
   protected readonly parseAppointmentDate = parseAppointmentDate;
   loading = signal(true);
+  errorMessage = signal('');
+  searchText = '';
+  selectedDate: Date | null = null;
 
   constructor(
     private appointmentService: AppointmentService,
@@ -43,28 +51,37 @@ export class AdvisorHistoryComponent implements OnInit {
 
   fetchHistory() {
     this.loading.set(true);
+    this.errorMessage.set('');
     this.appointmentService.getMyAdvisorAppointments().subscribe({
       next: (allAppointments: AppointmentDetailed[]) => {
-        const enriched = allAppointments
+        this.allAppointments = allAppointments
           .filter((appointment) => appointment.status === 'COMPLETED' || this.isPast(appointment))
-          .map((appointment) => ({
-            id: appointment.id,
-            farmerId: appointment.farmerId,
-            farmerName: appointment.farmerName || `Productor #${appointment.farmerId}`,
-            farmerPhoto: appointment.farmerPhoto || 'assets/images/profile/user-1.jpg',
-            date: appointment.availableDate.scheduledDate,
-            startTime: appointment.availableDate.startTime,
-            endTime: appointment.availableDate.endTime,
-            status: appointment.status
-          }));
+          .map((appointment) => this.toEnrichedAppointment(appointment));
 
-        this.appointments.set(enriched);
+        this.applyFilters();
         this.loading.set(false);
       },
       error: () => {
+        this.errorMessage.set('No se pudo cargar el historial de citas.');
         this.loading.set(false);
       }
     });
+  }
+
+  applyTextFilter(event: Event): void {
+    this.searchText = (event.target as HTMLInputElement).value.toLowerCase();
+    this.applyFilters();
+  }
+
+  onDateChange(event: MatDatepickerInputEvent<Date>): void {
+    this.selectedDate = event.value;
+    this.applyFilters();
+  }
+
+  clearFilters(): void {
+    this.searchText = '';
+    this.selectedDate = null;
+    this.applyFilters();
   }
 
   isPast(appointment: AppointmentDetailed): boolean {
@@ -86,5 +103,42 @@ export class AdvisorHistoryComponent implements OnInit {
       autoFocus: false,
       data: { appointmentId }
     });
+  }
+
+  private applyFilters(): void {
+    const text = this.searchText.trim().toLowerCase();
+    const selectedDate = this.selectedDate ? this.toLocalDateString(this.selectedDate) : '';
+
+    this.appointments.set(this.allAppointments.filter((appointment) => {
+      const textMatch = !text || [
+        appointment.farmerName,
+        appointment.message,
+        appointment.status,
+        appointment.date
+      ].join(' ').toLowerCase().includes(text);
+      const dateMatch = !selectedDate || appointment.date === selectedDate;
+      return textMatch && dateMatch;
+    }));
+  }
+
+  private toEnrichedAppointment(appointment: AppointmentDetailed): EnrichedAppointment {
+    return {
+      id: appointment.id,
+      farmerId: appointment.farmerId,
+      farmerName: appointment.farmerName || `Productor #${appointment.farmerId}`,
+      farmerPhoto: appointment.farmerPhoto || 'assets/images/profile/user-1.jpg',
+      date: appointment.availableDate.scheduledDate,
+      startTime: appointment.availableDate.startTime,
+      endTime: appointment.availableDate.endTime,
+      status: appointment.status,
+      message: appointment.message || ''
+    };
+  }
+
+  private toLocalDateString(date: Date): string {
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const day = `${date.getDate()}`.padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }

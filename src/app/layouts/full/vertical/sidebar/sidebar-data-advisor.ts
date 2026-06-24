@@ -5,20 +5,20 @@ export const navItemsAdvisor: NavItem[] = [
     navCap: 'Citas',
   },
   {
-    displayName: 'Mis Citas',
+    displayName: 'Mis citas',
     iconName: 'calendar',
     route: '/apps/advisor/appointments',
   },
   {
-    displayName: 'Mis Horarios',
+    displayName: 'Mis horarios',
     iconName: 'calendar-event',
     route: '/apps/advisor/available-dates',
   },
   {
-    navCap: 'Posts',
+    navCap: 'Publicaciones',
   },
   {
-    displayName: 'Mis Publicaciones',
+    displayName: 'Mis publicaciones',
     iconName: 'news',
     route: '/apps/advisor/posts',
   },
@@ -26,12 +26,12 @@ export const navItemsAdvisor: NavItem[] = [
     navCap: 'Perfil',
   },
   {
-    displayName: 'Mi Perfil',
+    displayName: 'Mi perfil',
     iconName: 'user-circle',
     route: '/apps/profile',
   },
   {
-    displayName: 'Mis Notificaciones',
+    displayName: 'Mis notificaciones',
     iconName: 'notification',
     route: '/apps/notifications',
   }

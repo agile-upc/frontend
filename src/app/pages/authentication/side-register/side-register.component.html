@@ -6,73 +6,63 @@
       </div>
     </div>
     <div class="col-lg-5 col-xl-4 p-0">
-      <div
-        class="p-32 d-flex align-items-start align-items-lg-center justify-content-center h-100"
-      >
+      <div class="p-32 d-flex align-items-start align-items-lg-center justify-content-center h-100">
         <div class="row justify-content-center w-100">
           <div class="col-lg-9 max-width-form">
             <h4 class="f-w-700 f-s-24 m-0">Bienvenido a AgroTech</h4>
 
             <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">
-              <!-- usuario -->
-              <mat-label class="f-s-14 f-w-600 m-b-12 d-block"
-                >Correo electrónico</mat-label
-              >
-              <mat-form-field
-                appearance="outline"
-                class="w-100"
-                color="primary"
-              >
+              <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Correo electrónico</mat-label>
+              <mat-form-field appearance="outline" class="w-100" color="primary">
                 <input matInput formControlName="uname" />
                 @if(f['uname'].touched && f['uname'].invalid) {
-                <mat-hint class="m-b-16 error-msg">
-                  @if(f['uname'].errors && f['uname'].errors['required']) {
-                  <div class="text-error">Correo es requerido.</div>
-                  } @if(f['uname'].errors && f['uname'].errors['email']) {
-                  <div class="text-error">Debe ser un email válido.</div>
-                  }
-                </mat-hint>
+                  <mat-hint class="m-b-16 error-msg">
+                    @if(f['uname'].errors && f['uname'].errors['required']) {
+                          <div class="text-error">El correo electrónico es obligatorio.</div>
+                    }
+                    @if(f['uname'].errors && f['uname'].errors['email']) {
+                      <div class="text-error">Debe ser un correo electrónico válido.</div>
+                    }
+                  </mat-hint>
                 }
               </mat-form-field>
-              <!-- password -->
-              <mat-label class="f-s-14 f-w-600 m-b-12 d-block"
-                >Contraseña</mat-label
-              >
-              <mat-form-field
-                appearance="outline"
-                class="w-100"
-                color="primary"
-              >
-                <input matInput type="password" formControlName="password" />
+
+              <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Contraseña</mat-label>
+              <mat-form-field appearance="outline" class="w-100" color="primary">
+                <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  type="button"
+                  [attr.aria-label]="hidePassword ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+                  (click)="hidePassword = !hidePassword"
+                >
+                  <i-tabler [name]="hidePassword ? 'eye' : 'eye-off'" class="icon-20 d-flex"></i-tabler>
+                </button>
                 @if(f['password'].touched && f['password'].invalid) {
-                <mat-hint class="m-b-16 error-msg">
-                  @if( f['password'].errors && f['password'].errors['required'])
-                  {
-                  <div class="text-error">Contraseña es requerida.</div>
-                  }
-                </mat-hint>
+                  <mat-hint class="m-b-16 error-msg">
+                    @if(f['password'].errors && f['password'].errors['required']) {
+                      <div class="text-error">La contraseña es obligatoria.</div>
+                    }
+                  </mat-hint>
                 }
               </mat-form-field>
-              <!-- roles -->
+
               <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Rol</mat-label>
               <mat-button-toggle-group formControlName="role" style="margin-bottom: 10px;">
-                <mat-button-toggle value="FARMER">Productor Agrícola</mat-button-toggle>
-                <mat-button-toggle value="ADVISOR">Asesor Especializado</mat-button-toggle>
+                <mat-button-toggle value="FARMER">Productor agrícola</mat-button-toggle>
+                <mat-button-toggle value="ADVISOR">Asesor especializado</mat-button-toggle>
               </mat-button-toggle-group>
 
               <div class="row">
                 <div class="col-md-6">
                   <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Nombre</mat-label>
-                  <mat-form-field
-                    appearance="outline"
-                    class="w-100"
-                    color="primary"
-                  >
+                  <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput formControlName="firstName" />
                     @if(f['firstName'].touched && f['firstName'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['firstName'].errors && f['firstName'].errors['required']) {
-                          <div class="text-error">Nombre es requerido.</div>
+                          <div class="text-error">El nombre es obligatorio.</div>
                         }
                       </mat-hint>
                     }
@@ -80,16 +70,12 @@
                 </div>
                 <div class="col-md-6">
                   <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Apellido</mat-label>
-                  <mat-form-field
-                    appearance="outline"
-                    class="w-100"
-                    color="primary"
-                  >
+                  <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput formControlName="lastName" />
                     @if(f['lastName'].touched && f['lastName'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['lastName'].errors && f['lastName'].errors['required']) {
-                          <div class="text-error">Apellido es requerido.</div>
+                          <div class="text-error">El apellido es obligatorio.</div>
                         }
                       </mat-hint>
                     }
@@ -100,16 +86,12 @@
               <div class="row">
                 <div class="col-md-6">
                   <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Ciudad</mat-label>
-                  <mat-form-field
-                    appearance="outline"
-                    class="w-100"
-                    color="primary"
-                  >
+                  <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput formControlName="city" />
                     @if(f['city'].touched && f['city'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['city'].errors && f['city'].errors['required']) {
-                          <div class="text-error">Ciudad es requerida.</div>
+                          <div class="text-error">La ciudad es obligatoria.</div>
                         }
                       </mat-hint>
                     }
@@ -117,16 +99,12 @@
                 </div>
                 <div class="col-md-6">
                   <mat-label class="f-s-14 f-w-600 m-b-12 d-block">País</mat-label>
-                  <mat-form-field
-                    appearance="outline"
-                    class="w-100"
-                    color="primary"
-                  >
+                  <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput formControlName="country" />
                     @if(f['country'].touched && f['country'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['country'].errors && f['country'].errors['required']) {
-                          <div class="text-error">País es requerido.</div>
+                          <div class="text-error">El país es obligatorio.</div>
                         }
                       </mat-hint>
                     }
@@ -137,20 +115,14 @@
               <div class="row">
                 <div class="col-md-6">
                   <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Fecha de nacimiento</mat-label>
-
-
-                  <mat-form-field
-                    appearance="outline"
-                    class="w-100"
-                    color="primary"
-                  >
+                  <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput [matDatepicker]="picker" formControlName="birthDate" [max]="maxBirthDate" readonly />
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                     @if(f['birthDate'].touched && f['birthDate'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['birthDate'].errors && f['birthDate'].errors['required']) {
-                          <div class="text-error">Fecha es requerida.</div>
+                          <div class="text-error">La fecha es obligatoria.</div>
                         }
                       </mat-hint>
                     }
@@ -171,6 +143,7 @@
                           class="rounded-circle object-cover profile-dd"
                           width="100"
                           height="100"
+                          alt="Foto seleccionada"
                         />
                       } @else {
                         Subir foto
@@ -182,34 +155,19 @@
               </div>
 
               <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Descripción</mat-label>
-              <mat-form-field
-                appearance="outline"
-                class="w-100"
-                color="primary"
-              >
+              <mat-form-field appearance="outline" class="w-100" color="primary">
                 <textarea matInput formControlName="description"></textarea>
-                @if(f['description'].touched && f['description'].invalid) {
-                  <mat-hint class="m-b-16 error-msg">
-                    @if(f['description'].errors && f['description'].errors['required']) {
-                      <div class="text-error">Descripción es requerida.</div>
-                    }
-                  </mat-hint>
-                }
               </mat-form-field>
 
               <div class="row" *ngIf="isAdvisor()">
                 <div class="col-md-6">
                   <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Ocupación</mat-label>
-                  <mat-form-field
-                    appearance="outline"
-                    class="w-100"
-                    color="primary"
-                  >
+                  <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput formControlName="occupation" />
                     @if(f['occupation'].touched && f['occupation'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['occupation'].errors && f['occupation'].errors['required']) {
-                          <div class="text-error">Ocupación es requerida.</div>
+                          <div class="text-error">La ocupación es obligatoria.</div>
                         }
                       </mat-hint>
                     }
@@ -217,18 +175,14 @@
                 </div>
                 <div class="col-md-6">
                   <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Experiencia</mat-label>
-                  <mat-form-field
-                    appearance="outline"
-                    class="w-100"
-                    color="primary"
-                  >
+                  <mat-form-field appearance="outline" class="w-100" color="primary">
                     <input matInput type="number" formControlName="experience" [min]="1" />
                     @if(f['experience'].touched && f['experience'].invalid) {
                       <mat-hint class="m-b-16 error-msg">
                         @if(f['experience'].errors && f['experience'].errors['required']) {
-                          <div class="text-error">Experiencia es requerida.</div>
+                          <div class="text-error">La experiencia es obligatoria.</div>
                         } @else if (f['experience'].errors && f['experience'].errors['min']) {
-                          <div class="text-error">Experiencia debe ser al menos 1 años.</div>
+                          <div class="text-error">La experiencia debe ser de al menos 1 año.</div>
                         }
                       </mat-hint>
                     }
@@ -236,25 +190,18 @@
                 </div>
               </div>
 
-              <button
-                mat-flat-button
-                color="primary"
-                class="w-100 m-t-24"
-                [disabled]="!form.valid"
-              >
+              <button mat-flat-button color="primary" class="w-100 m-t-24" [disabled]="!form.valid">
                 Registrarse
               </button>
-              <!-- input -->
             </form>
-            <span class="d-block f-w-500 d-block m-t-24"
-              >¿Ya tienes una cuenta?
-
+            <span class="d-block f-w-500 d-block m-t-24">
+              ¿Ya tienes una cuenta?
               <a
                 [routerLink]="['/authentication/login']"
                 class="text-decoration-none text-primary f-w-500 f-s-14"
               >
-                Inicia sesión</a
-              >
+                Inicia sesión
+              </a>
             </span>
           </div>
         </div>

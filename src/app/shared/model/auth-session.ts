@@ -8,4 +8,5 @@ export interface AuthSession {
   farmerId: number | null;
   advisorId: number | null;
   token: string;
+  refreshToken: string;
 }

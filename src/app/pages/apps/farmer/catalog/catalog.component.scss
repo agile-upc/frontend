@@ -5,6 +5,20 @@
   z-index: 1000;
 }
 
+.advisor-rating-row {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.advisor-rating-link {
+  align-items: center;
+  display: inline-flex;
+  gap: 4px;
+  justify-content: center;
+  white-space: nowrap;
+}
+
 .chat-box {
   position: fixed;
   bottom: 90px;

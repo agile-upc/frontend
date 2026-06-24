@@ -9,14 +9,14 @@ export class SweetAlertService {
 
   confirmAndDeleteWithValue(value?: string) {
     return Swal.fire({
-      title: '¿Estas seguro de eliminar ' + (value === undefined ? 'este registro' : 'los datos de ' + value) + '?',
-      text: "Esta acción no se podra revertir.",
+      title: '¿Estás seguro de eliminar ' + (value === undefined ? 'este registro' : 'los datos de ' + value) + '?',
+      text: "Esta acción no se podrá revertir.",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: '¡Sí, Eliminalo!',
-      cancelButtonText: 'No, cancelalo',
+      confirmButtonText: '¡Sí, elimínalo!',
+      cancelButtonText: 'No, cancelar',
     });
   }
 

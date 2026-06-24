@@ -1,0 +1,90 @@
+.tutorial-summary {
+  margin-bottom: 20px;
+}
+
+.summary-layout,
+.support-layout {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.summary-eyebrow {
+  align-items: center;
+  display: flex;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.summary-copy,
+.support-copy {
+  line-height: 1.5;
+  max-width: 680px;
+}
+
+.summary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.tutorial-steps {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-bottom: 20px;
+}
+
+.tutorial-step mat-card-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 180px;
+}
+
+.step-header {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.step-icon-box {
+  align-items: center;
+  background: var(--mat-sys-primary-container);
+  border-radius: 8px;
+  color: var(--mat-sys-on-primary-container);
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  width: 40px;
+}
+
+.step-index {
+  align-items: center;
+  background: var(--mat-sys-surface-container-highest);
+  border-radius: 999px;
+  color: var(--mat-sys-on-surface-variant);
+  display: flex;
+  font-size: 12px;
+  font-weight: 600;
+  height: 28px;
+  justify-content: center;
+  min-width: 28px;
+  padding: 0 8px;
+}
+
+@media (max-width: 768px) {
+  .summary-layout,
+  .support-layout {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .summary-actions {
+    justify-content: flex-start;
+  }
+}

@@ -1,0 +1,68 @@
+<mat-card class="cardWithShadow tutorial-summary">
+  <mat-card-content>
+    <div class="summary-layout">
+      <div>
+        <div class="summary-eyebrow text-primary">
+          <i-tabler name="help-circle" class="icon-18 d-flex"></i-tabler>
+          Guía rápida para productores
+        </div>
+        <mat-card-title class="f-s-20 f-w-600 m-b-8">
+          Reserva asesoría agrícola en pocos pasos
+        </mat-card-title>
+        <p class="text-muted f-s-14 m-0 summary-copy">
+          Sigue este recorrido para encontrar un asesor, preparar tu consulta y revisar tu historial de atenciones.
+        </p>
+      </div>
+      <div class="summary-actions">
+        <button mat-flat-button color="primary" class="tutorial-action-button" [routerLink]="['/apps/farmer/catalog']">
+          <i-tabler name="search" class="icon-18 d-flex"></i-tabler>
+          Buscar asesor
+        </button>
+        <button mat-stroked-button color="primary" class="tutorial-action-button" [routerLink]="['/apps/farmer/appointments']">
+          <i-tabler name="calendar" class="icon-18 d-flex"></i-tabler>
+          Ver mis citas
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<div class="tutorial-steps">
+  @for(step of steps; track step.title; let index = $index) {
+    <mat-card class="cardWithShadow tutorial-step">
+      <mat-card-content>
+        <div class="step-header">
+          <div class="step-icon-box">
+            <i-tabler [name]="step.icon" class="icon-24 d-flex"></i-tabler>
+          </div>
+          <div class="step-index">{{ index + 1 }}</div>
+        </div>
+        <h3 class="f-s-16 f-w-600 m-b-8">{{ step.title }}</h3>
+        <p class="text-muted f-s-14 m-0">
+          {{ step.text }}
+        </p>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>
+
+<mat-card class="cardWithShadow">
+  <mat-card-content class="support-layout">
+    <div>
+      <mat-card-title class="f-s-18 f-w-600 m-b-8">También puedes pedir ayuda a la IA</mat-card-title>
+      <p class="text-muted f-s-14 m-0 support-copy">
+        En el catálogo, abre el chat y describe tu necesidad. La IA recomendará asesores y puede llevar tu mensaje a la reserva.
+      </p>
+    </div>
+    <button
+      mat-flat-button
+      color="primary"
+      class="tutorial-action-button"
+      [routerLink]="['/apps/farmer/catalog']"
+      [queryParams]="{ openChat: 'true' }"
+    >
+      <i-tabler name="message" class="icon-18 d-flex"></i-tabler>
+      Abrir catálogo
+    </button>
+  </mat-card-content>
+</mat-card>

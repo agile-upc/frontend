@@ -1,8 +1,38 @@
 <mat-card class="cardWithShadow">
   <mat-card-content>
-    <div class="row justify-content-start">
-      <div class="d-flex align-items-center">
-        <button mat-flat-button color="primary" (click)="goBack()">
+    <div class="filter-toolbar">
+      <div class="filter-field filter-field-search">
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            placeholder="Buscar por productor o consulta"
+            [ngModel]="searchText"
+            (keyup)="applyTextFilter($event)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20 d-flex m-t-2"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="filter-field filter-field-date">
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            matInput
+            [matDatepicker]="advisorHistoryPicker"
+            placeholder="Filtrar por fecha"
+            [(ngModel)]="selectedDate"
+            (dateChange)="onDateChange($event)"
+          />
+          <mat-datepicker-toggle matSuffix [for]="advisorHistoryPicker"></mat-datepicker-toggle>
+          <mat-datepicker #advisorHistoryPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="filter-actions">
+        <button mat-stroked-button color="primary" class="filter-action-button" (click)="clearFilters()">
+          <i-tabler name="filter-off" class="icon-18 d-flex"></i-tabler>
+          Limpiar
+        </button>
+        <button mat-flat-button color="primary" class="filter-action-button" (click)="goBack()">
           <mat-icon matSuffix class="d-none d-sm-flex">
             <i-tabler name="arrow-left" class="icon-18 d-flex m-0"></i-tabler>
           </mat-icon>
@@ -18,12 +48,20 @@
     <mat-progress-spinner mode="indeterminate" diameter="36"></mat-progress-spinner>
   </div>
 }
+@else if (errorMessage()) {
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="text-center p-y-32">
+      <i-tabler name="alert-circle" class="icon-48 text-dark m-b-16"></i-tabler>
+      <div class="f-s-16 text-dark">{{ errorMessage() }}</div>
+    </mat-card-content>
+  </mat-card>
+}
 @else {
   @if (appointments().length == 0) {
     <mat-card class="cardWithShadow">
       <mat-card-content class="text-center p-y-32">
         <i-tabler name="calendar-off" class="icon-48 text-dark m-b-16"></i-tabler>
-        <div class="f-s-16 text-dark">No hay citas pasadas.</div>
+        <div class="f-s-16 text-dark">No hay citas pasadas con esos filtros.</div>
       </mat-card-content>
     </mat-card>
   }
@@ -37,6 +75,7 @@
                 src="{{ appointment.farmerPhoto }}"
                 class="rounded-circle border p-5"
                 width="100"
+                alt="Foto del productor"
               />
               <div class="d-flex flex-col gap-20 m-t-16">
                 <div>

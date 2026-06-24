@@ -212,7 +212,7 @@ export class FullComponent implements OnInit {
     this.profileService.fetchMyProfile().subscribe({
       next: (profile) => {
         this.username = `${profile.firstName} ${profile.lastName}`;
-        this.photo = profile.photo;
+        this.photo = profile.photo || '/assets/images/profile/user-1.jpg';
       },
       error: (error) => {
         console.error('Error fetching profile:', error);
