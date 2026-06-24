@@ -31,7 +31,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import {MAT_DATE_LOCALE, MatRippleModule, provideNativeDateAdapter} from '@angular/material/core';
+import { DateAdapter, MAT_DATE_LOCALE, MatRippleModule, provideNativeDateAdapter } from '@angular/material/core';
 // Material Popups & Modals
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -43,6 +43,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MaterialDateI18nAdapter } from './services/material-date-i18n.adapter';
 
 @NgModule({
   declarations: [],
@@ -87,6 +88,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   providers: [
     provideNativeDateAdapter(),
+    { provide: DateAdapter, useClass: MaterialDateI18nAdapter },
     { provide: MAT_DATE_LOCALE, useValue: 'es-PE' }
   ]
 })

@@ -7,6 +7,7 @@ import {
   CalendarEvent,
   CalendarModule,
   CalendarView,
+  CalendarDateFormatter,
 } from 'angular-calendar';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
@@ -22,6 +23,8 @@ import { AvailableDate } from 'src/app/shared/model/available-date';
 import { AvailableDateCreateDialogComponent } from 'src/app/components/available-dates/create-dialog/available-date-create-dialog.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LocalizedDatePipe } from 'src/app/pipes/localized-date.pipe';
+import { DateI18nService } from 'src/app/services/date-i18n.service';
+import { CalendarI18nDateFormatter } from './calendar-i18n-date-formatter';
 
 interface CalendarMeta {
   type: 'appointment' | 'availability';
@@ -45,6 +48,12 @@ interface CalendarListItem {
   imports: [CommonModule, CalendarModule, MaterialModule, TablerIconsModule, TimeFormatPipe, LocalizedDatePipe, TranslateModule],
   templateUrl: './advisory-calendar.component.html',
   styleUrl: './advisory-calendar.component.scss',
+  providers: [
+    {
+      provide: CalendarDateFormatter,
+      useClass: CalendarI18nDateFormatter,
+    },
+  ],
 })
 export class AdvisoryCalendarComponent implements OnInit {
   readonly CalendarView = CalendarView;
@@ -73,6 +82,7 @@ export class AdvisoryCalendarComponent implements OnInit {
     private dialog: MatDialog,
     private toastr: ToastrService,
     private translate: TranslateService,
+    private dateI18n: DateI18nService,
   ) {}
 
   get isAdvisor(): boolean {
@@ -80,35 +90,24 @@ export class AdvisoryCalendarComponent implements OnInit {
   }
 
   get calendarLocale(): string {
-    return this.currentLocale;
+    return this.angularCalendarLocale;
   }
 
   get periodLabel(): string {
     if (this.view === CalendarView.Day) {
-      return this.viewDate.toLocaleDateString(this.currentLocale, {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      });
+      return this.dateI18n.format(this.viewDate, 'longDate');
     }
 
     if (this.view === CalendarView.Week) {
-      return `${this.translate.instant('calendar.weekOf')} ${this.viewDate.toLocaleDateString(this.currentLocale, {
-        day: 'numeric',
-        month: 'long',
-      })}`;
+      return `${this.translate.instant('calendar.weekOf')} ${this.dateI18n.format(this.viewDate, 'weekdayMonth')}`;
     }
 
-    return this.viewDate.toLocaleDateString(this.currentLocale, {
-      month: 'long',
-      year: 'numeric',
-    });
+    return this.dateI18n.format(this.viewDate, 'monthYear');
   }
 
-  private get currentLocale(): string {
+  private get angularCalendarLocale(): string {
     const lang = this.translate.currentLang || this.translate.defaultLang || 'es';
-    return ({ es: 'es-PE', qu: 'qu-PE', ay: 'ay-PE' } as Record<string, string>)[lang] ?? 'es-PE';
+    return lang === 'es' ? 'es-PE' : 'es';
   }
 
   ngOnInit(): void {

@@ -9,6 +9,7 @@ import { AppDeleteDialogComponent } from 'src/app/shared/components/delete-dialo
 import { AppointmentDetailed, parseAppointmentDate } from '../../../farmer/appointment/appointment-detailed';
 import { AppointmentService } from 'src/app/services/apps/appointment/appointment.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { DateI18nService } from 'src/app/services/date-i18n.service';
 
 @Component({
   selector: 'app-advisor-appointment-detail',
@@ -37,7 +38,8 @@ export class AdvisorAppointmentDetailComponent implements OnInit {
     private router: Router,
     private appointmentService: AppointmentService,
     private dialog: MatDialog,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dateI18n: DateI18nService
   ) {}
 
   ngOnInit(): void {
@@ -77,12 +79,7 @@ export class AdvisorAppointmentDetailComponent implements OnInit {
     if (!dateVal) return '';
     const date = parseAppointmentDate(dateVal);
     if (!date) return '';
-    return date.toLocaleDateString(this.currentLocale, { day: 'numeric', month: 'long', year: 'numeric' });
-  }
-
-  private get currentLocale(): string {
-    const lang = this.translate.currentLang || this.translate.defaultLang || 'es';
-    return ({ es: 'es-PE', qu: 'qu-PE', ay: 'ay-PE' } as Record<string, string>)[lang] ?? 'es-PE';
+    return this.dateI18n.format(date, 'longDate');
   }
 
   openCancelModal() {

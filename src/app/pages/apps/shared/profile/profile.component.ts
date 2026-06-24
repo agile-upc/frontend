@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, Injectable, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'src/app/material.module';
 import { TablerIconsModule } from 'angular-tabler-icons';
@@ -7,13 +7,24 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import { Profile } from 'src/app/shared/model/profile';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SweetAlertService } from 'src/app/shared/services/sweet-alert.service';
-import { DateAdapter, MAT_DATE_FORMATS, NativeDateAdapter } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LocalizedDatePipe } from 'src/app/pipes/localized-date.pipe';
+import { DateI18nService } from 'src/app/services/date-i18n.service';
+import { MaterialDateI18nAdapter } from 'src/app/services/material-date-i18n.adapter';
 
 // Adaptador para mostrar siempre yyyy-MM-dd en el input del datepicker
-export class YMDDateAdapter extends NativeDateAdapter {
+@Injectable()
+export class YMDDateAdapter extends MaterialDateI18nAdapter {
+  constructor(dateI18n: DateI18nService) {
+    super(dateI18n);
+  }
+
   override format(date: Date, displayFormat: any): string {
+    if (displayFormat !== 'yyyy-MM-dd') {
+      return super.format(date, displayFormat);
+    }
+
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, '0');
     const d = String(date.getDate()).padStart(2, '0');

@@ -13,6 +13,7 @@ import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
 import { Advisor } from '../advisor';
 import { AvailableDate } from './available-date';
 import { AppointmentDetailed } from '../../appointment/appointment-detailed';
+import { DateI18nService } from 'src/app/services/date-i18n.service';
 
 interface ExistingAppointmentRange {
   scheduledDate: string;
@@ -38,7 +39,8 @@ export class AppBookAppointmentComponent implements OnInit {
     public availableDateService: AvailableDateService,
     public appointmentService: AppointmentService,
     private toastr: ToastrService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dateI18n: DateI18nService
   ) {}
 
   ngOnInit(): void {
@@ -108,16 +110,7 @@ export class AppBookAppointmentComponent implements OnInit {
 
   protected formatAvailableDate(scheduledDate: string, startTime: string, endTime: string): string {
     const date = moment(scheduledDate, 'YYYY-MM-DD').toDate();
-    return `${new Intl.DateTimeFormat(this.currentLocale, {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    }).format(date)}, ${startTime} - ${endTime}`;
-  }
-
-  private get currentLocale(): string {
-    const lang = this.translate.currentLang || this.translate.defaultLang || 'es';
-    return ({ es: 'es-PE', qu: 'qu-PE', ay: 'ay-PE' } as Record<string, string>)[lang] ?? 'es-PE';
+    return `${this.dateI18n.format(date, 'longDate')}, ${startTime} - ${endTime}`;
   }
 
   protected onDateChange(): void {

@@ -382,5 +382,13 @@
   "auth.login.errorMessage": "Usuario o contraseña incorrecta",
   "profile.selectedPhoto": "Foto seleccionada",
   "language.quechua": "Quechua",
-  "language.aymara": "Aymara"
+  "language.aymara": "Aymara",
+  "date.months.long": ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+  "date.months.short": ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
+  "date.weekdays.long": ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
+  "date.weekdays.short": ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
+  "date.formats.longDate": "{{day}} de {{month}} de {{year}}",
+  "date.formats.weekdayMonth": "{{weekday}}, {{day}} de {{month}}",
+  "date.formats.monthYear": "{{month}} de {{year}}",
+  "date.formats.weekSubHeader": "{{day}} {{shortMonth}}"
 }

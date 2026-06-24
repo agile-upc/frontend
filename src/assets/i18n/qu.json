@@ -284,5 +284,13 @@
   "auth.login.errorMessage": "Usuario utaq contraseña mana allinchu",
   "profile.selectedPhoto": "Akllasqa foto",
   "language.quechua": "Quechua",
-  "language.aymara": "Aymara"
+  "language.aymara": "Aymara",
+  "date.months.long": ["Qulla puquy", "Hatun puquy", "Pawqar waray", "Ayriway", "Aymuray", "Inti raymi", "Anta sitwa", "Qhapaq sitwa", "Uma raymi", "Kantaray", "Aya marq'ay", "Qhapaq raymi"],
+  "date.months.short": ["Qul", "Hat", "Paw", "Ayr", "Aym", "Int", "Ant", "Qsi", "Uma", "Kan", "Aya", "Qra"],
+  "date.weekdays.long": ["Intichaw", "Killachaw", "Antichaw", "Qoyllurchaw", "Illapachaw", "Ch'askachaw", "K'uychichaw"],
+  "date.weekdays.short": ["Int", "Kil", "Ant", "Qoy", "Ill", "Ch'a", "K'uy"],
+  "date.formats.longDate": "{{day}} {{month}} {{year}}",
+  "date.formats.weekdayMonth": "{{weekday}}, {{day}} {{month}}",
+  "date.formats.monthYear": "{{month}} {{year}}",
+  "date.formats.weekSubHeader": "{{day}} {{shortMonth}}"
 }

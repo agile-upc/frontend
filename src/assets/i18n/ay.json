@@ -284,5 +284,13 @@
   "auth.login.errorMessage": "Usuario jan ukax contraseña janiw walïkiti",
   "profile.selectedPhoto": "Ajllita foto",
   "language.quechua": "Quechua",
-  "language.aymara": "Aymara"
+  "language.aymara": "Aymara",
+  "date.months.long": ["Chinuqa", "Anata", "Achuqa", "Qasawi", "Llamayu", "Mara t'aqa", "Willka kuti", "Llumpaqa", "Sata qallta", "Taypi sata", "Lapaka", "Jallu qallta"],
+  "date.months.short": ["Chi", "Ana", "Ach", "Qas", "Lla", "Mar", "Wil", "Llu", "Sat", "Tay", "Lap", "Jal"],
+  "date.weekdays.long": ["Willka uru", "Phaxsi uru", "Saxra uru", "Wara uru", "Illapa uru", "Ururi uru", "Kurmi uru"],
+  "date.weekdays.short": ["Wil", "Pha", "Sax", "War", "Ill", "Uru", "Kur"],
+  "date.formats.longDate": "{{day}} {{month}} {{year}}",
+  "date.formats.weekdayMonth": "{{weekday}}, {{day}} {{month}}",
+  "date.formats.monthYear": "{{month}} {{year}}",
+  "date.formats.weekSubHeader": "{{day}} {{shortMonth}}"
 }
