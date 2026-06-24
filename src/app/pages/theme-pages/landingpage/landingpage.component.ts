@@ -37,8 +37,8 @@ export class AppLandingpageComponent {
   options = this.settings.getOptions();
   readonly languages = [
     { language: 'Español', code: 'es', shortLabel: 'ES' },
-    { language: 'Quechua', code: 'qu', shortLabel: 'QU' },
-    { language: 'Aymara', code: 'ay', shortLabel: 'AY' },
+    { language: 'Runasimi', code: 'qu', shortLabel: 'QU' },
+    { language: 'Aymar aru', code: 'ay', shortLabel: 'AY' },
   ];
   selectedLanguage = this.languages[0];
   private htmlElement!: HTMLHtmlElement;

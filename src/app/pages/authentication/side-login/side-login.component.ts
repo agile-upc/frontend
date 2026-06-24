@@ -9,6 +9,7 @@ import { CoreService } from 'src/app/services/core.service';
 import { User } from '../../../shared/model/user';
 import { AuthService } from '../../../shared/services/auth.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-side-login',
@@ -20,14 +21,31 @@ export class AppSideLoginComponent {
   options = this.settings.getOptions();
   user: User = new User('', '');
   hidePassword = true;
+  readonly languages = [
+    { language: 'Español', code: 'es', shortLabel: 'ES' },
+    { language: 'Runasimi', code: 'qu', shortLabel: 'QU' },
+    { language: 'Aymar aru', code: 'ay', shortLabel: 'AY' },
+  ];
+  selectedLanguage = this.languages[0];
+  private htmlElement!: HTMLHtmlElement;
 
   constructor(
     private settings: CoreService,
     private authService: AuthService,
     private router: Router,
     private toastr: ToastrService,
-    private translate: TranslateService
-  ) {}
+    private translate: TranslateService,
+    private dateAdapter: DateAdapter<Date>
+  ) {
+    this.htmlElement = document.querySelector('html')!;
+    const savedLanguage = localStorage.getItem('agrotech-language') ?? this.settings.getLanguage();
+    this.selectedLanguage = this.languages.find((lang) => lang.code === savedLanguage) ?? this.languages[0];
+    this.translate.addLangs(this.languages.map((lang) => lang.code));
+    this.translate.setDefaultLang('es');
+    this.translate.use(this.selectedLanguage.code);
+    this.dateAdapter.setLocale('es-PE');
+    this.applyThemeClass(this.options.theme);
+  }
 
   form = new FormGroup({
     uname: new FormControl('', [Validators.required, Validators.email]),
@@ -36,6 +54,20 @@ export class AppSideLoginComponent {
 
   get f() {
     return this.form.controls;
+  }
+
+  setLightDark(theme: string): void {
+    this.settings.setOptions({ theme });
+    this.options = this.settings.getOptions();
+    this.applyThemeClass(theme);
+  }
+
+  changeLanguage(lang: { language: string; code: string; shortLabel: string }): void {
+    this.selectedLanguage = lang;
+    this.translate.use(lang.code);
+    this.dateAdapter.setLocale('es-PE');
+    this.settings.setLanguage(lang.code);
+    localStorage.setItem('agrotech-language', lang.code);
   }
 
   submit() {
@@ -57,5 +89,16 @@ export class AppSideLoginComponent {
         );
       }
     });
+  }
+
+  private applyThemeClass(theme: string): void {
+    if (theme === 'dark') {
+      this.htmlElement.classList.add('dark-theme');
+      this.htmlElement.classList.remove('light-theme');
+      return;
+    }
+
+    this.htmlElement.classList.remove('dark-theme');
+    this.htmlElement.classList.add('light-theme');
   }
 }

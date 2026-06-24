@@ -86,12 +86,12 @@ export class HeaderComponent {
       shortLabel: 'ES',
     },
     {
-      language: 'Quechua',
+      language: 'Runasimi',
       code: 'qu',
       shortLabel: 'QU',
     },
     {
-      language: 'Aymara',
+      language: 'Aymar aru',
       code: 'ay',
       shortLabel: 'AY',
     },

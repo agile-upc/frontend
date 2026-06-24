@@ -127,7 +127,7 @@ export class AppProfileComponent implements OnInit {
       birthDate: p.birthDate ?? null, // mantener Date para el datepicker
       description: p.description,
       occupation: p.occupation,
-      spokenLanguages: this.parseLanguages(p.spokenLanguages),
+      spokenLanguages: this.parseLanguages(this.isAdvisor ? this.defaultSpokenLanguages(p.spokenLanguages) : p.spokenLanguages),
       experience: p.experience
     });
     this.previewUrl = p.photo || null;
@@ -204,6 +204,10 @@ export class AppProfileComponent implements OnInit {
       .split(',')
       .map((language) => language.trim())
       .filter(Boolean);
+  }
+
+  private defaultSpokenLanguages(value: string | null | undefined): string {
+    return value == null || value.trim() === '' ? 'Español' : value;
   }
 
   private formatLanguages(value: unknown): string {

@@ -9,6 +9,7 @@ import { MaterialModule } from '../../../material.module';
 import { CoreService } from 'src/app/services/core.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-side-register',
@@ -22,11 +23,18 @@ export class AppSideRegisterComponent implements OnInit {
   imageUrl = '';
   imageName = '';
   hidePassword = true;
+  readonly languages = [
+    { language: 'Español', code: 'es', shortLabel: 'ES' },
+    { language: 'Runasimi', code: 'qu', shortLabel: 'QU' },
+    { language: 'Aymar aru', code: 'ay', shortLabel: 'AY' },
+  ];
+  selectedLanguage = this.languages[0];
   readonly languageOptions = [
     { value: 'Español', labelKey: 'language.spanish' },
     { value: 'Quechua', labelKey: 'language.quechua' },
     { value: 'Aymara', labelKey: 'language.aymara' },
   ];
+  private htmlElement!: HTMLHtmlElement;
 
   today = new Date();
   maxBirthDate = new Date(
@@ -40,8 +48,18 @@ export class AppSideRegisterComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private toastr: ToastrService,
-    private translate: TranslateService
-  ) {}
+    private translate: TranslateService,
+    private dateAdapter: DateAdapter<Date>
+  ) {
+    this.htmlElement = document.querySelector('html')!;
+    const savedLanguage = localStorage.getItem('agrotech-language') ?? this.settings.getLanguage();
+    this.selectedLanguage = this.languages.find((lang) => lang.code === savedLanguage) ?? this.languages[0];
+    this.translate.addLangs(this.languages.map((lang) => lang.code));
+    this.translate.setDefaultLang('es');
+    this.translate.use(this.selectedLanguage.code);
+    this.dateAdapter.setLocale('es-PE');
+    this.applyThemeClass(this.options.theme);
+  }
 
   form = new FormGroup({
     uname: new FormControl('', [Validators.required, Validators.email]),
@@ -99,6 +117,20 @@ export class AppSideRegisterComponent implements OnInit {
     return this.form.controls;
   }
 
+  setLightDark(theme: string): void {
+    this.settings.setOptions({ theme });
+    this.options = this.settings.getOptions();
+    this.applyThemeClass(theme);
+  }
+
+  changeLanguage(lang: { language: string; code: string; shortLabel: string }): void {
+    this.selectedLanguage = lang;
+    this.translate.use(lang.code);
+    this.dateAdapter.setLocale('es-PE');
+    this.settings.setLanguage(lang.code);
+    localStorage.setItem('agrotech-language', lang.code);
+  }
+
   submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -119,7 +151,7 @@ export class AppSideRegisterComponent implements OnInit {
     if (this.isAdvisor()) {
       formData.append('occupation', this.form.value.occupation ?? '');
       formData.append('experience', String(this.form.value.experience ?? 0));
-      formData.append('spokenLanguages', (this.form.value.spokenLanguages ?? []).join(', '));
+      formData.append('spokenLanguages', this.normalizedSpokenLanguages().join(', '));
     }
 
     if (this.image) {
@@ -147,5 +179,24 @@ export class AppSideRegisterComponent implements OnInit {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  private normalizedSpokenLanguages(): string[] {
+    const languages = (this.form.value.spokenLanguages ?? [])
+      .map((language) => language.trim())
+      .filter(Boolean);
+
+    return languages.length > 0 ? languages : ['Español'];
+  }
+
+  private applyThemeClass(theme: string): void {
+    if (theme === 'dark') {
+      this.htmlElement.classList.add('dark-theme');
+      this.htmlElement.classList.remove('light-theme');
+      return;
+    }
+
+    this.htmlElement.classList.remove('dark-theme');
+    this.htmlElement.classList.add('light-theme');
   }
 }

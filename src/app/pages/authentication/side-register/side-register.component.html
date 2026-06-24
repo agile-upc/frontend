@@ -9,6 +9,33 @@
       <div class="p-32 d-flex align-items-start align-items-lg-center justify-content-center h-100">
         <div class="row justify-content-center w-100">
           <div class="col-lg-9 max-width-form">
+            <div class="auth-preferences d-flex align-items-center justify-content-end m-b-24">
+              <button
+                mat-button
+                [matMenuTriggerFor]="languageMenu"
+                [attr.aria-label]="'language.change' | translate"
+              >
+                {{ selectedLanguage.shortLabel }}
+              </button>
+              <mat-menu #languageMenu="matMenu">
+                @for(language of languages; track language.code) {
+                  <button mat-menu-item type="button" (click)="changeLanguage(language)">
+                    {{ language.language }}
+                  </button>
+                }
+              </mat-menu>
+
+              @if(options.theme === 'light') {
+                <button mat-icon-button type="button" [attr.aria-label]="'theme.enableDark' | translate" (click)="setLightDark('dark')">
+                  <i-tabler name="moon" class="icon-20 d-flex"></i-tabler>
+                </button>
+              } @else {
+                <button mat-icon-button type="button" [attr.aria-label]="'theme.enableLight' | translate" (click)="setLightDark('light')">
+                  <i-tabler name="sun" class="icon-20 d-flex"></i-tabler>
+                </button>
+              }
+            </div>
+
             <h4 class="f-w-700 f-s-24 m-0">{{ 'auth.register.welcome' | translate }}</h4>
 
             <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">

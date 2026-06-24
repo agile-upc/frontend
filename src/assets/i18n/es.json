@@ -158,6 +158,8 @@
   "search.placeholder": "Buscar aquí",
   "language.change": "Cambiar idioma",
   "language.spanish": "Español",
+  "theme.enableDark": "Activar modo oscuro",
+  "theme.enableLight": "Activar modo claro",
   "role.farmer": "Productor agrícola",
   "role.advisor": "Asesor especializado",
   "role.admin": "Administrador",
