@@ -5,7 +5,7 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="text-center m-b-24">
-              <img src="{{ advisor.photo }}" class="rounded-circle" width="150"  alt="Advisor Photo"/>
+              <img src="{{ advisor.photo }}" class="rounded-circle" width="150"  alt="Foto del asesor"/>
             </div>
             <div class="text-center m-t-16">
               <mat-card-title>Lugar de residencia</mat-card-title>
@@ -16,12 +16,20 @@
               <mat-card-subtitle class="f-s-14">{{ calculateAge(advisor.birthDate) }}</mat-card-subtitle>
             </div>
             <div class="text-center m-t-16">
-              <mat-card-title>Ocupación</mat-card-title>
-              <mat-card-subtitle class="f-s-14">{{ advisor.occupation }}</mat-card-subtitle>
+              <mat-card-title>Profesión</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ advisor.occupation || 'Asesor especializado' }}</mat-card-subtitle>
             </div>
             <div class="text-center m-t-16">
               <mat-card-title>Años de experiencia</mat-card-title>
               <mat-card-subtitle class="f-s-14">{{ advisor.experience }} años</mat-card-subtitle>
+            </div>
+            <div class="text-center m-t-16">
+              <mat-card-title>Calificación</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ advisor.rating || 'Sin calificación' }}</mat-card-subtitle>
+            </div>
+            <div class="text-center m-t-16">
+              <mat-card-title>Disponibilidad</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ hasDates ? 'Horarios disponibles' : 'Sin horarios disponibles' }}</mat-card-subtitle>
             </div>
           </div>
         </div>
@@ -32,7 +40,7 @@
           class="text-white"
           (click)="goToBookingPage()"
         >
-          Contactar
+          Reservar asesoría
         </button>
       </mat-card-actions>
     </mat-card>
@@ -41,7 +49,7 @@
     <mat-card class="cardWithShadow">
       <mat-card-content>
         <mat-card-title>Sobre {{ advisor.firstName }} {{ advisor.lastName }}</mat-card-title>
-        <p>{{ advisor.description }}</p>
+        <p>{{ advisor.description || 'Este asesor aún no agregó una descripción.' }}</p>
       </mat-card-content>
     </mat-card>
     <app-review [advisorId]="advisor.advisorId"></app-review>

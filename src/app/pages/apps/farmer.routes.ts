@@ -17,7 +17,7 @@ export const FarmerRoutes: Routes = [
         component: AppCatalogComponent,
         data: {
           title: 'Catálogo de asesores',
-          urls: [{ title: 'Catalog', url: '/apps/farmer/catalog' }],
+          urls: [{ title: 'Catálogo', url: '/apps/farmer/catalog' }],
         },
       },
       {
@@ -26,8 +26,8 @@ export const FarmerRoutes: Routes = [
         data: {
           title: 'Detalle del asesor',
           urls: [
-            { title: 'Catalog', url: '/apps/farmer/catalog' },
-            { title: 'Advisor Detail' },
+            { title: 'Catálogo', url: '/apps/farmer/catalog' },
+            { title: 'Detalle del asesor' },
           ]
         }
       },
@@ -37,8 +37,8 @@ export const FarmerRoutes: Routes = [
         data: {
           title: 'Reservar cita',
           urls: [
-            { title: 'Catalog', url: '/apps/farmer/catalog' },
-            { title: 'Book Appointment' },
+            { title: 'Catálogo', url: '/apps/farmer/catalog' },
+            { title: 'Reservar cita' },
           ]
         }
       },
@@ -47,7 +47,7 @@ export const FarmerRoutes: Routes = [
         component: AppAppointmentsComponent,
         data: {
           title: 'Mis citas',
-          urls: [{ title: 'Appointments', url: '/apps/farmer/appointments' }],
+          urls: [{ title: 'Citas', url: '/apps/farmer/appointments' }],
         }
       },
       {
@@ -56,8 +56,8 @@ export const FarmerRoutes: Routes = [
         data: {
           title: 'Historial de citas',
           urls: [
-            { title: 'Appointments', url: '/apps/farmer/appointments' },
-            { title: 'Appointment History' },
+            { title: 'Citas', url: '/apps/farmer/appointments' },
+            { title: 'Historial' },
           ],
         }
       },
@@ -67,8 +67,8 @@ export const FarmerRoutes: Routes = [
         data: {
           title: 'Detalle de la cita',
           urls: [
-            { title: 'Appointments', url: '/apps/farmer/appointments' },
-            { title: 'Appointment Detail' },
+            { title: 'Citas', url: '/apps/farmer/appointments' },
+            { title: 'Detalle de la cita' },
           ],
         }
       },
@@ -77,7 +77,7 @@ export const FarmerRoutes: Routes = [
         component: AppPostsComponent,
         data: {
           title: 'Publicaciones de asesores',
-          urls: [{ title: 'Posts', url: '/apps/farmer/posts' }]
+          urls: [{ title: 'Publicaciones', url: '/apps/farmer/posts' }]
         }
       }
     ],

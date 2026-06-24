@@ -51,6 +51,9 @@
               }
             </mat-select>
           </mat-form-field>
+          @if(dates.length == 0) {
+            <p class="f-s-14 text-muted m-t-0">Este asesor no tiene horarios disponibles.</p>
+          }
 
           <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Agrega un mensaje para el asesor</mat-label>
           <mat-form-field appearance="outline" class="w-100" color="primary">

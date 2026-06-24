@@ -6,8 +6,8 @@ import { CoreService } from 'src/app/services/core.service';
 import { AppSettings } from 'src/app/config';
 import { filter } from 'rxjs/operators';
 import { NavigationEnd, Router } from '@angular/router';
-import { navItems } from './vertical/sidebar/sidebar-data-template';
 import { NavService } from '../../services/nav.service';
+import { NavItem } from './vertical/sidebar/nav-item/nav-item';
 import { AppNavItemComponent } from './vertical/sidebar/nav-item/nav-item.component';
 import { RouterModule } from '@angular/router';
 import { MaterialModule } from 'src/app/material.module';
@@ -16,8 +16,6 @@ import { SidebarComponent } from './vertical/sidebar/sidebar.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { HeaderComponent } from './vertical/header/header.component';
-import { AppHorizontalHeaderComponent } from './horizontal/header/header.component';
-import { AppHorizontalSidebarComponent } from './horizontal/sidebar/sidebar.component';
 import { AppBreadcrumbComponent } from './shared/breadcrumb/breadcrumb.component';
 import { CustomizerComponent } from './shared/customizer/customizer.component';
 import {AuthService} from "../../shared/services/auth.service";
@@ -58,8 +56,6 @@ interface quicklinks {
         NgScrollbarModule,
         TablerIconsModule,
         HeaderComponent,
-        AppHorizontalHeaderComponent,
-        AppHorizontalSidebarComponent,
         AppBreadcrumbComponent,
         CustomizerComponent,
     ],
@@ -68,7 +64,7 @@ interface quicklinks {
     encapsulation: ViewEncapsulation.None
 })
 export class FullComponent implements OnInit {
-  navItems = navItems;
+  navItems: NavItem[] = [];
   homeRoute = '/authentication/login';
 
   @ViewChild('leftsidenav')
@@ -95,102 +91,61 @@ export class FullComponent implements OnInit {
   apps: apps[] = [
     {
       id: 1,
-      img: '/assets/images/svgs/icon-dd-chat.svg',
-      title: 'Chat Application',
-      subtitle: 'Messages & Emails',
-      link: '/apps/chat',
+      img: '/assets/images/svgs/icon-dd-date.svg',
+      title: 'Catálogo de asesores',
+      subtitle: 'Buscar especialistas',
+      link: '/apps/farmer/catalog',
     },
     {
       id: 2,
-      img: '/assets/images/svgs/icon-dd-cart.svg',
-      title: 'eCommerce App',
-      subtitle: 'Buy a Product',
-      link: '/apps/email/inbox',
+      img: '/assets/images/svgs/icon-dd-date.svg',
+      title: 'Mis citas',
+      subtitle: 'Asesorías programadas',
+      link: '/apps/farmer/appointments',
     },
     {
       id: 3,
-      img: '/assets/images/svgs/icon-dd-invoice.svg',
-      title: 'Invoice App',
-      subtitle: 'Get latest invoice',
-      link: '/apps/invoice',
+      img: '/assets/images/svgs/icon-dd-date.svg',
+      title: 'Mis horarios',
+      subtitle: 'Disponibilidad del asesor',
+      link: '/apps/advisor/available-dates',
     },
     {
       id: 4,
       img: '/assets/images/svgs/icon-dd-date.svg',
-      title: 'Calendar App',
-      subtitle: 'Get Dates',
-      link: '/apps/calendar',
+      title: 'Notificaciones',
+      subtitle: 'Avisos importantes',
+      link: '/apps/notifications',
     },
     {
       id: 5,
-      img: '/assets/images/svgs/icon-dd-mobile.svg',
-      title: 'Contact Application',
-      subtitle: '2 Unsaved Contacts',
-      link: '/apps/contacts',
-    },
-    {
-      id: 6,
-      img: '/assets/images/svgs/icon-dd-lifebuoy.svg',
-      title: 'Tickets App',
-      subtitle: 'Create new ticket',
-      link: '/apps/tickets',
-    },
-    {
-      id: 7,
-      img: '/assets/images/svgs/icon-dd-message-box.svg',
-      title: 'Email App',
-      subtitle: 'Get new emails',
-      link: '/apps/email/inbox',
-    },
-    {
-      id: 8,
-      img: '/assets/images/svgs/icon-dd-application.svg',
-      title: 'Courses',
-      subtitle: 'Create new course',
-      link: '/apps/courses',
+      img: '/assets/images/svgs/icon-account.svg',
+      title: 'Mi perfil',
+      subtitle: 'Datos de usuario',
+      link: '/apps/profile',
     },
   ];
 
   quicklinks: quicklinks[] = [
     {
       id: 1,
-      title: 'Pricing Page',
-      link: '/theme-pages/pricing',
+      title: 'Catálogo de asesores',
+      link: '/apps/farmer/catalog',
     },
     {
       id: 2,
-      title: 'Authentication Design',
-      link: '/authentication/login',
+      title: 'Mis citas',
+      link: '/apps/farmer/appointments',
     },
     {
       id: 3,
-      title: 'Register Now',
-      link: '/authentication/signup',
+      title: 'Mis horarios',
+      link: '/apps/advisor/available-dates',
     },
     {
       id: 4,
-      title: '404 Error Page',
-      link: '/authentication/error',
-    },
-    {
-      id: 5,
-      title: 'Notes App',
-      link: '/apps/notes',
-    },
-    {
-      id: 6,
-      title: 'Employee App',
-      link: '/apps/employee',
-    },
-    {
-      id: 7,
-      title: 'Todo Application',
-      link: '/apps/todo',
-    },
-    {
-      id: 8,
-      title: 'Treeview',
-      link: '/theme-pages/treeview',
+      title: 'Mi perfil',
+      link: '/apps/profile',
     },
   ];
 

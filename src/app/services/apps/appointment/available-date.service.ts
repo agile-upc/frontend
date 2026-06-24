@@ -33,7 +33,7 @@ export class AvailableDateService {
 
   public create(date: AvailableDate): Observable<AvailableDate> {
     return this.httpClient.post<AvailableDate>(this.environmentUrl, {
-      scheduledDate: date.scheduledDate,
+      scheduledDate: this.toLocalDateString(date.scheduledDate),
       startTime: date.startTime,
       endTime: date.endTime,
     });
@@ -41,7 +41,7 @@ export class AvailableDateService {
 
   public update(id: number, date: AvailableDate): Observable<AvailableDate> {
     return this.httpClient.put<AvailableDate>(`${this.environmentUrl}/${id}`, {
-      scheduledDate: date.scheduledDate,
+      scheduledDate: this.toLocalDateString(date.scheduledDate),
       startTime: date.startTime,
       endTime: date.endTime,
     });
@@ -49,5 +49,16 @@ export class AvailableDateService {
 
   public delete(id: number): Observable<any> {
     return this.httpClient.delete(`${this.environmentUrl}/${id}`, { responseType: 'text' });
+  }
+
+  private toLocalDateString(value: string | Date): string {
+    if (value instanceof Date) {
+      const year = value.getFullYear();
+      const month = `${value.getMonth() + 1}`.padStart(2, '0');
+      const day = `${value.getDate()}`.padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    return value;
   }
 }

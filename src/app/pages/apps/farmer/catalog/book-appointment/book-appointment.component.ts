@@ -48,7 +48,7 @@ export class AppBookAppointmentComponent implements OnInit {
   }
 
   form = new FormGroup({
-    date: new FormControl<number>(0, Validators.required),
+    date: new FormControl<number | null>(null, Validators.required),
     comment: new FormControl('', Validators.required),
   });
 
@@ -67,6 +67,8 @@ export class AppBookAppointmentComponent implements OnInit {
         this.dates = data;
         if (this.dates.length > 0) {
           this.form.get('date')!.setValue(this.dates[0].dateId);
+        } else {
+          this.form.get('date')!.setValue(null);
         }
       },
       error: (err) => console.error('Error loading available dates:', err)

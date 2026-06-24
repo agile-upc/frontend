@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { CoreService } from 'src/app/services/core.service';
 import { MatDialog } from '@angular/material/dialog';
-import { navItems } from '../sidebar/sidebar-data-template';
 import { TranslateService } from '@ngx-translate/core';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
@@ -19,6 +18,9 @@ import { AppSettings } from 'src/app/config';
 import { AuthService } from "src/app/shared/services/auth.service";
 import { UserNotification } from "src/app/shared/model/userNotification";
 import {NotificationService} from "../../../../shared/services/notification.service";
+import { navItemsAdvisor } from '../sidebar/sidebar-data-advisor';
+import { navItemsFarmer } from '../sidebar/sidebar-data-farmer';
+import { NavItem } from '../sidebar/nav-item/nav-item';
 
 interface profiledd {
   id: number;
@@ -149,7 +151,7 @@ export class HeaderComponent {
       img: '/assets/images/svgs/icon-account.svg',
       title: 'Mi Perfil',
       subtitle: 'Configuración de la cuenta',
-      link: 'apps//profile',
+      link: '/apps/profile',
     },
     {
       id: 2,
@@ -164,101 +166,60 @@ export class HeaderComponent {
     {
       id: 1,
       img: '/assets/images/svgs/icon-dd-chat.svg',
-      title: 'Chat Application',
-      subtitle: 'Messages & Emails',
-      link: '/apps/chat',
+      title: 'Catálogo de asesores',
+      subtitle: 'Buscar especialistas',
+      link: '/apps/farmer/catalog',
     },
     {
       id: 2,
-      img: '/assets/images/svgs/icon-dd-cart.svg',
-      title: 'Todo App',
-      subtitle: 'Completed task',
-      link: '/apps/todo',
+      img: '/assets/images/svgs/icon-dd-date.svg',
+      title: 'Mis citas',
+      subtitle: 'Asesorías programadas',
+      link: '/apps/farmer/appointments',
     },
     {
       id: 3,
       img: '/assets/images/svgs/icon-dd-invoice.svg',
-      title: 'Invoice App',
-      subtitle: 'Get latest invoice',
-      link: '/apps/invoice',
+      title: 'Mis horarios',
+      subtitle: 'Disponibilidad del asesor',
+      link: '/apps/advisor/available-dates',
     },
     {
       id: 4,
       img: '/assets/images/svgs/icon-dd-date.svg',
-      title: 'Calendar App',
-      subtitle: 'Get Dates',
-      link: '/apps/calendar',
+      title: 'Notificaciones',
+      subtitle: 'Avisos importantes',
+      link: '/apps/notifications',
     },
     {
       id: 5,
-      img: '/assets/images/svgs/icon-dd-mobile.svg',
-      title: 'Contact Application',
-      subtitle: '2 Unsaved Contacts',
-      link: '/apps/contacts',
-    },
-    {
-      id: 6,
-      img: '/assets/images/svgs/icon-dd-lifebuoy.svg',
-      title: 'Tickets App',
-      subtitle: 'Create new ticket',
-      link: '/apps/tickets',
-    },
-    {
-      id: 7,
-      img: '/assets/images/svgs/icon-dd-message-box.svg',
-      title: 'Email App',
-      subtitle: 'Get new emails',
-      link: '/apps/email/inbox',
-    },
-    {
-      id: 8,
-      img: '/assets/images/svgs/icon-dd-application.svg',
-      title: 'Courses',
-      subtitle: 'Create new course',
-      link: '/apps/courses',
+      img: '/assets/images/svgs/icon-account.svg',
+      title: 'Mi perfil',
+      subtitle: 'Datos de usuario',
+      link: '/apps/profile',
     },
   ];
 
   quicklinks: quicklinks[] = [
     {
       id: 1,
-      title: 'Pricing Page',
-      link: '/theme-pages/pricing',
+      title: 'Catálogo de asesores',
+      link: '/apps/farmer/catalog',
     },
     {
       id: 2,
-      title: 'Authentication Design',
-      link: '/authentication/login',
+      title: 'Mis citas',
+      link: '/apps/farmer/appointments',
     },
     {
       id: 3,
-      title: 'Register Now',
-      link: '/authentication/signup',
+      title: 'Mis horarios',
+      link: '/apps/advisor/available-dates',
     },
     {
       id: 4,
-      title: '404 Error Page',
-      link: '/authentication/error',
-    },
-    {
-      id: 5,
-      title: 'Notes App',
-      link: '/apps/notes',
-    },
-    {
-      id: 6,
-      title: 'Employee App',
-      link: '/apps/employee',
-    },
-    {
-      id: 7,
-      title: 'Todo Application',
-      link: '/apps/todo',
-    },
-    {
-      id: 8,
-      title: 'Treeview',
-      link: '/theme-pages/treeview',
+      title: 'Mi perfil',
+      link: '/apps/profile',
     },
   ];
 }
@@ -270,9 +231,15 @@ export class HeaderComponent {
 })
 export class AppSearchDialogComponent {
   searchText: string = '';
-  navItems = navItems;
+  navItems: NavItem[] = [];
 
-  navItemsData = navItems.filter((navitem) => navitem.displayName);
+  navItemsData: NavItem[] = [];
+
+  constructor(private authService: AuthService) {
+    const role = this.authService.user.role;
+    this.navItems = role === 'ADVISOR' ? navItemsAdvisor : role === 'FARMER' ? navItemsFarmer : [];
+    this.navItemsData = this.navItems.filter((navitem) => navitem.displayName);
+  }
 
   // filtered = this.navItemsData.find((obj) => {
   //   return obj.displayName == this.searchinput;

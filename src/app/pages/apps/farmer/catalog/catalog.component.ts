@@ -92,7 +92,11 @@ export class AppCatalogComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/apps/farmer/catalog', message.advisorId]);
+    const queryParams = message.draftAppointmentMessage
+      ? { message: message.draftAppointmentMessage }
+      : undefined;
+
+    this.router.navigate(['/apps/farmer/catalog', message.advisorId], { queryParams });
   }
 
   goToAiBooking(message: ChatMessage): void {
@@ -141,7 +145,9 @@ export class AppCatalogComponent implements OnInit {
   private filterAdvisors(): void {
     const text = this.searchText().toLowerCase();
     const filtered = this.originalAdvisors.filter((advisor) =>
-      `${advisor.firstName} ${advisor.lastName}`.toLowerCase().includes(text)
+      `${advisor.firstName} ${advisor.lastName} ${advisor.occupation} ${advisor.description}`
+        .toLowerCase()
+        .includes(text)
     );
 
     if (!this.selectedDate) {
@@ -149,7 +155,7 @@ export class AppCatalogComponent implements OnInit {
       return;
     }
 
-    const dateStr = this.selectedDate.toISOString().split('T')[0];
+    const dateStr = this.toLocalDateString(this.selectedDate);
     this.availableDatesService.getAvailableDatesByDate(dateStr).subscribe({
       next: (slots) => {
         const availableAdvisorIds = new Set(slots.map((slot) => slot.advisorId));
@@ -271,6 +277,13 @@ export class AppCatalogComponent implements OnInit {
         'Hola. Te ayudaré a encontrar el asesor ideal. Cuéntame qué necesitas.'
       )
     ];
+  }
+
+  private toLocalDateString(date: Date): string {
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const day = `${date.getDate()}`.padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }
 

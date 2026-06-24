@@ -19,6 +19,7 @@ import { Advisor } from '../advisor';
 export class AppAdvisorDetailComponent implements OnInit {
   advisor!: Advisor;
   hasDates = false;
+  draftAppointmentMessage: string | null = null;
 
   constructor(
     public router: Router,
@@ -29,6 +30,10 @@ export class AppAdvisorDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.activatedRoute.queryParamMap.subscribe((params) => {
+      this.draftAppointmentMessage = params.get('message');
+    });
+
     this.activatedRoute.params.subscribe((params) => {
       const advisorId = Number(params['advisorId']);
       if (advisorId) {
@@ -58,7 +63,11 @@ export class AppAdvisorDetailComponent implements OnInit {
 
   goToBookingPage(): void {
     if (this.hasDates) {
-      this.router.navigate(['/apps/farmer/catalog', this.advisor.advisorId, 'book']);
+      const queryParams = this.draftAppointmentMessage
+        ? { message: this.draftAppointmentMessage }
+        : undefined;
+
+      this.router.navigate(['/apps/farmer/catalog', this.advisor.advisorId, 'book'], { queryParams });
       return;
     }
 
