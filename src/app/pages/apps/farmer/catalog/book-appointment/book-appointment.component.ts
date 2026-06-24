@@ -159,7 +159,7 @@ export class AppBookAppointmentComponent implements OnInit {
   private updateConflictMessage(): void {
     const selectedDate = this.selectedAvailableDate();
     if (selectedDate && this.isDateConflicting(selectedDate)) {
-      this.conflictMessage = 'Ya tienes una asesoria reservada en ese rango horario. Elige otro horario.';
+      this.conflictMessage = 'Ya tienes una asesoría reservada en ese rango horario. Elige otro horario.';
       return;
       this.conflictMessage = 'Ya tienes una asesoría reservada para este día. Elige una fecha diferente.';
       return;
@@ -185,12 +185,13 @@ export class AppBookAppointmentComponent implements OnInit {
       message: this.form.get('comment')!.value ?? '',
     }).subscribe({
       next: () => {
+        this.availableDateService.clearCache();
         this.toastr.success('Cita reservada con éxito.', 'Éxito');
         this.router.navigate(['apps/farmer/catalog']);
       },
       error: (err) => {
         if (err?.status === 409) {
-          this.toastr.warning('Ya tienes una asesoria reservada en ese rango horario. Elige otro horario.', 'Horario no disponible');
+          this.toastr.warning('Ya tienes una asesoría reservada en ese rango horario. Elige otro horario.', 'Horario no disponible');
           return;
           this.toastr.warning('Ya tienes una asesoría reservada para ese día. Elige una fecha diferente.', 'Horario no disponible');
           return;

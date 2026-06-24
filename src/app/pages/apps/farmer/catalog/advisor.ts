@@ -11,6 +11,7 @@ export class Advisor {
     public description: string,
     public photo: string,
     public occupation: string,
+    public spokenLanguages: string,
     public experience: number,
     // De tabla "advisor"
     public rating: number,

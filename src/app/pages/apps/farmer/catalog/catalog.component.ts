@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Subject, finalize, takeUntil } from 'rxjs';
 import { TablerIconsModule } from 'angular-tabler-icons';
+import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from 'src/app/material.module';
 import { AdvisorService } from 'src/app/services/apps/catalog/advisor.service';
 import { AvailableDateService } from '../../../../services/apps/catalog/available-date.service';
@@ -23,6 +24,7 @@ import { AiAnswer, AiRecommendationMatch } from './ai-answer';
     TablerIconsModule,
     CommonModule,
     RouterLink,
+    TranslateModule,
   ],
 })
 export class AppCatalogComponent implements OnInit, OnDestroy {
@@ -164,7 +166,7 @@ export class AppCatalogComponent implements OnInit, OnDestroy {
     this.catalogError = '';
     const text = this.searchText().toLowerCase();
     const filtered = this.originalAdvisors.filter((advisor) =>
-      `${advisor.firstName} ${advisor.lastName} ${advisor.occupation} ${advisor.description}`
+      `${advisor.firstName} ${advisor.lastName} ${advisor.occupation} ${advisor.description} ${advisor.spokenLanguages}`
         .toLowerCase()
         .includes(text)
     );

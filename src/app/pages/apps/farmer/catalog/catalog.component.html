@@ -5,7 +5,7 @@
         <mat-form-field appearance="outline" class="w-100 hide-hint">
           <input
             matInput
-            placeholder="Busca por nombre, profesión o especialidad"
+            [placeholder]="'catalog.searchPlaceholder' | translate"
             [ngModel]="searchText()"
             (keyup)="applyFilter($event)"
           />
@@ -31,7 +31,7 @@
       <div class="filter-actions">
         <button mat-stroked-button color="primary" class="filter-action-button" (click)="clearFilters()">
           <i-tabler name="filter-off" class="icon-18 d-flex"></i-tabler>
-          Limpiar filtros
+          {{ 'catalog.clearFilters' | translate }}
         </button>
       </div>
     </div>
@@ -55,7 +55,7 @@
   <mat-card class="cardWithShadow">
     <mat-card-content class="text-center p-y-32">
       <i-tabler name="file-search" class="icon-48 text-dark m-b-16"></i-tabler>
-      <div class="f-s-16 text-dark">No hay asesores disponibles con esos filtros.</div>
+      <div class="f-s-16 text-dark">{{ 'catalog.empty' | translate }}</div>
     </mat-card-content>
   </mat-card>
 }
@@ -80,6 +80,9 @@
               </div>
               <p class="f-s-13 m-0 text-muted">
                 {{ advisor.experience }} años de experiencia
+              </p>
+              <p class="f-s-13 m-0 text-muted">
+                {{ 'advisor.languages' | translate }}: {{ advisor.spokenLanguages || 'Español' }}
               </p>
               <div class="d-flex gap-8 justify-content-center">
                 <button
@@ -132,6 +135,9 @@
           <div class="recommend-meta">
             Calificación {{ msg.selectedMatch.rating || 'sin calificación' }} - {{ msg.selectedMatch.experience }} años de experiencia
             <span *ngIf="msg.selectedMatch.nextAvailableDate"> - Disponible desde {{ msg.selectedMatch.nextAvailableDate | date:'yyyy-MM-dd' }}</span>
+          </div>
+          <div class="recommend-meta">
+            {{ 'advisor.languages' | translate }}: {{ msg.selectedMatch.spokenLanguages || 'Español' }}
           </div>
           <div class="recommend-why">{{ msg.selectedMatch.why }}</div>
           <div class="recommend-actions">

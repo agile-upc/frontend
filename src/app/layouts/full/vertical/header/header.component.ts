@@ -71,38 +71,29 @@ export class HeaderComponent {
   @Input() notifications: UserNotification[] = [];
 
   public selectedLanguage: any = {
-    language: 'English',
-    code: 'en',
-    type: 'US',
-    icon: '/assets/images/flag/icon-flag-en.svg',
+    language: 'Español',
+    code: 'es',
+    shortLabel: 'ES',
   };
 
 
-  /*
   public languages: any[] = [
-    {
-      language: 'English',
-      code: 'en',
-      type: 'US',
-      icon: '/assets/images/flag/icon-flag-en.svg',
-    },
     {
       language: 'Español',
       code: 'es',
-      icon: '/assets/images/flag/icon-flag-es.svg',
+      shortLabel: 'ES',
     },
     {
-      language: 'Français',
-      code: 'fr',
-      icon: '/assets/images/flag/icon-flag-fr.svg',
+      language: 'Quechua',
+      code: 'qu',
+      shortLabel: 'QU',
     },
     {
-      language: 'German',
-      code: 'de',
-      icon: '/assets/images/flag/icon-flag-de.svg',
+      language: 'Aymara',
+      code: 'ay',
+      shortLabel: 'AY',
     },
   ];
-  */
 
   @Output() optionsChange = new EventEmitter<AppSettings>();
 
@@ -113,7 +104,11 @@ export class HeaderComponent {
     private translate: TranslateService,
     private router: Router
   ) {
-    translate.setDefaultLang('en');
+    const savedLanguage = localStorage.getItem('agrotech-language') ?? 'es';
+    this.selectedLanguage = this.languages.find((lang) => lang.code === savedLanguage) ?? this.languages[0];
+    translate.addLangs(this.languages.map((lang) => lang.code));
+    translate.setDefaultLang('es');
+    translate.use(this.selectedLanguage.code);
   }
 
   options = this.settings.getOptions();
@@ -139,6 +134,7 @@ export class HeaderComponent {
   changeLanguage(lang: any): void {
     this.translate.use(lang.code);
     this.selectedLanguage = lang;
+    localStorage.setItem('agrotech-language', lang.code);
   }
 
   logout() {

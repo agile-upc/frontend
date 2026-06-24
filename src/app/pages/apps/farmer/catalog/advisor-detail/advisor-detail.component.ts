@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import moment from 'moment';
 import { TablerIconsModule } from 'angular-tabler-icons';
+import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from 'src/app/material.module';
 import { ReviewComponent } from 'src/app/components/catalog/review/review.component';
 import { NoDatesDialogComponent } from 'src/app/components/available-dates/no-dates-dialog/no-dates-dialog.component';
@@ -13,7 +14,7 @@ import { Advisor } from '../advisor';
 
 @Component({
   selector: 'app-advisor-page',
-  imports: [MaterialModule, TablerIconsModule, ReviewComponent, NgIf],
+  imports: [MaterialModule, TablerIconsModule, ReviewComponent, NgIf, TranslateModule],
   templateUrl: './advisor-detail.component.html'
 })
 export class AppAdvisorDetailComponent implements OnInit {

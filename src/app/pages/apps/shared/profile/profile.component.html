@@ -79,6 +79,17 @@
                     <input matInput formControlName="occupation" />
                   </mat-form-field>
                 </div>
+                <div class="col-sm-6">
+                  <span class="text-secondary f-s-12">Idiomas de atención</span>
+                  <div *ngIf="!editing()">{{ profile()?.spokenLanguages || 'Español' }}</div>
+                  <mat-form-field *ngIf="editing()" appearance="outline" class="w-100">
+                    <mat-select formControlName="spokenLanguages" multiple>
+                      @for(language of languageOptions; track language) {
+                        <mat-option [value]="language">{{ language }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
               </ng-container>
 
               <!-- Descripción para todos -->

@@ -45,6 +45,7 @@ export class AppPostsComponent implements OnInit {
       description: '',
       photo: 'assets/images/profile/user-1.jpg',
       occupation: '',
+      spokenLanguages: 'Español',
       experience: 0,
       rating: 0,
     };

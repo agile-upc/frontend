@@ -47,7 +47,7 @@ export class ProfileService {
     }
 
     return this.findProfileByUserId(id).pipe(
-      map((profile) => profile ?? new Profile(0, 0, '', '', '', '', new Date(), '', '', null, 0))
+      map((profile) => profile ?? new Profile(0, 0, '', '', '', '', new Date(), '', '', null, '', 0))
     );
   }
 
@@ -66,6 +66,7 @@ export class ProfileService {
     formData.append('birthDate', this.toYmd(profile.birthDate));
     formData.append('description', profile.description ?? '');
     formData.append('occupation', profile.occupation ?? '');
+    formData.append('spokenLanguages', profile.spokenLanguages ?? '');
     formData.append('experience', String(profile.experience ?? 0));
     formData.append('photo', photo);
 
@@ -84,6 +85,7 @@ export class ProfileService {
       birthDate: string;
       description: string;
       occupation: string | null;
+      spokenLanguages: string;
       experience: number | null;
     },
     photoFile?: File
@@ -95,6 +97,7 @@ export class ProfileService {
     formData.append('country', payload.country ?? '');
     formData.append('birthDate', payload.birthDate ?? '');
     formData.append('description', payload.description ?? '');
+    formData.append('spokenLanguages', payload.spokenLanguages ?? '');
 
     if (payload.occupation != null) {
       formData.append('occupation', payload.occupation);
@@ -137,6 +140,7 @@ export class ProfileService {
       profile?.description ?? '',
       profile?.photo ?? '',
       profile?.occupation ?? null,
+      profile?.spokenLanguages ?? '',
       profile?.experience ?? 0
     );
   }

@@ -96,5 +96,12 @@
   "Menu Level": "Nível do menu",
   "Menu 1": "Menu 1",
   "Menu 2": "Menu 2",
-  "Disabled": "Desabilitada"
+  "Disabled": "Deshabilitada",
+  "catalog.searchPlaceholder": "Busca por nombre, profesión o especialidad",
+  "catalog.clearFilters": "Limpiar filtros",
+  "catalog.empty": "No hay asesores disponibles con esos filtros.",
+  "advisor.languages": "Idiomas de atención",
+  "advisor.book": "Reservar asesoría",
+  "common.notifications": "Notificaciones",
+  "common.profile": "Mi perfil"
 }

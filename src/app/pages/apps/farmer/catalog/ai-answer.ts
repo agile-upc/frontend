@@ -8,6 +8,7 @@ export interface AiRecommendationMatch {
   experience: number;
   city: string;
   country: string;
+  spokenLanguages: string;
   nextAvailableDate: string | null;
   why: string;
 }
@@ -39,6 +40,7 @@ export class AiAnswer {
             experience: match?.experience ?? 0,
             city: match?.city ?? '',
             country: match?.country ?? '',
+            spokenLanguages: match?.spokenLanguages ?? '',
             nextAvailableDate: match?.nextAvailableDate ?? null,
             why: match?.why ?? ''
           }))

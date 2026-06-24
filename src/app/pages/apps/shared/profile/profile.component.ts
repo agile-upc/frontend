@@ -40,6 +40,12 @@ export const YMD_DATE_FORMATS = {
   ]
 })
 export class AppProfileComponent implements OnInit {
+  readonly languageOptions = [
+    'Español',
+    'Quechua',
+    'Aymara',
+  ];
+
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
   profile = signal<Profile | null>(null);
@@ -64,6 +70,7 @@ export class AppProfileComponent implements OnInit {
       birthDate: [null], // usaremos Date aquí
       description: [''],
       occupation: [''],
+      spokenLanguages: [[]],
       experience: [0]
     });
   }
@@ -106,6 +113,7 @@ export class AppProfileComponent implements OnInit {
       birthDate: p.birthDate ?? null, // mantener Date para el datepicker
       description: p.description,
       occupation: p.occupation,
+      spokenLanguages: this.parseLanguages(p.spokenLanguages),
       experience: p.experience
     });
     this.previewUrl = p.photo || null;
@@ -156,6 +164,7 @@ export class AppProfileComponent implements OnInit {
       description: this.form.value.description,
       photo: p.photo ?? null,
       occupation: this.isAdvisor ? (this.form.value.occupation ?? null) : p.occupation,
+      spokenLanguages: this.isAdvisor ? this.formatLanguages(this.form.value.spokenLanguages) : p.spokenLanguages,
       experience: this.isAdvisor ? (Number(this.form.value.experience) ?? 0) : p.experience
     };
 
@@ -175,6 +184,19 @@ export class AppProfileComponent implements OnInit {
   }
 
   onDelete(): void { /* pendiente */ }
+
+  private parseLanguages(value: string | null | undefined): string[] {
+    return (value ?? '')
+      .split(',')
+      .map((language) => language.trim())
+      .filter(Boolean);
+  }
+
+  private formatLanguages(value: unknown): string {
+    return Array.isArray(value)
+      ? value.map((language) => String(language).trim()).filter(Boolean).join(', ')
+      : '';
+  }
 
   onImageError(event: Event) {
     (event.target as HTMLImageElement).src = 'assets/images/profile/user-1.jpg';

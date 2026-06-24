@@ -10,6 +10,7 @@ export class Profile {
     public description: string,
     public photo: string,
     public occupation: string | null,
+    public spokenLanguages: string,
     public experience: number,
   ) {}
 }

@@ -188,6 +188,16 @@
                     }
                   </mat-form-field>
                 </div>
+                <div class="col-12">
+                  <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Idiomas de atención</mat-label>
+                  <mat-form-field appearance="outline" class="w-100" color="primary">
+                    <mat-select formControlName="spokenLanguages" multiple>
+                      @for(language of languageOptions; track language) {
+                        <mat-option [value]="language">{{ language }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
               </div>
 
               <button mat-flat-button color="primary" class="w-100 m-t-24" [disabled]="!form.valid">

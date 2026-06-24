@@ -21,6 +21,11 @@ export class AppSideRegisterComponent implements OnInit {
   imageUrl = '';
   imageName = '';
   hidePassword = true;
+  readonly languageOptions = [
+    'Español',
+    'Quechua',
+    'Aymara',
+  ];
 
   today = new Date();
   maxBirthDate = new Date(
@@ -47,6 +52,7 @@ export class AppSideRegisterComponent implements OnInit {
     birthDate: new FormControl<Date | null>(null, [Validators.required]),
     description: new FormControl('', []),
     occupation: new FormControl('', []),
+    spokenLanguages: new FormControl<string[]>(['Español'], []),
     experience: new FormControl<number | null>(null, []),
     photo: new FormControl('', []),
   });
@@ -60,6 +66,9 @@ export class AppSideRegisterComponent implements OnInit {
     if (this.form.get('role')?.value === 'ADVISOR') {
       this.form.get('occupation')?.setValidators([Validators.required]);
       this.form.get('experience')?.setValidators([Validators.required, Validators.min(1)]);
+      if ((this.form.get('spokenLanguages')?.value ?? []).length === 0) {
+        this.form.get('spokenLanguages')?.setValue(['Español']);
+      }
     } else {
       this.form.get('occupation')?.clearValidators();
       this.form.get('experience')?.clearValidators();
@@ -108,6 +117,7 @@ export class AppSideRegisterComponent implements OnInit {
     if (this.isAdvisor()) {
       formData.append('occupation', this.form.value.occupation ?? '');
       formData.append('experience', String(this.form.value.experience ?? 0));
+      formData.append('spokenLanguages', (this.form.value.spokenLanguages ?? []).join(', '));
     }
 
     if (this.image) {

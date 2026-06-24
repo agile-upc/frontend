@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, retry, shareReplay, timeout } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { Advisor } from 'src/app/pages/apps/farmer/catalog/advisor';
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -10,8 +10,11 @@ import { AuthService } from 'src/app/shared/services/auth.service';
   providedIn: 'root',
 })
 export class AdvisorService {
+  private static readonly CACHE_TTL_MS = 60_000;
   private environmentUrl = `${environment.apiUrl}/advisors`;
   private catalogUrl = `${environment.apiUrl}/advisors/catalog`;
+  private catalogCache$: Observable<Advisor[]> | null = null;
+  private catalogCacheExpiresAt = 0;
 
   constructor(
     private httpClient: HttpClient,
@@ -19,8 +22,14 @@ export class AdvisorService {
   ) {}
 
   public getAdvisor(advisorId: number): Observable<Advisor> {
-    return this.httpClient.get<any>(`${this.environmentUrl}/${advisorId}`).pipe(
-      map((item) => this.mapCatalogItem(item))
+    return this.getAdvisorCatalog().pipe(
+      map((advisors) => {
+        const cachedAdvisor = advisors.find((advisor) => advisor.advisorId === advisorId);
+        if (!cachedAdvisor) {
+          throw new Error('Advisor not found in catalog cache');
+        }
+        return cachedAdvisor;
+      })
     );
   }
 
@@ -46,9 +55,23 @@ export class AdvisorService {
   }
 
   public getAdvisorCatalog(): Observable<Advisor[]> {
-    return this.httpClient.get<any[]>(this.catalogUrl).pipe(
-      map((items) => items.map((item) => this.mapCatalogItem(item)))
-    );
+    const now = Date.now();
+    if (!this.catalogCache$ || now >= this.catalogCacheExpiresAt) {
+      this.catalogCache$ = this.httpClient.get<any[]>(this.catalogUrl).pipe(
+        timeout(8000),
+        retry({ count: 1, delay: 500 }),
+        map((items) => items.map((item) => this.mapCatalogItem(item))),
+        shareReplay({ bufferSize: 1, refCount: true })
+      );
+      this.catalogCacheExpiresAt = now + AdvisorService.CACHE_TTL_MS;
+    }
+
+    return this.catalogCache$;
+  }
+
+  public clearCatalogCache(): void {
+    this.catalogCache$ = null;
+    this.catalogCacheExpiresAt = 0;
   }
 
   private mapCatalogItem(item: any): Advisor {
@@ -64,6 +87,7 @@ export class AdvisorService {
       profile?.description ?? '',
       profile?.photo ?? '',
       profile?.occupation ?? '',
+      profile?.spokenLanguages ?? '',
       profile?.experience ?? 0,
       item?.rating ?? 0
     );

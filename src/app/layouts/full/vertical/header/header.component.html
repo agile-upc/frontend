@@ -24,6 +24,22 @@
 
   <span class="flex-1-auto"></span>
 
+  <button
+    mat-button
+    [matMenuTriggerFor]="languageMenu"
+    aria-label="Cambiar idioma"
+    class="m-x-5"
+  >
+    {{ selectedLanguage.shortLabel }}
+  </button>
+  <mat-menu #languageMenu="matMenu" class="topbar-dd cardWithShadow">
+    @for(language of languages; track language.code) {
+      <button mat-menu-item (click)="changeLanguage(language)">
+        <span>{{ language.language }}</span>
+      </button>
+    }
+  </mat-menu>
+
   @if(options.theme=='light'){
     <button mat-icon-button aria-label="lightdark" class="d-flex justify-content-center" (click)="setlightDark('dark')" >
       <i-tabler class="d-flex icon-22" [name]="'moon'"></i-tabler>

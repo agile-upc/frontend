@@ -28,6 +28,10 @@
               <mat-card-subtitle class="f-s-14">{{ advisor.rating || 'Sin calificación' }}</mat-card-subtitle>
             </div>
             <div class="text-center m-t-16">
+              <mat-card-title>{{ 'advisor.languages' | translate }}</mat-card-title>
+              <mat-card-subtitle class="f-s-14">{{ advisor.spokenLanguages || 'Español' }}</mat-card-subtitle>
+            </div>
+            <div class="text-center m-t-16">
               <mat-card-title>Disponibilidad</mat-card-title>
               <mat-card-subtitle class="f-s-14">{{ hasDates ? 'Horarios disponibles' : 'Sin horarios disponibles' }}</mat-card-subtitle>
             </div>
@@ -40,7 +44,7 @@
           class="text-white"
           (click)="goToBookingPage()"
         >
-          Reservar asesoría
+          {{ 'advisor.book' | translate }}
         </button>
       </mat-card-actions>
     </mat-card>
