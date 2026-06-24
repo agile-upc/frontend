@@ -14,13 +14,39 @@
 
         <span class="flex-1-auto"></span>
 
+        <button
+          mat-button
+          [matMenuTriggerFor]="languageMenu"
+          aria-label="Cambiar idioma"
+          class="m-l-8"
+        >
+          {{ selectedLanguage.shortLabel }}
+        </button>
+        <mat-menu #languageMenu="matMenu">
+          @for(language of languages; track language.code) {
+            <button mat-menu-item (click)="changeLanguage(language)">
+              {{ language.language }}
+            </button>
+          }
+        </mat-menu>
+
+        @if(options.theme === 'light') {
+          <button mat-icon-button aria-label="Activar modo oscuro" (click)="setLightDark('dark')">
+            <i-tabler name="moon" class="icon-20 d-flex"></i-tabler>
+          </button>
+        } @else {
+          <button mat-icon-button aria-label="Activar modo claro" (click)="setLightDark('light')">
+            <i-tabler name="sun" class="icon-20 d-flex"></i-tabler>
+          </button>
+        }
+
         <div class="d-none d-lg-flex">
           <a
             mat-flat-button
             color="primary"
             class="m-l-10"
             [routerLink]="['/authentication/login']"
-            >Iniciar sesión</a
+            >{{ 'landing.actions.login' | translate }}</a
           >
         </div>
 
@@ -49,14 +75,14 @@
             <div>
               <span class="f-s-16 f-w-600 m-b-16 d-flex align-items-center"
                 ><i-tabler name="rocket" class="text-secondary m-r-8"></i-tabler
-                >Bienvenidos a AgroTech</span
+                >{{ 'landing.hero.eyebrow' | translate }}</span
               >
               <h1 class="banner-title m-0">
-                Asesoría moderna.
-                <span class="text-primary">Resultados duraderos.</span>
+                {{ 'landing.hero.title' | translate }}
+                <span class="text-primary">{{ 'landing.hero.titleHighlight' | translate }}</span>
               </h1>
               <p class="f-s-18 p-y-24 m-t-12 m-0 banner-subtitle">
-                Conecta productores y asesores con citas, publicaciones y acompañamiento experto.
+                {{ 'landing.hero.subtitle' | translate }}
               </p>
               <div class="m-t-24 hstack">
                 <a
@@ -64,14 +90,14 @@
                   color="primary"
                   [routerLink]="['/authentication/login']"
                   class="btn-custom"
-                  >Iniciar sesión</a
+                  >{{ 'landing.actions.login' | translate }}</a
                 >
                 <a
                   mat-stroked-button
                   color="primary"
                   (click)="gotoDemos()"
                   class="btn-custom border-primary"
-                  >Ver más</a
+                  >{{ 'landing.actions.learnMore' | translate }}</a
                 >
               </div>
             </div>
@@ -130,7 +156,7 @@
           <div class="col-lg-8 text-center">
             
             <h2 class="section-title">
-              ¿Tienes alguno de estos desafíos?
+              {{ 'landing.challenges.title' | translate }}
             </h2>
           </div>
         </div>
@@ -138,11 +164,11 @@
           <div class="col-lg-3 col-sm-6 m-b-16">
             <mat-card>
               <mat-card-header>
-                <mat-card-title>Dificultad para encontrar asesoría confiable</mat-card-title>
+                <mat-card-title>{{ 'landing.challenges.find.title' | translate }}</mat-card-title>
               </mat-card-header>
               <mat-card-content>
                 <p>
-                  Necesitas orientación experta para tomar mejores decisiones productivas, pero encontrar al asesor adecuado te toma demasiado tiempo.
+                  {{ 'landing.challenges.find.text' | translate }}
                 </p>
               </mat-card-content>
             </mat-card>
@@ -150,11 +176,11 @@
           <div class="col-lg-3 col-sm-6 m-b-16">
             <mat-card>
               <mat-card-header>
-                <mat-card-title>Seguimiento disperso de tus consultas</mat-card-title>
+                <mat-card-title>{{ 'landing.challenges.follow.title' | translate }}</mat-card-title>
               </mat-card-header>
               <mat-card-content>
                 <p>
-                  Tus conversaciones, horarios y recomendaciones quedan repartidos entre varios canales y eso dificulta dar continuidad a cada caso.
+                  {{ 'landing.challenges.follow.text' | translate }}
                 </p>
               </mat-card-content>
             </mat-card>
@@ -162,11 +188,11 @@
           <div class="col-lg-3 col-sm-6 m-b-16">
             <mat-card>
               <mat-card-header>
-                <mat-card-title>Poca visibilidad de especialistas disponibles</mat-card-title>
+                <mat-card-title>{{ 'landing.challenges.visibility.title' | translate }}</mat-card-title>
                 </mat-card-header>
               <mat-card-content>
                 <p>
-                  Quieres comparar perfiles, experiencia y disponibilidad antes de reservar, pero no tienes una vista clara del catálogo de asesores.
+                  {{ 'landing.challenges.visibility.text' | translate }}
                 </p>
               </mat-card-content>
             </mat-card>
@@ -188,25 +214,25 @@
           <div class="col-lg-6 col-sm-8">
             <span
               class="text-primary text-uppercase d-block text-center f-w-500"
-              >Multifuncional</span
+              >{{ 'landing.users.eyebrow' | translate }}</span
             >
             <h2 class="section-title text-center m-t-16">
-              AgroTech se diseñó pensando en dos tipos de usuario
+              {{ 'landing.users.title' | translate }}
             </h2>
           </div>
         </div>
 
         <!-- users -->
         <div class="row m-t-24">
-          @for(user of users; track user.title) {
+          @for(user of users; track user.titleKey) {
           <div class="col-sm-6 col-lg-6 text-center">
             <i-tabler
               [name]="user.icon"
               class="icon-40 text-primary m-t-16"
             ></i-tabler>
-            <h6 class="m-0 f-s-18 f-w-600 m-b-8 m-t-24">{{ user.title }}</h6>
+            <h6 class="m-0 f-s-18 f-w-600 m-b-8 m-t-24">{{ user.titleKey | translate }}</h6>
             <span class="f-s-14 m-b-24 d-block lh-base">{{
-              user.subtext
+              user.subtextKey | translate
             }}</span>
           </div>
           }
@@ -227,7 +253,7 @@
         <div class="row justify-content-center">
           <div class="col-lg-8 col-sm-11">
             <h2 class="section-title text-center">
-              Obtén asesoramiento experto, agenda reuniones en línea y mantén el seguimiento de cada recomendación en un solo lugar.
+              {{ 'landing.value.title' | translate }}
             </h2>
           </div>
         </div>
@@ -264,7 +290,7 @@
         <div class="row justify-content-center">
           <div class="col-lg-8 col-sm-11">
             <h2 class="section-title text-center">
-              Conoce a los desarrolladores detrás de AgroTech
+              {{ 'landing.team.title' | translate }}
             </h2>
           </div>
         </div>
@@ -286,11 +312,11 @@
                     <h6 class=" f-s-16 f-w-600">
                       {{ profile.name }}
                     </h6>
-                    <span>{{ profile.subtext }}</span>
+                    <span>{{ profile.subtextKey | translate }}</span>
                   </div>
                 </div>
                 <p class="m-t-24 f-s-14 m-b-0">
-                  {{ profile.description }}
+                  {{ profile.descriptionKey | translate }}
                 </p>
               </mat-card-content>
             </mat-card>
@@ -317,23 +343,23 @@
           >
             <mat-card-content class="p-32 text-center">
               <h3 class="f-s-24 f-w-600 m-0 m-t-12 ">
-                ¿Tienes alguna consulta o recomendación?
+                {{ 'landing.contact.title' | translate }}
               </h3>
               <span class="f-s-14 f-w-500 m-t-8 d-block"
-                >Conéctate con nosotros a través de Discord o envíanos un correo electrónico</span
+                >{{ 'landing.contact.text' | translate }}</span
               >
               <div class="m-t-30 m-b-16 hstack justify-content-center">
                 <a
                   mat-flat-button
                   color="primary"
                   class="btn-custom"
-                  >Preguntar en Discord</a
+                  >{{ 'landing.actions.discord' | translate }}</a
                 >
                 <a
                   mat-stroked-button
                   color="accent"
                   class="btn-custom border-accent"
-                  >Enviar correo</a
+                  >{{ 'landing.actions.email' | translate }}</a
                 >
               </div>
             </mat-card-content>
@@ -355,14 +381,14 @@
           <div class="col-lg-5 d-flex align-items-center m-b-24">
             <div>
               <h3 class="m-t-0 section-title2 text-white m-b-24">
-                ¿Qué esperas para conectar con asesoría especializada de forma simple? Comienza hoy mismo con AgroTech.
+                {{ 'landing.cta.title' | translate }}
               </h3>
               <div class="hstack">
                 <a
                   mat-flat-button
                   [routerLink]="['/authentication/login']"
                   class="text-primary btn-custom sm bg-white f-w-500"
-                  >Iniciar sesión</a
+                  >{{ 'landing.actions.login' | translate }}</a
                 >
                 <a
                   mat-stroked-button
@@ -370,7 +396,7 @@
                   class="btn-custom sm text-white f-w-500 border-white"
                   href="https://portal.testapp.io/apps/install/LqWkmgv9qk51m"
                   target="_blank"
-                  >Descargar app móvil</a
+                  >{{ 'landing.actions.download' | translate }}</a
                 >
               </div>
             </div>
@@ -401,7 +427,7 @@
               <img src="assets/images/landingpage/favicon.png" alt="logo" width="50px" />
             </span>
             <div class="f-s-14 m-t-8">
-              Todos los derechos reservados © 2025
+              {{ 'landing.footer.rights' | translate }}
               <a class="f-s-14"
                 >NovaTech</a
               >.

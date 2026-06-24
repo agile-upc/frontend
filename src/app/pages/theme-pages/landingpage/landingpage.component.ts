@@ -5,25 +5,26 @@ import { TablerIconsModule } from 'angular-tabler-icons';
 import { CoreService } from 'src/app/services/core.service';
 import { MaterialModule } from 'src/app/material.module';
 import { BrandingComponent } from '../../../layouts/full/vertical/sidebar/branding.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface profiles {
   id: number;
   name: string;
-  subtext: string;
+  subtextKey: string;
   imgSrc: string;
-  description: string;
+  descriptionKey: string;
 }
 
 interface users {
   id: number;
   icon: string;
-  title: string;
-  subtext: string;
+  titleKey: string;
+  subtextKey: string;
 }
 
 @Component({
   selector: 'app-landingpage',
-  imports: [MaterialModule, TablerIconsModule, RouterLink, BrandingComponent],
+  imports: [MaterialModule, TablerIconsModule, RouterLink, BrandingComponent, TranslateModule],
   templateUrl: './landingpage.component.html',
 })
 export class AppLandingpageComponent {
@@ -33,14 +34,54 @@ export class AppLandingpageComponent {
   @Output() toggleCollapsed = new EventEmitter<void>();
 
   options = this.settings.getOptions();
+  readonly languages = [
+    { language: 'Español', code: 'es', shortLabel: 'ES' },
+    { language: 'Quechua', code: 'qu', shortLabel: 'QU' },
+    { language: 'Aymara', code: 'ay', shortLabel: 'AY' },
+  ];
+  selectedLanguage = this.languages[0];
+  private htmlElement!: HTMLHtmlElement;
 
   constructor(
     private settings: CoreService,
-    private scroller: ViewportScroller
-  ) {}
+    private scroller: ViewportScroller,
+    private translate: TranslateService
+  ) {
+    this.htmlElement = document.querySelector('html')!;
+    const savedLanguage = localStorage.getItem('agrotech-language') ?? 'es';
+    this.selectedLanguage = this.languages.find((lang) => lang.code === savedLanguage) ?? this.languages[0];
+    this.translate.addLangs(this.languages.map((lang) => lang.code));
+    this.translate.setDefaultLang('es');
+    this.translate.use(this.selectedLanguage.code);
+    this.applyThemeClass(this.options.theme);
+  }
 
   gotoDemos() {
     this.scroller.scrollToAnchor('demos');
+  }
+
+  setLightDark(theme: string): void {
+    this.settings.setOptions({ theme });
+    this.options = this.settings.getOptions();
+    this.applyThemeClass(theme);
+  }
+
+  changeLanguage(lang: { language: string; code: string; shortLabel: string }): void {
+    this.selectedLanguage = lang;
+    this.translate.use(lang.code);
+    this.settings.setLanguage(lang.code);
+    localStorage.setItem('agrotech-language', lang.code);
+  }
+
+  private applyThemeClass(theme: string): void {
+    if (theme === 'dark') {
+      this.htmlElement.classList.add('dark-theme');
+      this.htmlElement.classList.remove('light-theme');
+      return;
+    }
+
+    this.htmlElement.classList.remove('dark-theme');
+    this.htmlElement.classList.add('light-theme');
   }
 
   profiles: profiles[] = [
@@ -48,36 +89,36 @@ export class AppLandingpageComponent {
       id: 1,
       imgSrc: '/assets/images/landingpage/profile/piero_perfil.jpg',
       name: 'Piero Delgado',
-      subtext: 'Ingeniero de Software',
-      description: 'Soy Piero, estudiante de noveno ciclo de Ingeniería de Software, con experiencia en diseño web empleando HTML y CSS, además del uso de Figma para elaborar prototipos. Me considero una persona responsable y organizada, comprometida con una gestión eficiente del tiempo.'
+      subtextKey: 'landing.team.role',
+      descriptionKey: 'landing.team.piero'
     },
     {
       id: 2,
       imgSrc: '/assets/images/landingpage/profile/ariana_perfil.png',
       name: 'Ariana Vargas',
-      subtext: 'Ingeniero de Software',
-      description: 'Soy Ariana, estudiante del noveno ciclo de Ingeniería de Software. Me interesa construir productos web bien diseñados y funcionales, colaborando de forma organizada y manteniendo una fuerte atención al detalle.'
+      subtextKey: 'landing.team.role',
+      descriptionKey: 'landing.team.ariana'
     },
     {
       id: 3,
       imgSrc: '/assets/images/landingpage/profile/mauricio_perfil.png',
       name: 'Mauricio Salas',
-      subtext: 'Ingeniero de Software',
-      description: 'Soy Mauricio, estudiante del noveno ciclo de Ingeniería de Software. Disfruto trabajar en soluciones web y backend, con enfoque en implementar funcionalidades claras, mantenibles y alineadas con las necesidades del usuario.'
+      subtextKey: 'landing.team.role',
+      descriptionKey: 'landing.team.mauricio'
     },
     {
       id: 4,
       imgSrc: '/assets/images/landingpage/profile/sebastian_perfil.png',
       name: 'Sebastian Paredes',
-      subtext: 'Ingeniero de Software',
-      description: 'Soy Sebastian, estudiante del noveno ciclo de Ingeniería de Software. A lo largo de mi formación he adquirido experiencia trabajando con diversos lenguajes como C++, Python, C# y Java, aplicando principios de programación orientada a objetos.'
+      subtextKey: 'landing.team.role',
+      descriptionKey: 'landing.team.sebastian'
     },
     {
       id: 5,
       imgSrc: '/assets/images/landingpage/profile/salvador_perfil.jpg',
       name: 'Salvador Salinas',
-      subtext: 'Ingeniero de Software',
-      description: 'Soy Salvador y actualmente curso el noveno ciclo de la carrera de Ingeniería de Software. Poseo conocimientos en programación orientada a objetos, desarrollo de backend, frontend web y móvil, y CI/CD. Considero que soy una persona responsable y organizada con los tiempos.'
+      subtextKey: 'landing.team.role',
+      descriptionKey: 'landing.team.salvador'
     },
   ];
 
@@ -85,16 +126,14 @@ export class AppLandingpageComponent {
     {
       id: 1,
       icon: 'building-cottage',
-      title: 'Productores agrícolas',
-      subtext:
-        'Encuentra asesores, agenda citas y centraliza recomendaciones para tomar decisiones con mejor contexto y seguimiento.',
+      titleKey: 'landing.users.farmers.title',
+      subtextKey: 'landing.users.farmers.text',
     },
     {
       id: 2,
       icon: 'user-circle',
-      title: 'Asesores especializados',
-      subtext:
-        'Publica contenido, administra tu disponibilidad y acompaña a más productores con una experiencia simple y ordenada.',
+      titleKey: 'landing.users.advisors.title',
+      subtextKey: 'landing.users.advisors.text',
     }
   ];
 }
