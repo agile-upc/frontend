@@ -1,0 +1,106 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="education-toolbar">
+      <div>
+        <h2 class="m-0 f-s-20 f-w-600">Portal educativo</h2>
+        <p class="m-0 m-t-4 text-muted">Administra los recursos visibles para productores.</p>
+      </div>
+      <button mat-flat-button color="primary" class="text-white icon-text-button" (click)="openCreateDialog()">
+        <i-tabler name="plus" class="icon-18 d-flex"></i-tabler>
+        Nuevo recurso
+      </button>
+    </div>
+
+    <div class="filter-toolbar">
+      <mat-form-field appearance="outline" class="filter-search hide-hint">
+        <input
+          matInput
+          [(ngModel)]="searchText"
+          placeholder="Buscar por titulo, fuente, URL o tema"
+        />
+        <mat-icon matSuffix>
+          <i-tabler name="search" class="icon-20 d-flex m-t-2"></i-tabler>
+        </mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="hide-hint">
+        <mat-label>Tipo</mat-label>
+        <mat-select [(ngModel)]="selectedTypes" multiple>
+          @for(type of typeOptions; track type) {
+            <mat-option [value]="type">{{ type }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="hide-hint">
+        <mat-label>Tema</mat-label>
+        <mat-select [(ngModel)]="selectedTopics" multiple>
+          @for(topic of topicOptions; track topic) {
+            <mat-option [value]="topic">{{ topic }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-stroked-button color="primary" class="icon-text-button" (click)="clearFilters()">
+        <i-tabler name="filter-off" class="icon-18 d-flex"></i-tabler>
+        Limpiar
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+@if(loading) {
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="text-center p-y-32">
+      <mat-progress-spinner mode="indeterminate" diameter="36"></mat-progress-spinner>
+    </mat-card-content>
+  </mat-card>
+} @else if(resources().length === 0) {
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="text-center p-y-32">
+      <i-tabler name="book" class="icon-48 text-dark m-b-16"></i-tabler>
+      <div>No hay recursos educativos publicados.</div>
+    </mat-card-content>
+  </mat-card>
+} @else if(filteredResources.length === 0) {
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="text-center p-y-32">
+      <i-tabler name="file-search" class="icon-48 text-dark m-b-16"></i-tabler>
+      <div>No hay recursos que coincidan con esos filtros.</div>
+    </mat-card-content>
+  </mat-card>
+} @else {
+  <div class="resource-list">
+    @for(resource of filteredResources; track resource.id) {
+      <mat-card class="cardWithShadow resource-card">
+        <mat-card-content>
+          <div class="resource-main">
+            <div class="resource-title">{{ resource.title }}</div>
+            <div class="text-muted f-s-13">{{ resource.type }} - {{ resource.sourceName }}</div>
+            <p class="m-t-8 m-b-0 f-s-13">{{ resource.summary || 'Sin resumen.' }}</p>
+            <div class="topic-row">
+              @for(topic of resource.topics; track topic) {
+                <span class="topic-chip">{{ topic }}</span>
+              }
+            </div>
+          </div>
+        </mat-card-content>
+        <mat-divider></mat-divider>
+        <mat-card-actions class="resource-actions">
+          <button mat-stroked-button color="primary" class="icon-text-button" (click)="openResource(resource)">
+            <i-tabler name="external-link" class="icon-18 d-flex"></i-tabler>
+            Abrir
+          </button>
+          <button mat-stroked-button color="primary" class="icon-text-button" (click)="openEditDialog(resource)">
+            <i-tabler name="edit" class="icon-18 d-flex"></i-tabler>
+            Editar
+          </button>
+          <button mat-stroked-button color="warn" class="icon-text-button" (click)="deleteResource(resource)">
+            <i-tabler name="trash" class="icon-18 d-flex"></i-tabler>
+            Eliminar
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    }
+  </div>
+}

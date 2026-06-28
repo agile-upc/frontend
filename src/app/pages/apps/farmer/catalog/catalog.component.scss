@@ -19,6 +19,17 @@
   white-space: nowrap;
 }
 
+.advisor-name {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.advisor-verified {
+  color: var(--mat-sys-primary);
+}
+
 .chat-box {
   position: fixed;
   bottom: 90px;

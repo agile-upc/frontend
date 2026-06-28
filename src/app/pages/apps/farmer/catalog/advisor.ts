@@ -15,5 +15,6 @@ export class Advisor {
     public experience: number,
     // De tabla "advisor"
     public rating: number,
+    public validated?: boolean,
   ) {}
 }

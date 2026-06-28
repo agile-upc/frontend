@@ -1,0 +1,73 @@
+<div class="dialog-header">
+  <h2 mat-dialog-title class="m-0">{{ title }}</h2>
+  <button mat-icon-button type="button" (click)="cancel()" aria-label="Cerrar">
+    <i-tabler name="x" class="icon-20 d-flex"></i-tabler>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="resource-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Titulo</mat-label>
+      <input matInput formControlName="title" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Resumen</mat-label>
+      <textarea matInput rows="4" formControlName="summary"></textarea>
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo</mat-label>
+        <mat-select formControlName="type">
+          @for(type of data.typeOptions; track type) {
+            <mat-option [value]="type">{{ type }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha de publicacion</mat-label>
+        <input matInput type="date" formControlName="publishedAt" />
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fuente</mat-label>
+      <input matInput formControlName="sourceName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>URL principal</mat-label>
+      <input matInput formControlName="sourceUrl" />
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>URL de descarga</mat-label>
+        <input matInput formControlName="downloadUrl" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>URL de imagen</mat-label>
+        <input matInput formControlName="thumbnailUrl" />
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Temas separados por coma</mat-label>
+      <input matInput formControlName="topics" />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" class="icon-text-button" (click)="cancel()">
+    Cancelar
+  </button>
+  <button mat-flat-button color="primary" type="button" class="text-white icon-text-button" (click)="save()">
+    <i-tabler name="device-floppy" class="icon-18 d-flex"></i-tabler>
+    Guardar
+  </button>
+</mat-dialog-actions>

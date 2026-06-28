@@ -33,11 +33,11 @@ export class AdvisorService {
     );
   }
 
-  public getMyAdvisor(): Observable<{ id: number; userId: number; rating: number }> {
-    return this.httpClient.get<{ id: number; userId: number; rating: number }>(this.environmentUrl);
+  public getMyAdvisor(): Observable<{ id: number; userId: number; rating: number; validated: boolean }> {
+    return this.httpClient.get<{ id: number; userId: number; rating: number; validated: boolean }>(this.environmentUrl);
   }
 
-  public getAdvisorByUserId(userId: number): Observable<{ id: number; userId: number; rating: number }> {
+  public getAdvisorByUserId(userId: number): Observable<{ id: number; userId: number; rating: number; validated: boolean }> {
     if (this.authService.user.userId === userId) {
       return this.getMyAdvisor();
     }
@@ -49,6 +49,7 @@ export class AdvisorService {
           id: advisor?.advisorId ?? 0,
           userId: advisor?.userId ?? 0,
           rating: advisor?.rating ?? 0,
+          validated: advisor?.validated ?? false,
         };
       })
     );
@@ -89,7 +90,8 @@ export class AdvisorService {
       profile?.occupation ?? '',
       profile?.spokenLanguages ?? '',
       profile?.experience ?? 0,
-      item?.rating ?? 0
+      item?.rating ?? 0,
+      item?.validated ?? false
     );
   }
 

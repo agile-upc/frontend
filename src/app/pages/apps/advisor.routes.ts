@@ -8,6 +8,7 @@ import { AdvisorPostsComponent } from './advisor/posts/advisor-posts.component';
 import { EditPostComponent } from './advisor/posts/edit-post/edit-post.component';
 import { CreatePostComponent } from './advisor/posts/create-post/create-post.component';
 import { AdvisoryCalendarComponent } from './shared/advisory-calendar/advisory-calendar.component';
+import { AdvisorCredentialsComponent } from './advisor/credentials/advisor-credentials.component';
 
 export const AdvisorRoutes: Routes = [
   {
@@ -92,6 +93,16 @@ export const AdvisorRoutes: Routes = [
           title: 'nav.mySchedule',
           urls: [
             { title: 'availability.availableSlots', url: '/apps/advisor/available-dates' },
+          ]
+        }
+      },
+      {
+        path: 'credentials',
+        component: AdvisorCredentialsComponent,
+        data: {
+          title: 'advisor.credentials',
+          urls: [
+            { title: 'advisor.credentials', url: '/apps/advisor/credentials' },
           ]
         }
       },

@@ -39,6 +39,10 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       return this.redirectByRole(role);
     }
 
+    if (url.startsWith('/apps/admin') && role !== 'ADMIN') {
+      return this.redirectByRole(role);
+    }
+
     return true;
   }
 
@@ -50,7 +54,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       return this.router.createUrlTree(['/apps/advisor/appointments']);
     }
     if (role === 'ADMIN') {
-      return this.router.createUrlTree(['/apps/profile']);
+      return this.router.createUrlTree(['/apps/admin/education']);
     }
     return this.router.createUrlTree(['/authentication/login']);
   }

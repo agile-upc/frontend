@@ -12,3 +12,5 @@ export interface EducationalResource {
   publishedAt: string | null;
   topics: string[];
 }
+
+export type EducationalResourcePayload = Omit<EducationalResource, 'id'>;

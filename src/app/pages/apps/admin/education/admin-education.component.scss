@@ -1,0 +1,93 @@
+.icon-text-button {
+  align-items: center;
+  display: inline-flex;
+  gap: 8px;
+  min-width: max-content;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .icon-text-button .mdc-button__label {
+  align-items: center;
+  display: inline-flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.education-toolbar {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.filter-toolbar {
+  align-items: center;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(260px, 1fr) minmax(180px, 220px) minmax(180px, 220px) auto;
+  margin-top: 20px;
+}
+
+.resource-list {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+}
+
+.resource-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.resource-card mat-card-content {
+  flex: 1 1 auto;
+}
+
+.resource-main {
+  min-width: 0;
+}
+
+.resource-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.resource-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: auto;
+  padding: 12px 16px 16px;
+}
+
+.topic-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.topic-chip {
+  background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent);
+  border-radius: 999px;
+  color: var(--mat-sys-primary);
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+@media (max-width: 960px) {
+  .education-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .filter-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .resource-list {
+    grid-template-columns: 1fr;
+  }
+}

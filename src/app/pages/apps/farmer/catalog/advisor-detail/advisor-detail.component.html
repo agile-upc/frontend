@@ -52,7 +52,12 @@
   <div class="col-md-8">
     <mat-card class="cardWithShadow">
       <mat-card-content>
-        <mat-card-title>{{ 'advisor.about' | translate }} {{ advisor.firstName }} {{ advisor.lastName }}</mat-card-title>
+        <mat-card-title class="advisor-detail-name">
+          {{ 'advisor.about' | translate }} {{ advisor.firstName }} {{ advisor.lastName }}
+          @if(advisor.validated) {
+            <i-tabler name="shield-check" class="icon-20 d-flex advisor-verified" [matTooltip]="'Asesor validado'"></i-tabler>
+          }
+        </mat-card-title>
         <p>{{ advisor.description || ('advisor.noDescription' | translate) }}</p>
       </mat-card-content>
     </mat-card>

@@ -83,8 +83,11 @@
             />
             <div class="d-flex flex-col gap-20 m-t-16">
               <div>
-                <h4 mat-card-title>
+                <h4 mat-card-title class="advisor-name">
                   {{ advisor.firstName }} {{ advisor.lastName }}
+                  @if(advisor.validated) {
+                    <i-tabler name="shield-check" class="icon-18 d-flex advisor-verified" [matTooltip]="'Asesor validado'"></i-tabler>
+                  }
                 </h4>
                 <span class="f-s-12">{{ advisor.occupation || ('advisor.specialized' | translate) }}</span>
               </div>

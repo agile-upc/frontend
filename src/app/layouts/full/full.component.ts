@@ -21,6 +21,7 @@ import { CustomizerComponent } from './shared/customizer/customizer.component';
 import {AuthService} from "../../shared/services/auth.service";
 import {navItemsFarmer} from "./vertical/sidebar/sidebar-data-farmer";
 import {navItemsAdvisor} from "./vertical/sidebar/sidebar-data-advisor";
+import {navItemsAdmin} from "./vertical/sidebar/sidebar-data-admin";
 import {ProfileService} from "../../shared/services/profile.service";
 import {UserNotification} from "../../shared/model/userNotification";
 import {NotificationService} from "../../shared/services/notification.service";
@@ -207,7 +208,7 @@ export class FullComponent implements OnInit {
     }
 
     if (role === 'ADMIN') {
-      this.navItems = [];
+      this.navItems = navItemsAdmin;
       this.role = 'role.admin';
     }
 
@@ -299,7 +300,7 @@ export class FullComponent implements OnInit {
     }
 
     if (role === 'ADMIN') {
-      return '/apps/profile';
+      return '/apps/admin/education';
     }
 
     return '/authentication/login';

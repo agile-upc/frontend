@@ -20,6 +20,11 @@ export const navItemsAdvisor: NavItem[] = [
     route: '/apps/advisor/available-dates',
   },
   {
+    displayName: 'advisor.credentials',
+    iconName: 'shield-check',
+    route: '/apps/advisor/credentials',
+  },
+  {
     navCap: 'nav.posts',
   },
   {

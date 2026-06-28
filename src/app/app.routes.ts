@@ -26,6 +26,11 @@ export const routes: Routes = [
               import('./pages/apps/advisor.routes').then((m) => m.AdvisorRoutes),
           },
           {
+            path: 'admin',
+            loadChildren: () =>
+              import('./pages/apps/admin.routes').then((m) => m.AdminRoutes),
+          },
+          {
             path: 'notifications',
             component: AppNotificationsComponent,
             data: {

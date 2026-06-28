@@ -15,7 +15,18 @@ import { Advisor } from '../advisor';
 @Component({
   selector: 'app-advisor-page',
   imports: [MaterialModule, TablerIconsModule, ReviewComponent, NgIf, TranslateModule],
-  templateUrl: './advisor-detail.component.html'
+  templateUrl: './advisor-detail.component.html',
+  styles: [`
+    .advisor-detail-name {
+      align-items: center;
+      display: inline-flex;
+      gap: 8px;
+    }
+
+    .advisor-verified {
+      color: var(--mat-sys-primary);
+    }
+  `],
 })
 export class AppAdvisorDetailComponent implements OnInit {
   advisor!: Advisor;
