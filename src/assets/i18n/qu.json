@@ -5,6 +5,8 @@
   "catalog.datePlaceholder": "Huk p'unchayta akllay",
   "catalog.dateHint": "DD/MM/AAAA",
   "catalog.languageFilter": "Rimanakuna",
+  "catalog.error.load": "Yachachiqkunapa sinrinta apamuyta mana atikunchu.",
+  "catalog.error.filterDate": "Chay p'unchaypaq kachkaq yachachiqkunata apamuyta mana atikunchu.",
   "advisor.languages": "Rimanakuna",
   "advisor.book": "Yachachiyta waqaychay",
   "common.notifications": "Willaykuna",

@@ -103,6 +103,8 @@
   "catalog.datePlaceholder": "Selecciona una fecha",
   "catalog.dateHint": "DD/MM/AAAA",
   "catalog.languageFilter": "Idiomas de atención",
+  "catalog.error.load": "No se pudo cargar el catálogo de asesores.",
+  "catalog.error.filterDate": "No se pudieron cargar los asesores disponibles para esa fecha.",
   "advisor.languages": "Idiomas de atención",
   "advisor.book": "Reservar asesoría",
   "common.notifications": "Notificaciones",

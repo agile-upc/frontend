@@ -5,6 +5,8 @@
   "catalog.datePlaceholder": "Mä uru chhijllam",
   "catalog.dateHint": "DD/MM/AAAA",
   "catalog.languageFilter": "Arunaka",
+  "catalog.error.load": "Yatichirinakan sinri apaniñax janiw atiskiti.",
+  "catalog.error.filterDate": "Uka urutak yatichirinaka utjki ukanak apaniñax janiw atiskiti.",
   "advisor.languages": "Arunaka",
   "advisor.book": "Yanapt'a mayiña",
   "common.notifications": "Yatiyawinaka",
